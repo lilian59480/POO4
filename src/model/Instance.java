@@ -18,6 +18,8 @@
  */
 package model;
 
+import java.util.List;
+
 /**
  *
  * @author Corentin
@@ -29,4 +31,7 @@ public class Instance {
     private int capaciteVehicule;
     private int coutVehicule;
     private List<Depot> depot;
+    private List<Client> clients;
+    private List<Emplacement> emplacements;
+    private List<Route> routes;
 }
