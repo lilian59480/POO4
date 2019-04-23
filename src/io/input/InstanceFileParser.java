@@ -31,6 +31,7 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import model.Instance;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -90,8 +91,8 @@ public class InstanceFileParser {
      * @return an Instance
      * @throws ParserException
      */
-    public int parse(File f) throws ParserException {
-        try ( FileInputStream fis = new FileInputStream(f)) {
+    public Instance parse(File f) throws ParserException {
+        try (FileInputStream fis = new FileInputStream(f)) {
             return this.parse(fis);
         } catch (IOException ex) {
             throw new ParserException(ex);
@@ -105,7 +106,7 @@ public class InstanceFileParser {
      * @return an Instance
      * @throws ParserException
      */
-    public int parse(InputStream is) throws ParserException {
+    public Instance parse(InputStream is) throws ParserException {
         InputStream validInputStream = InstanceFileParser.createSuitableXMLRoot(is);
         Document document;
 
@@ -142,7 +143,7 @@ public class InstanceFileParser {
         List<String[]> travelCostsTimesList = this.getTravelCostsTimesList(document);
         System.out.println("travelCostsTimesList : " + travelCostsTimesList);
 
-        return 0;
+        return new Instance();
     }
 
     /**

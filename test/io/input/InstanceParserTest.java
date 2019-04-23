@@ -19,6 +19,7 @@
 package io.input;
 
 import java.io.ByteArrayInputStream;
+import model.Instance;
 import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -64,7 +65,7 @@ public class InstanceParserTest {
     public void isWorkingWithValidInputStream() {
 
         try {
-            int actual = this.parser.parse(new ByteArrayInputStream(this.testString.getBytes()));
+            Instance actual = this.parser.parse(new ByteArrayInputStream(this.testString.getBytes()));
         } catch (ParserException ex) {
             fail("Received an exception", ex);
         }
