@@ -22,6 +22,6 @@ package model;
  *
  * @author Corentin
  */
-public class Entrepot {
+public class Depot extends Point {
 
 }

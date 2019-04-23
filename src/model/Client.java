@@ -18,10 +18,12 @@
  */
 package model;
 
+import java.util.List;
+
 /**
  *
  * @author Corentin
  */
 public class Client {
-
+    private List<Emplacement> emplacements;
 }

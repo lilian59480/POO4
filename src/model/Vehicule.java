@@ -18,10 +18,13 @@
  */
 package model;
 
+import java.util.List;
+
 /**
  *
  * @author Corentin
  */
 public class Vehicule {
-
+    private List<Emplacement> destinations;
+    private int capacite;
 }

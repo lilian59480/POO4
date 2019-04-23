@@ -18,10 +18,13 @@
  */
 package model;
 
+import java.util.List;
+
 /**
  *
  * @author Corentin
  */
 public class Planning {
-
+    private List<Vehicule> vehicules;
+    private List<Client> clients;
 }

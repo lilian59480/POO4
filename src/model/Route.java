@@ -23,5 +23,6 @@ package model;
  * @author Corentin
  */
 public class Route {
-
+    private Point from;
+    private Point to;
 }

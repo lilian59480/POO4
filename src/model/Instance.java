@@ -23,5 +23,10 @@ package model;
  * @author Corentin
  */
 public class Instance {
-
+    private int nbClients;
+    private int nbEmplacements;
+    private int nbVehicules;
+    private int capaciteVehicule;
+    private int coutVehicule;
+    private List<Depot> depot;
 }

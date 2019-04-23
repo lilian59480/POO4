@@ -18,10 +18,15 @@
  */
 package model;
 
+import java.util.Map;
+
 /**
  *
  * @author Corentin
  */
 public class Point {
-
+    private double x;
+    private double y;
+    private Map<Point, Route> routeTo;
+    private Map<Point, Route> routeFrom;
 }

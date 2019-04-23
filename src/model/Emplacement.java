@@ -22,6 +22,7 @@ package model;
  *
  * @author Corentin
  */
-public class Emplacement {
-
+public class Emplacement extends Point {
+    private int heureDebut;
+    private int heureFin;
 }
