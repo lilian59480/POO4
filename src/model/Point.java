@@ -26,29 +26,37 @@ import java.util.Map;
  * @author Corentin
  */
 public class Point {
+
     private double x;
     private double y;
     private Map<Point, Route> routeTo;
     private Map<Point, Route> routeFrom;
-    
-    public Point(){
-        this.routeTo = new HashMap();
-        this.routeFrom = new HashMap();
+
+    public Point() {
+        this.routeTo = new HashMap<>();
+        this.routeFrom = new HashMap<>();
     }
-    
-    public Point(double x, double y){
+
+    public Point(double x, double y) {
         this();
         this.x = x;
         this.y = y;
     }
-    
-    public Route getRouteTo(Point p)
-    {
+
+    public Route getRouteTo(Point p) {
         return this.routeTo.get(p);
     }
 
-    public Route getRouteFrom(Point p)
-    {
+    public Route getRouteFrom(Point p) {
         return this.routeFrom.get(p);
     }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
 }
