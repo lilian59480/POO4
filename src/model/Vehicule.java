@@ -18,6 +18,7 @@
  */
 package model;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -27,4 +28,15 @@ import java.util.List;
 public class Vehicule {
     private List<Emplacement> destinations;
     private int capacite;
+    private int capaciteUtilisee;
+    
+    public Vehicule()
+    {
+        this.destinations = new LinkedList();
+    }
+    
+    public Vehicule(int capacite)
+    {
+        this.capacite = capacite;
+    }
 }
