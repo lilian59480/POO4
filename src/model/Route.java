@@ -18,6 +18,8 @@
  */
 package model;
 
+import java.util.Objects;
+
 /**
  *
  * @author Corentin
@@ -25,10 +27,64 @@ package model;
 public class Route {
     private Point from;
     private Point to;
-    
-    public Route(Point from, Point to)
-    {
+    private double cout;
+    private int temps;
+
+    public Route(Point from, Point to, double cout, int temps) {
         this.from = from;
         this.to = to;
+        this.cout = cout;
+        this.temps = temps;
     }
+
+    public Point getFrom() {
+        return from;
+    }
+
+    public Point getTo() {
+        return to;
+    }
+
+    public double getCout() {
+        return cout;
+    }
+
+    public int getTemps() {
+        return temps;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.from);
+        hash = 53 * hash + Objects.hashCode(this.to);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Route other = (Route) obj;
+        if (!Objects.equals(this.from, other.from)) {
+            return false;
+        }
+        if (!Objects.equals(this.to, other.to)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Route{" + "from=" + from + ", to=" + to + ", cout=" + cout + ", temps=" + temps + '}';
+    }
+    
 }
