@@ -18,6 +18,7 @@
  */
 package model;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -27,4 +28,17 @@ import java.util.List;
 public class Planning {
     private List<Vehicule> vehicules;
     private List<Client> clients;
+    private double cout;
+    
+    public Planning()
+    {
+        this.vehicules = new LinkedList();
+        this.clients = new LinkedList();
+    }
+    
+    public Planning(double c)
+    {
+        this();
+        this.cout = c;
+    }
 }
