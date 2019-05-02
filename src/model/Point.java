@@ -32,8 +32,8 @@ public class Point {
     private Map<Point, Route> routeFrom;
     
     public Point(){
-        this.routeTo = new HashMap<Point, Route>();
-        this.routeTo = new HashMap<Point, Route>();
+        this.routeTo = new HashMap();
+        this.routeFrom = new HashMap();
     }
     
     public Point(double x, double y){

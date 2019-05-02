@@ -25,4 +25,10 @@ package model;
 public class Route {
     private Point from;
     private Point to;
+    
+    public Route(Point from, Point to)
+    {
+        this.from = from;
+        this.to = to;
+    }
 }
