@@ -26,10 +26,23 @@ import java.util.List;
  * @author Corentin
  */
 public class Client {
+
+    private int demande;
     private List<Emplacement> emplacements;
-    
-    public Client()
-    {
-        this.emplacements = new LinkedList();
+
+    public Client() {
+        this.emplacements = new LinkedList<>();
+    }
+
+    public Client(int demande) {
+        this();
+        this.demande = demande;
+    }
+
+    public boolean addEmplacement(Emplacement e) {
+        if (e == null) {
+            return false;
+        }
+        return this.emplacements.add(e);
     }
 }
