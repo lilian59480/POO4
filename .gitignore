@@ -32,5 +32,6 @@ nbdist/
 .nb-gradle/
 lib/
 build.xml
+nbbuild.xml
 manifest.mf
 
