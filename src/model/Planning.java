@@ -27,27 +27,27 @@ import java.util.Objects;
  * @author Corentin
  */
 public class Planning {
+
     private List<Vehicule> vehicules;
     private Instance instance;
     private double cout;
-    
-    public Planning()
-    {
-        this.vehicules = new LinkedList();
+
+    public Planning() {
+        this.vehicules = new LinkedList<>();
         this.cout = 0.0;
     }
-    
+
     public Planning(Instance instance) {
         this();
         this.instance = instance;
     }
-    
+
     public Planning(double cout, Instance instance, List<Vehicule> vehiculeSet) {
         this.cout = cout;
         this.instance = instance;
         this.vehicules = vehiculeSet;
     }
-    
+
     public boolean addVehicule(Vehicule v) {
         if (v == null) {
             return false;
@@ -58,7 +58,7 @@ public class Planning {
         return this.vehicules.add(v);
 
     }
-    
+
     public void recalculerCoutTotal() {
         double cost = 0;
         for (Vehicule vehicule : vehicules) {
@@ -66,7 +66,7 @@ public class Planning {
         }
         this.cout = cost;
     }
-    
+
     public void clear() {
         this.vehicules.clear();
         this.cout = 0.0;
@@ -105,5 +105,5 @@ public class Planning {
     public String toString() {
         return "Planning{" + "vehicules=" + vehicules + ", cout=" + cout + '}';
     }
-    
+
 }

@@ -36,6 +36,5 @@ public class Depot extends Emplacement {
     public String toString() {
         return "Depot{" + super.toString() + '}';
     }
-    
-    
+
 }

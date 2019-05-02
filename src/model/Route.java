@@ -25,6 +25,7 @@ import java.util.Objects;
  * @author Corentin
  */
 public class Route {
+
     private Point from;
     private Point to;
     private double cout;
@@ -86,5 +87,5 @@ public class Route {
     public String toString() {
         return "Route{" + "from=" + from + ", to=" + to + ", cout=" + cout + ", temps=" + temps + '}';
     }
-    
+
 }

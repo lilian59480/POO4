@@ -27,6 +27,7 @@ import java.util.Objects;
  * @author Corentin
  */
 public class Vehicule {
+
     private Depot depot;
     private Map<Client, Emplacement> destinations;
     private Planning planning;
@@ -34,17 +35,15 @@ public class Vehicule {
     private double cout;
     private int capacite;
     private int capaciteUtilisee;
-    
-    public Vehicule()
-    {
-        this.destinations = new HashMap();
+
+    public Vehicule() {
+        this.destinations = new HashMap<>();
         this.cout = 0;
         this.capaciteUtilisee = 0;
         this.capacite = 0;
     }
-    
-    public Vehicule(int capacite)
-    {
+
+    public Vehicule(int capacite) {
         this.capacite = capacite;
     }
 
@@ -65,7 +64,7 @@ public class Vehicule {
     public double getCout() {
         return cout;
     }
-    
+
     public void clear() {
         this.cout = 0.0;
         this.capaciteUtilisee = 0;
@@ -105,7 +104,5 @@ public class Vehicule {
     public String toString() {
         return "Vehicule{" + "depot=" + depot + ", destinations=" + destinations + ", cout=" + cout + ", capacite=" + capacite + ", capaciteUtilisee=" + capaciteUtilisee + '}';
     }
-    
-    
-    
+
 }

@@ -26,6 +26,7 @@ import java.util.List;
  * @author Corentin
  */
 public class Instance {
+
     private int capaciteVehicule;
     private int coutVehicule;
     private Depot depot;
@@ -33,12 +34,12 @@ public class Instance {
     private List<Vehicule> vehicules;
     private List<Route> routes;
     private List<Planning> plannings;
-    
+
     public Instance() {
-        this.clients = new LinkedList();
-        this.routes = new LinkedList();
-        this.vehicules = new LinkedList();
-        this.plannings = new LinkedList();
+        this.clients = new LinkedList<>();
+        this.routes = new LinkedList<>();
+        this.vehicules = new LinkedList<>();
+        this.plannings = new LinkedList<>();
         this.plannings.add(new Planning(this));
     }
 
@@ -61,14 +62,14 @@ public class Instance {
     public void setRoutes(List<Route> routes) {
         this.routes = routes;
     }
-    
+
     public Planning getPlanningCurrent() {
-        return plannings.get(plannings.size()-1);
+        return plannings.get(plannings.size() - 1);
     }
 
     @Override
     public String toString() {
         return "Instance{" + "capaciteVehicule=" + capaciteVehicule + ", coutVehicule=" + coutVehicule + ", depot=" + depot + ", clients=" + clients + ", vehicules=" + vehicules + ", routes=" + routes + ", plannings=" + plannings + '}';
     }
-    
+
 }
