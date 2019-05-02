@@ -18,8 +18,9 @@
  */
 package model;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  *
@@ -27,7 +28,7 @@ import java.util.List;
  */
 public class Vehicule {
     private Depot depot;
-    private List<Emplacement> destinations;
+    private Map<Client, Emplacement> destinations;
     private Planning planning;
     private Instance instance;
     private double cout;
@@ -36,7 +37,7 @@ public class Vehicule {
     
     public Vehicule()
     {
-        this.destinations = new LinkedList();
+        this.destinations = new HashMap();
         this.cout = 0;
         this.capaciteUtilisee = 0;
         this.capacite = 0;
@@ -70,4 +71,41 @@ public class Vehicule {
         this.capaciteUtilisee = 0;
         this.destinations.clear();
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 23 * hash + Objects.hashCode(this.instance);
+        hash = 23 * hash + this.capacite;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Vehicule other = (Vehicule) obj;
+        if (this.capacite != other.capacite) {
+            return false;
+        }
+        if (!Objects.equals(this.instance, other.instance)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Vehicule{" + "depot=" + depot + ", destinations=" + destinations + ", cout=" + cout + ", capacite=" + capacite + ", capaciteUtilisee=" + capaciteUtilisee + '}';
+    }
+    
+    
+    
 }

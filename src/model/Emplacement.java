@@ -41,4 +41,9 @@ public class Emplacement extends Point {
         return heureFin;
     }
 
+    @Override
+    public String toString() {
+        return "Emplacement{" + "heureDebut=" + heureDebut + ", heureFin=" + heureFin + ", " + super.toString() + '}';
+    }
+
 }

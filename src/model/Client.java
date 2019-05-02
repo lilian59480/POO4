@@ -45,4 +45,10 @@ public class Client {
         }
         return this.emplacements.add(e);
     }
+
+    @Override
+    public String toString() {
+        return "Client{" + "emplacements=" + emplacements + '}';
+    }
+    
 }

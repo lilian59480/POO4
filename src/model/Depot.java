@@ -31,4 +31,11 @@ public class Depot extends Emplacement {
     public Depot(Emplacement e) {
         super(e.getHeureDebut(), e.getHeureFin(), e.getX(), e.getY());
     }
+
+    @Override
+    public String toString() {
+        return "Depot{" + super.toString() + '}';
+    }
+    
+    
 }

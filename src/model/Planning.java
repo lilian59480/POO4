@@ -100,6 +100,10 @@ public class Planning {
         }
         return true;
     }
-    
+
+    @Override
+    public String toString() {
+        return "Planning{" + "vehicules=" + vehicules + ", cout=" + cout + '}';
+    }
     
 }
