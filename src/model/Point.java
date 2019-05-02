@@ -18,6 +18,7 @@
  */
 package model;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -29,4 +30,25 @@ public class Point {
     private double y;
     private Map<Point, Route> routeTo;
     private Map<Point, Route> routeFrom;
+    
+    public Point(){
+        this.routeTo = new HashMap<Point, Route>();
+        this.routeTo = new HashMap<Point, Route>();
+    }
+    
+    public Point(double x, double y){
+        this();
+        this.x = x;
+        this.y = y;
+    }
+    
+    public Route getRouteTo(Point p)
+    {
+        return this.routeTo.get(p);
+    }
+
+    public Route getRouteFrom(Point p)
+    {
+        return this.routeFrom.get(p);
+    }
 }
