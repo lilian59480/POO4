@@ -22,9 +22,9 @@ package model;
  *
  * @author Corentin
  */
-public class Depot extends Point {
-    public Depot(int x, int y)
+public class Depot extends Emplacement {
+    public Depot(int heureDebut, int heureFin, int x, int y)
     {
-        super(x, y);
+        super(heureDebut, heureFin, x, y);
     }
 }

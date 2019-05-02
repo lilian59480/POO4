@@ -36,6 +36,10 @@ public class DumbSolver implements ISolver {
         return instance;
     }
 
+    public boolean resoudre() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     public static void main(String[] args) {
         System.out.println("Coucou, je suis un solveur stupide");
     }
