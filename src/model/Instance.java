@@ -18,6 +18,7 @@
  */
 package model;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -30,8 +31,51 @@ public class Instance {
     private int nbVehicules;
     private int capaciteVehicule;
     private int coutVehicule;
-    private List<Depot> depot;
+    private Depot depot;
     private List<Client> clients;
     private List<Emplacement> emplacements;
     private List<Route> routes;
+    
+    public Instance()
+    {
+        this.clients = new LinkedList();
+        this.emplacements = new LinkedList();
+        this.routes = new LinkedList();
+    }
+
+    public void setNbClients(int nbClients) {
+        this.nbClients = nbClients;
+    }
+
+    public void setNbEmplacements(int nbEmplacements) {
+        this.nbEmplacements = nbEmplacements;
+    }
+
+    public void setNbVehicules(int nbVehicules) {
+        this.nbVehicules = nbVehicules;
+    }
+
+    public void setCapaciteVehicule(int capaciteVehicule) {
+        this.capaciteVehicule = capaciteVehicule;
+    }
+
+    public void setCoutVehicule(int coutVehicule) {
+        this.coutVehicule = coutVehicule;
+    }
+
+    public void setDepot(Depot depot) {
+        this.depot = depot;
+    }
+
+    public void setClients(List<Client> clients) {
+        this.clients = clients;
+    }
+
+    public void setEmplacements(List<Emplacement> emplacements) {
+        this.emplacements = emplacements;
+    }
+
+    public void setRoutes(List<Route> routes) {
+        this.routes = routes;
+    }
 }
