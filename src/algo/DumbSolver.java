@@ -18,7 +18,11 @@
  */
 package algo;
 
+import java.util.ArrayList;
+import java.util.List;
+import model.Client;
 import model.Instance;
+import model.Vehicule;
 
 /**
  *
@@ -37,9 +41,40 @@ public class DumbSolver implements ISolver {
     }
 
     public boolean resoudre() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        dumbSolve();
+        return true;
     }
 
+    private void dumbSolve()
+    {
+        this.instance.clear();
+        List<Client> clients = this.instance.getClients();
+        List<Vehicule> vehicules = this.instance.getVehicules();
+        List<Vehicule> vehiculesUtilises = new ArrayList<>();
+
+        for (Client c : clients) {
+            boolean affecte = false;
+            for (Vehicule v : vehiculesUtilises) {
+                if (v.addClient(c)) {
+                    affecte = true;
+                    break;
+                }
+            }
+            if (!affecte) {
+                if (vehicules.isEmpty()) {
+                    System.err.println("Erreur : Plus de vehicule dispo pour affecter le client " + c);
+                } else {
+                    Vehicule v = vehicules.remove(0);
+                    this.instance.addVehiculeInPlanning(v);
+                    if (!v.addClient(c)) {
+                        System.err.println("Erreur : client " + c + " n'a pas pu être affecté au vehicule " + v);
+                    }
+                    vehiculesUtilises.add(v);
+                }
+            }
+        }
+    }
+    
     public static void main(String[] args) {
         System.out.println("Coucou, je suis un solveur stupide");
     }

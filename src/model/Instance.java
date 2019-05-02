@@ -67,6 +67,10 @@ public class Instance {
         return plannings.get(plannings.size() - 1);
     }
     
+    public void setPlanningCurrent(Planning planningCurrent) {
+        this.plannings.add(planningCurrent);
+    }
+    
     public void clear() {
             for(Client c: this.clients) {
                 c.clear();
@@ -76,6 +80,14 @@ public class Instance {
             }
             this.plannings.add(new Planning(this));
         }
+
+    public List<Client> getClients() {
+        return clients;
+    }
+
+    public List<Vehicule> getVehicules() {
+        return vehicules;
+    }
 
     @Override
     public String toString() {

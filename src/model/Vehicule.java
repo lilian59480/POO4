@@ -18,9 +18,10 @@
  */
 package model;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  *
@@ -29,15 +30,16 @@ import java.util.Objects;
 public class Vehicule {
 
     private Depot depot;
-    private Map<Client, Emplacement> destinations;
+    private List<Emplacement> emplacements;
     private Planning planning;
     private Instance instance;
     private double cout;
     private int capacite;
     private int capaciteUtilisee;
+    private int time;
 
     public Vehicule() {
-        this.destinations = new HashMap<>();
+        this.emplacements = new ArrayList<>();
         this.cout = 0;
         this.capaciteUtilisee = 0;
         this.capacite = 0;
@@ -68,9 +70,78 @@ public class Vehicule {
     public void clear() {
         this.cout = 0.0;
         this.capaciteUtilisee = 0;
-        this.destinations.clear();
+        this.emplacements.clear();
     }
 
+    public int getCapaciteRestante() {
+        return this.capacite - this.capaciteUtilisee;
+    }
+    
+    public boolean addClient(Client c) {
+        if (c == null) {
+            return false;
+        }
+
+        if (this.getCapaciteRestante() < c.getDemande()) {
+            return false;
+        }
+
+        Emplacement lastEmplacement = this.emplacements.get(this.emplacements.size() - 1);
+        if( lastEmplacement == null)
+            lastEmplacement = this.depot;
+        
+        for( Emplacement e : c.getEmplacements() ) {
+            if( time + lastEmplacement.getRouteTo(e).getTemps() > lastEmplacement.getHeureFin() )
+            {
+                continue;
+            }
+            //TODO add emplacement to client
+            //return true;
+        }
+        
+        return false;
+        
+        /*
+        // Get position
+        if (clients.isEmpty()) {
+            c.setPosition(0);
+        } else {
+            lastClient = clients.get(clients.size() - 1);
+            int value = 1;
+            if (lastClient.getPosition() != null) {
+                value = lastClient.getPosition();
+            }
+            c.setPosition(value + 1);
+        }
+
+        boolean added = clients.add(c);
+        if (!added) {
+            return false;
+        }
+
+        // Il faut ajouter la distance client -> depot et depot -> client
+        // Ne pas oublier d'enlever la distance pour le dernier client
+        if (this.clientList.size() == 1) {
+            double depotToClient = this.ndepot.getDistanceTo(c);
+            double clientToDepot = c.getDistanceTo(ndepot);
+            this.cout = depotToClient + clientToDepot;
+        } else {
+            if (lastClient == null) {
+                throw new RuntimeException("Impossible if well made");
+            }
+            double diffCout = -lastClient.getDistanceTo(ndepot);
+            diffCout += lastClient.getDistanceTo(c);
+            diffCout += c.getDistanceTo(ndepot);
+
+            this.cout += diffCout;
+        }
+
+        this.capaciteutilisee += c.getDemande();
+        c.setVehicule(this);
+        nplanning.recalculerCoutTotal();
+        return true;*/
+    }
+    
     @Override
     public int hashCode() {
         int hash = 5;

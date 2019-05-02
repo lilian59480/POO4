@@ -23,7 +23,7 @@ package model;
  * @author Corentin
  */
 public class Emplacement extends Point {
-
+    private Client client;
     private int heureDebut;
     private int heureFin;
 
@@ -41,6 +41,14 @@ public class Emplacement extends Point {
         return heureFin;
     }
 
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+    
     @Override
     public String toString() {
         return "Emplacement{" + "heureDebut=" + heureDebut + ", heureFin=" + heureFin + ", " + super.toString() + '}';

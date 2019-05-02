@@ -53,9 +53,26 @@ public class Client {
         if (e == null) {
             return false;
         }
+        e.setClient(this);
         return this.emplacements.add(e);
     }
 
+    public int getDemande() {
+        return demande;
+    }
+
+    public Integer getPosition() {
+        return position;
+    }
+
+    public void setPosition(Integer position) {
+        this.position = position;
+    }
+
+    public List<Emplacement> getEmplacements() {
+        return emplacements;
+    }
+    
     @Override
     public String toString() {
         return "Client{" + "demande=" + demande + ", emplacements=" + emplacements + ", position=" + position + ", vehicule=" + vehicule + '}';
@@ -65,6 +82,5 @@ public class Client {
         this.position = -1;
         this.vehicule = null;
     }
-
 
 }
