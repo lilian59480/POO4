@@ -33,14 +33,17 @@ public class Instance {
     private int coutVehicule;
     private Depot depot;
     private List<Client> clients;
-    private List<Emplacement> emplacements;
+    private List<Vehicule> vehicules;
     private List<Route> routes;
+    private List<Planning> plannings;
     
     public Instance()
     {
         this.clients = new LinkedList();
-        this.emplacements = new LinkedList();
         this.routes = new LinkedList();
+        this.vehicules = new LinkedList();
+        this.plannings = new LinkedList();
+        this.plannings.add(new Planning(this));
     }
 
     public void setNbClients(int nbClients) {
@@ -71,11 +74,11 @@ public class Instance {
         this.clients = clients;
     }
 
-    public void setEmplacements(List<Emplacement> emplacements) {
-        this.emplacements = emplacements;
-    }
-
     public void setRoutes(List<Route> routes) {
         this.routes = routes;
+    }
+    
+    public Planning getPlanningCurrent() {
+        return plannings.get(plannings.size()-1);
     }
 }
