@@ -18,6 +18,7 @@
  */
 package model;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -26,4 +27,9 @@ import java.util.List;
  */
 public class Client {
     private List<Emplacement> emplacements;
+    
+    public Client()
+    {
+        this.emplacements = new LinkedList();
+    }
 }
