@@ -29,13 +29,23 @@ public class Client {
 
     private int demande;
     private List<Emplacement> emplacements;
+    private Integer position;
+    private Vehicule vehicule;
 
     public Client() {
         this.emplacements = new LinkedList<>();
+        this.position = -1;
     }
 
     public Client(int demande) {
         this();
+        this.demande = demande;
+    }
+    
+    public Client(int demande, List<Emplacement> emplacements) {
+        
+        this();
+        this.emplacements = emplacements;
         this.demande = demande;
     }
 
@@ -48,7 +58,13 @@ public class Client {
 
     @Override
     public String toString() {
-        return "Client{" + "emplacements=" + emplacements + '}';
+        return "Client{" + "demande=" + demande + ", emplacements=" + emplacements + ", position=" + position + ", vehicule=" + vehicule + '}';
     }
+
+    public void clear() {
+        this.position = -1;
+        this.vehicule = null;
+    }
+
 
 }

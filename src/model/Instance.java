@@ -66,6 +66,16 @@ public class Instance {
     public Planning getPlanningCurrent() {
         return plannings.get(plannings.size() - 1);
     }
+    
+    public void clear() {
+            for(Client c: this.clients) {
+                c.clear();
+            }
+            for(Vehicule v: this.vehicules) {
+                v.clear();
+            }
+            this.plannings.add(new Planning(this));
+        }
 
     @Override
     public String toString() {
