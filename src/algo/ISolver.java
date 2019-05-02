@@ -1,7 +1,6 @@
 /*
- * POO4 Project
- * Copyright (C) 2019
- * Lilian Petitpas, Thomas Ternisien, Thibaut Fenain, Corentin Apolinario
+ * <one line to give the program's name and a brief idea of what it does.>
+ * Copyright (C) 2019 Lilian Petitpas <lilian.petitpas@outlook.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,19 +23,6 @@ import model.Instance;
  *
  * @author Corentin
  */
-public class DumbSolver implements ISolver {
-
-    private final Instance instance;
-
-    public DumbSolver(Instance i) {
-        this.instance = i;
-    }
-
-    public Instance getInstance() {
-        return instance;
-    }
-
-    public static void main(String[] args) {
-        System.out.println("Coucou, je suis un solveur stupide");
-    }
+public interface ISolver {
+    public Instance getInstance();
 }
