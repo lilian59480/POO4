@@ -25,4 +25,11 @@ package model;
 public class Emplacement extends Point {
     private int heureDebut;
     private int heureFin;
+
+    public Emplacement(int heureDebut, int heureFin, double x, double y) {
+        super(x, y);
+        this.heureDebut = heureDebut;
+        this.heureFin = heureFin;
+    }
+    
 }
