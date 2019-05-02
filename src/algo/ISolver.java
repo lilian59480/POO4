@@ -24,5 +24,14 @@ import model.Instance;
  * @author Corentin
  */
 public interface ISolver {
+    /**
+     * 
+     * @return the instance linked to the solver
+     */
     public Instance getInstance();
+    /**
+     * 
+     * @return true if the solver found a solution
+     */
+    public boolean resoudre();
 }
