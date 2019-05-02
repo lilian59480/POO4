@@ -27,11 +27,19 @@ import java.io.SequenceInputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import model.Client;
+import model.Depot;
+import model.Emplacement;
 import model.Instance;
+import model.Point;
+import model.Route;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -116,34 +124,39 @@ public class InstanceFileParser {
             throw new ParserException(ex);
         }
 
+        Instance inst = new Instance();
+
         int nbCustomers = this.getNbCustomers(document);
-        System.out.println("nbCustomers : " + nbCustomers);
+        // inst.setNbClients(nbCustomers);
 
         int nbLocations = this.getNbLocations(document);
-        System.out.println("nbLocations : " + nbLocations);
+        // inst.setNbEmplacements(nbLocations);
 
         int nbVehicles = this.getNbVehicles(document);
-        System.out.println("nbVehicules : " + nbVehicles);
+        // inst.setNbVehicules(nbVehicles);
 
         int vehicleCapacity = this.getVehicleCapacity(document);
-        System.out.println("vehiculeCapacity : " + vehicleCapacity);
+        inst.setCapaciteVehicule(vehicleCapacity);
 
         int externalVehicleCost = this.getExternalVehicleCost(document);
-        System.out.println("externalVehiculeCost : " + externalVehicleCost);
+        inst.setCoutVehicule(externalVehicleCost);
 
-        List<String[]> depotsList = this.getDepotsList(document);
-        System.out.println("depotsList : " + depotsList);
+        Map<Integer, Emplacement> locationsMap = this.getLocationsList(document);
 
-        List<String[]> customersList = this.getCustomersList(document);
-        System.out.println("customersList : " + customersList);
+        Map<Integer, Depot> depotsList = this.getDepotsList(document, locationsMap);
 
-        List<String[]> locationsList = this.getLocationsList(document);
-        System.out.println("locationsList : " + locationsList);
+        // We assume there is only one Depot with id = 0
+        inst.setDepot(depotsList.get(0));
 
-        List<String[]> travelCostsTimesList = this.getTravelCostsTimesList(document);
-        System.out.println("travelCostsTimesList : " + travelCostsTimesList);
+        Map<Integer, Client> customersList = this.getCustomersList(document, locationsMap);
 
-        return new Instance();
+        // Drop IDs as they are not stored now
+        inst.setClients(new ArrayList<>(customersList.values()));
+
+        List<Route> travelCostsTimesList = this.getTravelCostsTimesList(document, locationsMap);
+        inst.setRoutes(travelCostsTimesList);
+
+        return inst;
     }
 
     /**
@@ -208,8 +221,40 @@ public class InstanceFileParser {
      * @return The value as a list
      * @throws ParserException
      */
-    private List<String[]> getDepotsList(Document document) throws ParserException {
-        return this.getSingleNodeTSV(document, "DEPOT");
+    private Map<Integer, Depot> getDepotsList(Document document, Map<Integer, Emplacement> locations) throws ParserException {
+        List<String[]> depoList = this.getSingleNodeTSV(document, "DEPOT");
+
+        Iterator<String[]> depotIter = depoList.iterator();
+
+        // Skip first entry, as it is an header
+        if (!depotIter.hasNext()) {
+            return null;
+        }
+        depotIter.next();
+
+        Map<Integer, Depot> depotMap = new HashMap<>();
+
+        while (depotIter.hasNext()) {
+            String[] elt = depotIter.next();
+            // ID DEMAND NBLOC LOCS
+            int id = Integer.parseInt(elt[0]);
+            // Demand should be equals to 0 in all cases
+            int demand = Integer.parseInt(elt[1]);
+            int nbloc = Integer.parseInt(elt[2]);
+
+            int locId = -1;
+            // There should be only one location, so we will assume it is the case.
+            // Keep only the last locId
+            for (int i = 3; i < 3 + nbloc; i++) {
+                locId = Integer.parseInt(elt[i]);
+            }
+
+            Emplacement emp = locations.get(locId);
+            Depot depot = new Depot(emp);
+            depotMap.put(id, depot);
+        }
+
+        return depotMap;
     }
 
     /**
@@ -219,8 +264,41 @@ public class InstanceFileParser {
      * @return The value as a list
      * @throws ParserException
      */
-    private List<String[]> getCustomersList(Document document) throws ParserException {
-        return this.getSingleNodeTSV(document, "CUSTOMERS");
+    private Map<Integer, Client> getCustomersList(Document document, Map<Integer, Emplacement> locations) throws ParserException {
+        List<String[]> customerList = this.getSingleNodeTSV(document, "CUSTOMERS");
+
+        Iterator<String[]> customerIter = customerList.iterator();
+
+        // Skip first entry, as it is an header
+        if (!customerIter.hasNext()) {
+            return null;
+        }
+        customerIter.next();
+
+        Map<Integer, Client> clientMap = new HashMap<>();
+
+        while (customerIter.hasNext()) {
+            String[] elt = customerIter.next();
+            // ID DEMAND NBLOC LOCS
+            int id = Integer.parseInt(elt[0]);
+            // Demand should be equals to 0 in all cases
+            int demand = Integer.parseInt(elt[1]);
+            int nbloc = Integer.parseInt(elt[2]);
+
+            Client client = new Client(demand);
+
+            // There should be only one location, so we will assume it is the case.
+            // Keep only the last locId
+            for (int i = 3; i < 3 + nbloc; i++) {
+                int locId = Integer.parseInt(elt[i]);
+                Emplacement emp = locations.get(locId);
+                client.addEmplacement(emp);
+            }
+
+            clientMap.put(id, client);
+        }
+
+        return clientMap;
     }
 
     /**
@@ -230,8 +308,34 @@ public class InstanceFileParser {
      * @return The value as a list
      * @throws ParserException
      */
-    private List<String[]> getLocationsList(Document document) throws ParserException {
-        return this.getSingleNodeTSV(document, "LOCATIONSS");
+    private Map<Integer, Emplacement> getLocationsList(Document document) throws ParserException {
+        List<String[]> locationList = this.getSingleNodeTSV(document, "LOCATIONS");
+
+        Iterator<String[]> locationIter = locationList.iterator();
+
+        // Skip first entry, as it is an header
+        if (!locationIter.hasNext()) {
+            return null;
+        }
+        locationIter.next();
+
+        Map<Integer, Emplacement> locationMap = new HashMap<>();
+
+        while (locationIter.hasNext()) {
+            String[] elt = locationIter.next();
+            // ID x y TWE TWL
+            int id = Integer.parseInt(elt[0]);
+            double x = Double.parseDouble(elt[1]);
+            double y = Double.parseDouble(elt[2]);
+            int twe = Integer.parseInt(elt[3]);
+            int twl = Integer.parseInt(elt[4]);
+
+            Emplacement emplacement = new Emplacement(twe, twl, x, y);
+
+            locationMap.put(id, emplacement);
+        }
+
+        return locationMap;
     }
 
     /**
@@ -241,8 +345,36 @@ public class InstanceFileParser {
      * @return The value as a list
      * @throws ParserException
      */
-    private List<String[]> getTravelCostsTimesList(Document document) throws ParserException {
-        return this.getSingleNodeTSV(document, "TRAVEL_COSTS_TIMES");
+    private List<Route> getTravelCostsTimesList(Document document, Map<Integer, Emplacement> locations) throws ParserException {
+        List<String[]> rawRouteList = this.getSingleNodeTSV(document, "TRAVEL_COSTS_TIMES");
+
+        Iterator<String[]> routeIter = rawRouteList.iterator();
+
+        // Skip first entry, as it is an header
+        if (!routeIter.hasNext()) {
+            return null;
+        }
+        routeIter.next();
+
+        List<Route> routeList = new ArrayList<>();
+
+        while (routeIter.hasNext()) {
+            String[] elt = routeIter.next();
+            // IDFROM	IDTO	COST	TIME
+            int idFrom = Integer.parseInt(elt[0]);
+            int idTo = Integer.parseInt(elt[1]);
+            double cost = Double.parseDouble(elt[2]);
+            int time = Integer.parseInt(elt[3]);
+
+            Point from = locations.get(idFrom);
+            Point to = locations.get(idTo);
+
+            Route r = new Route(from, to, cost, time);
+
+            routeList.add(r);
+        }
+
+        return routeList;
     }
 
     /**
@@ -308,12 +440,13 @@ public class InstanceFileParser {
         return new SequenceInputStream(Collections.enumeration(streams));
     }
 
-//    public static void main(String[] args) {
-//        try {
-//            InstanceFileParser ifp = new InstanceFileParser();
-//            ifp.parse(new File("resources/instances/instance_0-triangle.txt"));
-//        } catch (Exception ex) {
-//            Logger.getLogger(InstanceFileParser.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
+    public static void main(String[] args) {
+        try {
+            InstanceFileParser ifp = new InstanceFileParser();
+            Instance i = ifp.parse(new File("resources/instances/instance_0-triangle.txt"));
+            System.out.println(i);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 }

@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -52,7 +51,7 @@ public class TSVParser {
      * @throws ParserException
      */
     public List<String[]> parse(File f) throws ParserException {
-        try ( FileInputStream fis = new FileInputStream(f)) {
+        try (FileInputStream fis = new FileInputStream(f)) {
             return this.parse(fis);
         } catch (IOException ex) {
             throw new ParserException(ex);
@@ -68,7 +67,7 @@ public class TSVParser {
      * @throws ParserException
      */
     public List<String[]> parse(InputStream is) throws ParserException {
-        try ( InputStreamReader isr = new InputStreamReader(is)) {
+        try (InputStreamReader isr = new InputStreamReader(is)) {
             return this.parse(isr);
         } catch (IOException ex) {
             throw new ParserException(ex);
@@ -87,14 +86,13 @@ public class TSVParser {
 
         List<String[]> lines = new LinkedList<>();
 
-        try ( BufferedReader br = new BufferedReader(rd)) {
+        try (BufferedReader br = new BufferedReader(rd)) {
             String line;
 
             //Read File Line By Line
             while ((line = br.readLine()) != null) {
                 // Print the content on the console
                 String[] split = line.split("[\\s\t]+");
-                System.out.println(Arrays.toString(split));
                 lines.add(split);
             }
         } catch (IOException ex) {
