@@ -26,17 +26,48 @@ import java.util.List;
  * @author Corentin
  */
 public class Vehicule {
+    private Depot depot;
     private List<Emplacement> destinations;
+    private Planning planning;
+    private Instance instance;
+    private double cout;
     private int capacite;
     private int capaciteUtilisee;
     
     public Vehicule()
     {
         this.destinations = new LinkedList();
+        this.cout = 0;
+        this.capaciteUtilisee = 0;
+        this.capacite = 0;
     }
     
     public Vehicule(int capacite)
     {
         this.capacite = capacite;
+    }
+
+    public Vehicule(Depot depot, int capacite) {
+        this();
+        this.depot = depot;
+        this.capacite = capacite;
+    }
+
+    public void setPlanning(Planning planning) {
+        this.planning = planning;
+    }
+
+    public void setInstance(Instance instance) {
+        this.instance = instance;
+    }
+
+    public double getCout() {
+        return cout;
+    }
+    
+    public void clear() {
+        this.cout = 0.0;
+        this.capaciteUtilisee = 0;
+        this.destinations.clear();
     }
 }
