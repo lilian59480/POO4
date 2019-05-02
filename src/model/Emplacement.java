@@ -23,6 +23,7 @@ package model;
  * @author Corentin
  */
 public class Emplacement extends Point {
+
     private int heureDebut;
     private int heureFin;
 
@@ -31,5 +32,13 @@ public class Emplacement extends Point {
         this.heureDebut = heureDebut;
         this.heureFin = heureFin;
     }
-    
+
+    public int getHeureDebut() {
+        return heureDebut;
+    }
+
+    public int getHeureFin() {
+        return heureFin;
+    }
+
 }
