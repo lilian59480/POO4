@@ -23,8 +23,8 @@ package model;
  * @author Corentin
  */
 public class Depot extends Point {
-    public Depot()
+    public Depot(int x, int y)
     {
-        super();
+        super(x, y);
     }
 }
