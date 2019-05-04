@@ -73,6 +73,23 @@ public class Point {
         return r.getTemps();
     }
     
+    public boolean addRouteTo(Route r) {
+        if(r.getFrom() == null || r.getTo() == null || r.getFrom() != this)
+            return false;
+        if(this.routeTo.containsKey(r.getTo()) || !r.getTo().addRouteFrom(r))
+            return false;
+        this.routeTo.put(r.getTo(), r);
+        return true;
+    }
+    
+    private boolean addRouteFrom(Route r) {
+        if(r.getTo() != this || this.routeTo.containsKey(r.getTo()))
+            return false;
+        this.routeFrom.put(r.getFrom(), r);
+        return true;
+    }
+    
+    
     @Override
     public String toString() {
         return "Point{" + "x=" + x + ", y=" + y + '}';
