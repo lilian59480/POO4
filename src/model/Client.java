@@ -72,6 +72,10 @@ public class Client {
     public List<Emplacement> getEmplacements() {
         return emplacements;
     }
+
+    public void setVehicule(Vehicule vehicule) {
+        this.vehicule = vehicule;
+    }
     
     @Override
     public String toString() {

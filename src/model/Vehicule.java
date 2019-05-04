@@ -30,7 +30,7 @@ import java.util.Set;
 public class Vehicule {
 
     private Depot depot;
-    private List<Emplacement> emplacements;
+    private List<Emplacement> destinations;
     private Planning planning;
     private Instance instance;
     private double cout;
@@ -39,7 +39,7 @@ public class Vehicule {
     private int time;
 
     public Vehicule() {
-        this.emplacements = new ArrayList<>();
+        this.destinations = new ArrayList<>();
         this.cout = 0;
         this.capaciteUtilisee = 0;
         this.capacite = 0;
@@ -70,7 +70,7 @@ public class Vehicule {
     public void clear() {
         this.cout = 0.0;
         this.capaciteUtilisee = 0;
-        this.emplacements.clear();
+        this.destinations.clear();
     }
 
     public int getCapaciteRestante() {
@@ -86,7 +86,9 @@ public class Vehicule {
             return false;
         }
 
-        Emplacement lastEmplacement = this.emplacements.get(this.emplacements.size() - 1);
+        int position = this.destinations.size() + 1;
+
+        Emplacement lastEmplacement = this.destinations.get(position - 1);
         if( lastEmplacement == null)
             lastEmplacement = this.depot;
         
@@ -95,51 +97,32 @@ public class Vehicule {
             {
                 continue;
             }
-            //TODO add emplacement to client
-            //return true;
-        }
+            c.setPosition(position);
+            
+            if (!destinations.add(e))
+                return false;
+            
+            // Il faut ajouter la distance client -> depot et depot -> client
+            // Ne pas oublier d'enlever la distance pour le dernier client
+            if (position == 1) {
+                double depotToClient = this.depot.getDistanceTo(e);
+                double clientToDepot = e.getDistanceTo(depot);
+                this.cout = depotToClient + clientToDepot;
+            } else {
+                double diffCout = -lastEmplacement.getDistanceTo(depot);
+                diffCout += lastEmplacement.getDistanceTo(e);
+                diffCout += e.getDistanceTo(depot);
+
+                this.cout += diffCout;
+            }
+
+            this.capaciteUtilisee += c.getDemande();
+            c.setVehicule(this);
+            planning.recalculerCoutTotal();
+                return true;
+            }
         
         return false;
-        
-        /*
-        // Get position
-        if (clients.isEmpty()) {
-            c.setPosition(0);
-        } else {
-            lastClient = clients.get(clients.size() - 1);
-            int value = 1;
-            if (lastClient.getPosition() != null) {
-                value = lastClient.getPosition();
-            }
-            c.setPosition(value + 1);
-        }
-
-        boolean added = clients.add(c);
-        if (!added) {
-            return false;
-        }
-
-        // Il faut ajouter la distance client -> depot et depot -> client
-        // Ne pas oublier d'enlever la distance pour le dernier client
-        if (this.clientList.size() == 1) {
-            double depotToClient = this.ndepot.getDistanceTo(c);
-            double clientToDepot = c.getDistanceTo(ndepot);
-            this.cout = depotToClient + clientToDepot;
-        } else {
-            if (lastClient == null) {
-                throw new RuntimeException("Impossible if well made");
-            }
-            double diffCout = -lastClient.getDistanceTo(ndepot);
-            diffCout += lastClient.getDistanceTo(c);
-            diffCout += c.getDistanceTo(ndepot);
-
-            this.cout += diffCout;
-        }
-
-        this.capaciteutilisee += c.getDemande();
-        c.setVehicule(this);
-        nplanning.recalculerCoutTotal();
-        return true;*/
     }
     
     @Override

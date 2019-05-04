@@ -58,7 +58,21 @@ public class Point {
     public double getY() {
         return y;
     }
+    
+    public double getDistanceTo(Point p){
+        Route r = this.routeTo.get(p);
+        if (r == null)
+            return Double.POSITIVE_INFINITY;
+        return r.getCout();
+    }
 
+    public int getTempsTo(Point p){
+        Route r = this.routeTo.get(p);
+        if (r == null)
+            return Integer.MAX_VALUE;
+        return r.getTemps();
+    }
+    
     @Override
     public String toString() {
         return "Point{" + "x=" + x + ", y=" + y + '}';
