@@ -39,7 +39,7 @@ public class SolutionWriter {
     public boolean write(Instance i, String filename) throws WriterException {
         File f = new File(filename);
 
-        try (PrintWriter writer = new PrintWriter(f, Charset.forName("UTF-8"))) {
+        try (PrintWriter writer = new PrintWriter(f, "UTF-8")) {
             // Business code needed
         } catch (IOException ex) {
             throw new WriterException(ex);

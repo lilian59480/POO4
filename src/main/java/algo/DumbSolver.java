@@ -18,6 +18,8 @@
  */
 package algo;
 
+import io.input.InstanceFileParser;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import model.Client;
@@ -40,7 +42,7 @@ public class DumbSolver implements ISolver {
         return instance;
     }
 
-    public boolean resoudre() {
+    public boolean solve() {
         dumbSolve();
         return true;
     }
@@ -50,32 +52,39 @@ public class DumbSolver implements ISolver {
         this.instance.clear();
         List<Client> clients = this.instance.getClients();
         List<Vehicule> vehicules = this.instance.getVehicules();
-        List<Vehicule> vehiculesUtilises = new ArrayList<>();
 
         for (Client c : clients) {
             boolean affecte = false;
-            for (Vehicule v : vehiculesUtilises) {
+            for (Vehicule v : vehicules) {
                 if (v.addClient(c)) {
                     affecte = true;
                     break;
                 }
             }
             if (!affecte) {
-                if (vehicules.isEmpty()) {
-                    System.err.println("Erreur : Plus de vehicule dispo pour affecter le client " + c);
-                } else {
-                    Vehicule v = vehicules.remove(0);
-                    this.instance.addVehiculeInPlanning(v);
-                    if (!v.addClient(c)) {
-                        System.err.println("Erreur : client " + c + " n'a pas pu être affecté au vehicule " + v);
-                    }
-                    vehiculesUtilises.add(v);
+                System.out.println("Plus de vehicule dispo pour affecter le client " + c);
+                Vehicule v = this.instance.addVehicule();
+                if (v != null) {
+                    System.out.println("Nouveau vehicule créé");
+                }
+                if (!v.addClient(c)) {
+                    System.err.println("Erreur : Impossible d'affecter le client" + c);
                 }
             }
         }
     }
     
     public static void main(String[] args) {
-        System.out.println("Coucou, je suis un solveur stupide");
+        Instance i = null;
+        try {
+            InstanceFileParser ifp = new InstanceFileParser();
+            i = ifp.parse(new File("resources/instances/instance_0-triangle.txt"));
+            System.out.println(i);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return;
+        }
+        DumbSolver ds = new DumbSolver(i);
+        ds.solve();
     }
 }

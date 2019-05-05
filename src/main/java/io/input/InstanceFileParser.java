@@ -150,6 +150,7 @@ public class InstanceFileParser {
         // We assume there is only one Depot with id = 0
         Depot mainDepot = depotsList.get(0);
         inst.setDepot(mainDepot);
+        locationsMap.put(0, mainDepot);
 
         Map<Integer, Client> customersList = this.getCustomersList(document, locationsMap);
 

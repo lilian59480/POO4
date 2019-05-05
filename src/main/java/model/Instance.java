@@ -92,6 +92,14 @@ public class Instance {
     public List<Vehicule> getVehicules() {
         return vehicules;
     }
+    
+    public Vehicule addVehicule()
+    {
+        Vehicule v = new Vehicule(this.depot, this.capaciteVehicule);
+        //TODO add cout to planning
+        this.vehicules.add(v);
+        return v;
+    }
 
     @Override
     public String toString() {
