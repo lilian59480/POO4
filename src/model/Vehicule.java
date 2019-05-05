@@ -82,18 +82,21 @@ public class Vehicule {
             return false;
         }
 
+        //Test if enough remaining capacity
         if (this.getCapaciteRestante() < c.getDemande()) {
             return false;
         }
 
-        int position = this.destinations.size() + 1;
+        int position = this.destinations.size();
 
         Emplacement lastEmplacement = 
-                position != 1 ? this.destinations.get(position - 1) 
+                position != 0 ? this.destinations.get(position - 1) 
                               : depot;
         
         for( Emplacement e : c.getEmplacements() ) {
-            if( time + lastEmplacement.getTempsTo(e) > lastEmplacement.getHeureFin() )
+            // Test if enough remaining time
+            int timeToDestination = lastEmplacement.getTempsTo(e);
+            if( time + timeToDestination > lastEmplacement.getHeureFin() )
             {
                 continue;
             }
@@ -117,8 +120,10 @@ public class Vehicule {
             }
 
             this.capaciteUtilisee += c.getDemande();
+            this.time += timeToDestination;
             c.setVehicule(this);
-            planning.recalculerCoutTotal();
+//            planning.recalculerCoutTotal();
+            
             return true;
             }
         

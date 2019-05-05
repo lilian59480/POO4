@@ -33,5 +33,5 @@ public interface ISolver {
      * 
      * @return true if the solver found a solution
      */
-    public boolean resoudre();
+    public boolean solve();
 }
