@@ -383,6 +383,7 @@ public class InstanceFileParser {
             Route r = new Route(from, to, cost, time);
 
             routeList.add(r);
+            from.addRouteTo(r);
         }
 
         return routeList;
