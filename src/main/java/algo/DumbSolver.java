@@ -51,11 +51,10 @@ public class DumbSolver implements ISolver {
     {
         this.instance.clear();
         List<Client> clients = this.instance.getClients();
-        List<Vehicule> vehicules = this.instance.getVehicules();
 
         for (Client c : clients) {
             boolean affecte = false;
-            for (Vehicule v : vehicules) {
+            for (Vehicule v : this.instance.getVehicules()) {
                 if (v.addClient(c)) {
                     affecte = true;
                     break;

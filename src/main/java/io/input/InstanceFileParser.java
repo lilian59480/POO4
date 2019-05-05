@@ -164,6 +164,7 @@ public class InstanceFileParser {
         List<Vehicule> vehiculeList = new LinkedList<>();
         for (int i = 0; i < nbVehicles; i++) {
             Vehicule v = new Vehicule(mainDepot, vehicleCapacity);
+            v.setInstance(inst);
             vehiculeList.add(v);
         }
         inst.setVehicules(vehiculeList);

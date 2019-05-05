@@ -96,7 +96,8 @@ public class Vehicule {
         for( Emplacement e : c.getEmplacements() ) {
             // Test if enough remaining time
             int timeToDestination = lastEmplacement.getTempsTo(e);
-            if( time + timeToDestination > lastEmplacement.getHeureFin() )
+            int timeAtDestination = time + timeToDestination;
+            if( timeAtDestination > e.getHeureFin() )
             {
                 continue;
             }
@@ -120,8 +121,10 @@ public class Vehicule {
             }
 
             this.capaciteUtilisee += c.getDemande();
-            this.time += timeToDestination;
+            this.time = timeAtDestination < e.getHeureDebut() ? timeAtDestination 
+                                                              : this.time + timeToDestination;
             c.setVehicule(this);
+            //TODO fix planning
 //            planning.recalculerCoutTotal();
             
             return true;
