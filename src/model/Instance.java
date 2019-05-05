@@ -63,23 +63,27 @@ public class Instance {
         this.routes = routes;
     }
 
+    public void setVehicules(List<Vehicule> vehicules) {
+        this.vehicules = vehicules;
+    }
+
     public Planning getPlanningCurrent() {
         return plannings.get(plannings.size() - 1);
     }
-    
+
     public void setPlanningCurrent(Planning planningCurrent) {
         this.plannings.add(planningCurrent);
     }
-    
+
     public void clear() {
-            for(Client c: this.clients) {
-                c.clear();
-            }
-            for(Vehicule v: this.vehicules) {
-                v.clear();
-            }
-            this.plannings.add(new Planning(this));
+        for (Client c : this.clients) {
+            c.clear();
         }
+        for (Vehicule v : this.vehicules) {
+            v.clear();
+        }
+        this.plannings.add(new Planning(this));
+    }
 
     public List<Client> getClients() {
         return clients;

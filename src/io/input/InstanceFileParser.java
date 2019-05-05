@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
@@ -40,6 +41,7 @@ import model.Emplacement;
 import model.Instance;
 import model.Point;
 import model.Route;
+import model.Vehicule;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -146,7 +148,8 @@ public class InstanceFileParser {
         Map<Integer, Depot> depotsList = this.getDepotsList(document, locationsMap);
 
         // We assume there is only one Depot with id = 0
-        inst.setDepot(depotsList.get(0));
+        Depot mainDepot = depotsList.get(0);
+        inst.setDepot(mainDepot);
 
         Map<Integer, Client> customersList = this.getCustomersList(document, locationsMap);
 
@@ -155,6 +158,14 @@ public class InstanceFileParser {
 
         List<Route> travelCostsTimesList = this.getTravelCostsTimesList(document, locationsMap);
         inst.setRoutes(travelCostsTimesList);
+
+        // Create vehicules
+        List<Vehicule> vehiculeList = new LinkedList<>();
+        for (int i = 0; i < nbVehicles; i++) {
+            Vehicule v = new Vehicule(mainDepot, vehicleCapacity);
+            vehiculeList.add(v);
+        }
+        inst.setVehicules(vehiculeList);
 
         return inst;
     }
