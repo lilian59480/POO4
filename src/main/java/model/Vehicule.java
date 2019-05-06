@@ -98,18 +98,22 @@ public class Vehicule {
             // Test if enough remaining time
             int timeToDestination = lastEmplacement.getTempsTo(e);
             int timeAtDestination = time + timeToDestination;
-            if( timeAtDestination > e.getHeureFin() )
+            timeAtDestination = timeAtDestination < e.getHeureDebut() ? e.getHeureDebut()
+                                                                      : this.time + timeToDestination;
+            int timeAtDepot = timeAtDestination + e.getTempsTo(depot);
+            if( timeAtDestination > e.getHeureFin() || timeAtDepot > depot.getHeureFin())
             {
                 continue;
             }
-            c.setPosition(position);
+
+            c.setPosition(position + 1);
             
             if (!destinations.add(e))
                 return false;
             
             // Il faut ajouter la distance client -> depot et depot -> client
             // Ne pas oublier d'enlever la distance pour le dernier client
-            if (position == 1) {
+            if (position == 0) {
                 double depotToClient = this.depot.getDistanceTo(e);
                 double clientToDepot = e.getDistanceTo(depot);
                 this.cout = depotToClient + clientToDepot;
@@ -122,8 +126,7 @@ public class Vehicule {
             }
 
             this.capaciteUtilisee += c.getDemande();
-            this.time = timeAtDestination < e.getHeureDebut() ? timeAtDestination 
-                                                              : this.time + timeToDestination;
+            this.time = timeAtDestination;
             c.setVehicule(this);
             
             planning.recalculerCoutTotal();

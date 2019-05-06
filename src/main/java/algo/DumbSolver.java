@@ -85,5 +85,6 @@ public class DumbSolver implements ISolver {
         }
         DumbSolver ds = new DumbSolver(i);
         ds.solve();
+        System.out.println(ds.getInstance().getPlanningCurrent().toString());
     }
 }
