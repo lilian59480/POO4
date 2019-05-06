@@ -54,9 +54,7 @@ public class Planning {
         }
 
         v.setPlanning(this);
-
         return this.vehicules.add(v);
-
     }
 
     public void recalculerCoutTotal() {
@@ -64,6 +62,8 @@ public class Planning {
         for (Vehicule vehicule : vehicules) {
             cost += vehicule.getCout();
         }
+        int vehiculeSupp = this.vehicules.size() - this.instance.getNbVehicules();
+        cost += vehiculeSupp * this.instance.getCoutVehicule();
         this.cout = cost;
     }
 

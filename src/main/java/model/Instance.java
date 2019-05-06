@@ -29,6 +29,7 @@ public class Instance {
 
     private int capaciteVehicule;
     private int coutVehicule;
+    private int nbVehicules;
     private Depot depot;
     private List<Client> clients;
     private List<Vehicule> vehicules;
@@ -65,6 +66,10 @@ public class Instance {
 
     public void setVehicules(List<Vehicule> vehicules) {
         this.vehicules = vehicules;
+        for(Vehicule v : this.vehicules)
+        {
+            this.getPlanningCurrent().addVehicule(v);
+        }
     }
 
     public Planning getPlanningCurrent() {
@@ -75,6 +80,15 @@ public class Instance {
         this.plannings.add(planningCurrent);
     }
 
+    public void addNewPlanning()
+    {
+        Planning p = new Planning(this);
+        for(Vehicule v : this.vehicules){
+            p.addVehicule(v);
+        }
+        this.plannings.add(p);
+    }
+    
     public void clear() {
         for (Client c : this.clients) {
             c.clear();
@@ -82,7 +96,7 @@ public class Instance {
         for (Vehicule v : this.vehicules) {
             v.clear();
         }
-        this.plannings.add(new Planning(this));
+        this.addNewPlanning();
     }
 
     public List<Client> getClients() {
@@ -96,11 +110,24 @@ public class Instance {
     public Vehicule addVehicule()
     {
         Vehicule v = new Vehicule(this.depot, this.capaciteVehicule);
-        //TODO add cout to planning
+        v.setInstance(this);
         this.vehicules.add(v);
+        this.getPlanningCurrent().addVehicule(v);
         return v;
     }
 
+    public int getNbVehicules() {
+        return nbVehicules;
+    }
+
+    public void setNbVehicules(int nbVehicule) {
+        this.nbVehicules = nbVehicule;
+    }
+
+    public int getCoutVehicule() {
+        return coutVehicule;
+    }
+ 
     @Override
     public String toString() {
         return "Instance{" + "capaciteVehicule=" + capaciteVehicule + ", coutVehicule=" + coutVehicule + ", depot=" + depot + ", clients=" + clients + ", vehicules=" + vehicules + ", routes=" + routes + ", plannings=" + plannings + '}';

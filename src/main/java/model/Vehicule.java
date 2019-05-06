@@ -61,6 +61,7 @@ public class Vehicule {
 
     public void setInstance(Instance instance) {
         this.instance = instance;
+        this.planning = instance.getPlanningCurrent();
     }
 
     public double getCout() {
@@ -124,8 +125,8 @@ public class Vehicule {
             this.time = timeAtDestination < e.getHeureDebut() ? timeAtDestination 
                                                               : this.time + timeToDestination;
             c.setVehicule(this);
-            //TODO fix planning
-//            planning.recalculerCoutTotal();
+            
+            planning.recalculerCoutTotal();
             
             return true;
             }

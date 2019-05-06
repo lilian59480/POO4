@@ -135,7 +135,7 @@ public class InstanceFileParser {
         // inst.setNbEmplacements(nbLocations);
 
         int nbVehicles = this.getNbVehicles(document);
-        // inst.setNbVehicules(nbVehicles);
+        inst.setNbVehicules(nbVehicles);
 
         int vehicleCapacity = this.getVehicleCapacity(document);
         inst.setCapaciteVehicule(vehicleCapacity);
