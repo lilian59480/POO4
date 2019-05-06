@@ -77,7 +77,7 @@ public class DumbSolver implements ISolver {
         Instance i = null;
         try {
             InstanceFileParser ifp = new InstanceFileParser();
-            i = ifp.parse(new File("resources/instances/instance_0-triangle.txt"));
+            i = ifp.parse(new File("src/main/resources/instances/instance_0-triangle.txt"));
             System.out.println(i);
         } catch (Exception ex) {
             ex.printStackTrace();
