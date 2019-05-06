@@ -48,6 +48,10 @@ public class Planning {
         this.vehicules = vehiculeSet;
     }
 
+    public List<Vehicule> getVehicules() {
+        return this.vehicules;
+    }
+
     public boolean addVehicule(Vehicule v) {
         if (v == null) {
             return false;

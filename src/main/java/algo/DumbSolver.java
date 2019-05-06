@@ -19,8 +19,8 @@
 package algo;
 
 import io.input.InstanceFileParser;
+import io.output.SolutionWriter;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import model.Client;
 import model.Instance;
@@ -47,8 +47,7 @@ public class DumbSolver implements ISolver {
         return true;
     }
 
-    private void dumbSolve()
-    {
+    private void dumbSolve() {
         this.instance.clear();
         List<Client> clients = this.instance.getClients();
 
@@ -72,19 +71,28 @@ public class DumbSolver implements ISolver {
             }
         }
     }
-    
+
     public static void main(String[] args) {
         Instance i = null;
-        try {
-            InstanceFileParser ifp = new InstanceFileParser();
-            i = ifp.parse(new File("src/main/resources/instances/instance_0-triangle.txt"));
-            System.out.println(i);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return;
+        for (int j = 0; j < 40; j++) {
+            int id = j;
+            try {
+                InstanceFileParser ifp = new InstanceFileParser();
+                i = ifp.parse(new File("src/main/resources/instances/instance_" + id + "-triangle.txt"));
+                System.out.println(i);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return;
+            }
+            DumbSolver ds = new DumbSolver(i);
+            ds.solve();
+            try {
+                SolutionWriter sw = new SolutionWriter();
+                sw.write(i, "target/instance_" + id + "-triangle_sol.txt");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        DumbSolver ds = new DumbSolver(i);
-        ds.solve();
-        System.out.println(ds.getInstance().getPlanningCurrent().toString());
+
     }
 }

@@ -27,6 +27,7 @@ import java.util.Map;
  */
 public class Point {
 
+    private int id;
     private double x;
     private double y;
     private Map<Point, Route> routeTo;
@@ -43,12 +44,28 @@ public class Point {
         this.y = y;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public Route getRouteTo(Point p) {
         return this.routeTo.get(p);
     }
 
     public Route getRouteFrom(Point p) {
         return this.routeFrom.get(p);
+    }
+
+    public Map<Point, Route> getRoutesTo() {
+        return this.routeTo;
+    }
+
+    public Map<Point, Route> getRoutesFrom() {
+        return this.routeFrom;
     }
 
     public double getX() {
@@ -58,39 +75,42 @@ public class Point {
     public double getY() {
         return y;
     }
-    
-    public double getDistanceTo(Point p){
+
+    public double getDistanceTo(Point p) {
         Route r = this.routeTo.get(p);
-        if (r == null){
+        if (r == null) {
             return Double.POSITIVE_INFINITY;
         }
         return r.getCout();
     }
 
-    public int getTempsTo(Point p){
+    public int getTempsTo(Point p) {
         Route r = this.routeTo.get(p);
-        if (r == null)
-        {
+        if (r == null) {
             return Integer.MAX_VALUE;
         }
         return r.getTemps();
     }
-    
+
     public boolean addRouteTo(Route r) {
-        if(r.getFrom() == null || r.getTo() == null || r.getFrom() != this)
+        if (r.getFrom() == null || r.getTo() == null || r.getFrom() != this) {
             return false;
-        if(this.routeTo.containsKey(r.getTo()) || !r.getTo().addRouteFrom(r))
-            return false;
+        }
+//        if (this.routeTo.containsKey(r.getTo()) || !r.getTo().addRouteFrom(r)) {
+//            return false;
+//        }
         this.routeTo.put(r.getTo(), r);
         return true;
     }
-    
+
     private boolean addRouteFrom(Route r) {
-        if(r.getTo() != this || this.routeTo.containsKey(r.getTo()))
+        if (r.getTo() != this || this.routeFrom.containsKey(r.getTo())) {
             return false;
+        }
         this.routeFrom.put(r.getFrom(), r);
         return true;
     }
+
     
     
     @Override

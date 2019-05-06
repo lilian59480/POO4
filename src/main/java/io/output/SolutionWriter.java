@@ -21,10 +21,13 @@ package io.output;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import model.Emplacement;
 import model.Instance;
+import model.Planning;
+import model.Vehicule;
 
 /**
  *
@@ -40,7 +43,16 @@ public class SolutionWriter {
         File f = new File(filename);
 
         try (PrintWriter writer = new PrintWriter(f, "UTF-8")) {
-            // Business code needed
+            Planning p = i.getPlanningCurrent();
+            List<Vehicule> vehicules = p.getVehicules();
+            for (Vehicule vehicule : vehicules) {
+                List<Emplacement> el = vehicule.getEmplacements();
+                List<Integer> al = new ArrayList<>();
+                for (Emplacement emplacement : el) {
+                    al.add(emplacement.getId());
+                }
+                this.printTSVln(writer, al);
+            }
         } catch (IOException ex) {
             throw new WriterException(ex);
         }
@@ -48,7 +60,7 @@ public class SolutionWriter {
         return true;
     }
 
-    private void printTSV(PrintWriter w, List<Object> objList) {
+    private void printTSV(PrintWriter w, List objList) {
         Iterator<Object> objIter = objList.iterator();
 
         while (objIter.hasNext()) {
@@ -64,7 +76,7 @@ public class SolutionWriter {
 
     }
 
-    private void printTSVln(PrintWriter w, List<Object> objList) {
+    private void printTSVln(PrintWriter w, List objList) {
         this.printTSV(w, objList);
         w.println();
     }

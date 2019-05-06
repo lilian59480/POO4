@@ -344,6 +344,7 @@ public class InstanceFileParser {
             int twl = Integer.parseInt(elt[4]);
 
             Emplacement emplacement = new Emplacement(twe, twl, x, y);
+            emplacement.setId(id);
 
             locationMap.put(id, emplacement);
         }
@@ -385,7 +386,6 @@ public class InstanceFileParser {
             Route r = new Route(from, to, cost, time);
 
             routeList.add(r);
-            from.addRouteTo(r);
         }
 
         return routeList;
