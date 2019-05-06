@@ -90,7 +90,7 @@ public class Vehicule {
         if (this.getCapaciteRestante() < c.getDemande()) {
             return false;
         }
-
+        
         int position = this.destinations.size();
 
         Emplacement lastEmplacement
@@ -141,6 +141,14 @@ public class Vehicule {
         return false;
     }
 
+    public Depot getDepot() {
+        return depot;
+    }
+
+    public List<Emplacement> getDestinations() {
+        return destinations;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 5;

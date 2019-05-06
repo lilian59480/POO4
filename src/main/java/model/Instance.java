@@ -106,6 +106,10 @@ public class Instance {
     public List<Vehicule> getVehicules() {
         return vehicules;
     }
+
+    public Depot getDepot() {
+        return depot;
+    }
     
     public Vehicule addVehicule()
     {
