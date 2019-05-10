@@ -32,6 +32,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -78,7 +79,17 @@ public class InstanceFileParser {
      */
     public InstanceFileParser() throws ParserException {
         if (InstanceFileParser.dbf == null) {
-            InstanceFileParser.dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            documentBuilderFactory.setExpandEntityReferences(false);
+
+            try {
+                documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+                documentBuilderFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+                documentBuilderFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            } catch (ParserConfigurationException ex) {
+                throw new ParserException(ex);
+            }
+            InstanceFileParser.dbf = documentBuilderFactory;
         }
 
         if (InstanceFileParser.db == null) {
