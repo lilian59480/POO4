@@ -53,6 +53,7 @@ public class DumbSolver implements ISolver {
             dumbSolve();
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
+            return false;
         }
         return true;
     }

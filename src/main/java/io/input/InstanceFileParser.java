@@ -138,7 +138,6 @@ public class InstanceFileParser {
         try {
             document = InstanceFileParser.db.parse(validInputStream);
         } catch (SAXException | IOException ex) {
-            LOGGER.log(Level.SEVERE, "Error while parsing ", ex);
             throw new ParserException(ex);
         }
 

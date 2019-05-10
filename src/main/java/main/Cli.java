@@ -110,7 +110,7 @@ public class Cli {
     private static void runAllSolversAllJarInstances(PrintStream ps) {
 
         ps.println("Run All solvers on all files instances stored in Jar");
-        LOGGER.log(Level.INFO, "Solvers available {0}", SOLVERS.toString());
+        LOGGER.log(Level.INFO, "Solvers available {0}", SOLVERS);
 
         JarInstanceResourceReader instanceLoader = new JarInstanceResourceReader();
 
@@ -132,7 +132,7 @@ public class Cli {
                         InstanceFileParser ifp = new InstanceFileParser();
                         Instance instance = ifp.parse(is);
 
-                        LOGGER.log(Level.FINE, "Instance parsed : {0}", is.toString());
+                        LOGGER.log(Level.FINE, "Instance parsed : {0}", is);
 
                         ISolver solverInst = cons.newInstance(instance);
                         boolean status = solverInst.solve();

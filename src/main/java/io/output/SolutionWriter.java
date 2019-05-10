@@ -60,7 +60,6 @@ public class SolutionWriter {
                 this.printTSVln(writer, al);
             }
         } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, "Exception while writing solution", ex);
             throw new WriterException(ex);
         }
 
