@@ -43,11 +43,16 @@ public class DumbSolver implements ISolver {
     }
 
     public boolean solve() {
-        dumbSolve();
+        try {
+            dumbSolve();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
         return true;
     }
 
-    private void dumbSolve() {
+    private void dumbSolve() throws Exception {
         this.instance.clear();
         List<Client> clients = this.instance.getClients();
 
@@ -62,9 +67,11 @@ public class DumbSolver implements ISolver {
             if (!affecte) {
                 System.out.println("Plus de vehicule dispo pour affecter le client " + c);
                 Vehicule v = this.instance.addVehicule();
-                if (v != null) {
-                    System.out.println("Nouveau vehicule créé");
+                if (v == null) {
+                    System.err.println("Invalid vehicule !");
+                    throw new Exception("Invalid vehicule");
                 }
+                System.out.println("Nouveau vehicule créé");
                 if (!v.addClient(c)) {
                     System.err.println("Erreur : Impossible d'affecter le client" + c);
                 }

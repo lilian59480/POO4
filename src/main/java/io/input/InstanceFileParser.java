@@ -144,20 +144,37 @@ public class InstanceFileParser {
         inst.setCoutVehicule(externalVehicleCost);
 
         Map<Integer, Emplacement> locationsMap = this.getLocationsList(document);
+        if (locationsMap == null) {
+            throw new ParserException(new NullPointerException("locationMap is null"));
+        }
 
         Map<Integer, Depot> depotsList = this.getDepotsList(document, locationsMap);
+        if (depotsList == null) {
+            throw new ParserException(new NullPointerException("depotsList is null"));
+        }
 
         // We assume there is only one Depot with id = 0
         Depot mainDepot = depotsList.get(0);
+        if (mainDepot == null) {
+            throw new ParserException(new NullPointerException("mainDepot is null"));
+        }
+
         inst.setDepot(mainDepot);
         locationsMap.put(0, mainDepot);
 
         Map<Integer, Client> customersList = this.getCustomersList(document, locationsMap);
+        if (customersList == null) {
+            throw new ParserException(new NullPointerException("customersList is null"));
+        }
 
         // Drop IDs as they are not stored now
         inst.setClients(new ArrayList<>(customersList.values()));
 
         List<Route> travelCostsTimesList = this.getTravelCostsTimesList(document, locationsMap);
+        if (travelCostsTimesList == null) {
+            throw new ParserException(new NullPointerException("travelCostsTimesList is null"));
+        }
+
         inst.setRoutes(travelCostsTimesList);
 
         // Create vehicules
@@ -180,6 +197,9 @@ public class InstanceFileParser {
      * @throws ParserException
      */
     private int getNbCustomers(Document document) throws ParserException {
+        if (document == null) {
+            throw new ParserException(new NullPointerException("Document is null"));
+        }
         return this.getSingleNodeValueInteger(document, "NB_CUSTOMERS");
     }
 
@@ -191,6 +211,9 @@ public class InstanceFileParser {
      * @throws ParserException
      */
     private int getNbLocations(Document document) throws ParserException {
+        if (document == null) {
+            throw new ParserException(new NullPointerException("Document is null"));
+        }
         return this.getSingleNodeValueInteger(document, "NB_LOCATIONS");
     }
 
@@ -202,6 +225,9 @@ public class InstanceFileParser {
      * @throws ParserException
      */
     private int getNbVehicles(Document document) throws ParserException {
+        if (document == null) {
+            throw new ParserException(new NullPointerException("Document is null"));
+        }
         return this.getSingleNodeValueInteger(document, "NB_VEHICLES");
     }
 
@@ -213,6 +239,9 @@ public class InstanceFileParser {
      * @throws ParserException
      */
     private int getVehicleCapacity(Document document) throws ParserException {
+        if (document == null) {
+            throw new ParserException(new NullPointerException("Document is null"));
+        }
         return this.getSingleNodeValueInteger(document, "VEHICLE_CAPACITY");
     }
 
@@ -224,6 +253,9 @@ public class InstanceFileParser {
      * @throws ParserException
      */
     private int getExternalVehicleCost(Document document) throws ParserException {
+        if (document == null) {
+            throw new ParserException(new NullPointerException("Document is null"));
+        }
         return this.getSingleNodeValueInteger(document, "EXTERNAL_VEHICLE_COST");
     }
 
@@ -235,6 +267,12 @@ public class InstanceFileParser {
      * @throws ParserException
      */
     private Map<Integer, Depot> getDepotsList(Document document, Map<Integer, Emplacement> locations) throws ParserException {
+        if (document == null) {
+            throw new ParserException(new NullPointerException("Document is null"));
+        }
+        if (locations == null) {
+            throw new ParserException(new NullPointerException("locations is null"));
+        }
         List<String[]> depoList = this.getSingleNodeTSV(document, "DEPOT");
 
         Iterator<String[]> depotIter = depoList.iterator();
@@ -278,6 +316,13 @@ public class InstanceFileParser {
      * @throws ParserException
      */
     private Map<Integer, Client> getCustomersList(Document document, Map<Integer, Emplacement> locations) throws ParserException {
+        if (document == null) {
+            throw new ParserException(new NullPointerException("Document is null"));
+        }
+        if (locations == null) {
+            throw new ParserException(new NullPointerException("locations is null"));
+        }
+
         List<String[]> customerList = this.getSingleNodeTSV(document, "CUSTOMERS");
 
         Iterator<String[]> customerIter = customerList.iterator();
@@ -322,6 +367,10 @@ public class InstanceFileParser {
      * @throws ParserException
      */
     private Map<Integer, Emplacement> getLocationsList(Document document) throws ParserException {
+        if (document == null) {
+            throw new ParserException(new NullPointerException("Document is null"));
+        }
+
         List<String[]> locationList = this.getSingleNodeTSV(document, "LOCATIONS");
 
         Iterator<String[]> locationIter = locationList.iterator();
@@ -360,6 +409,13 @@ public class InstanceFileParser {
      * @throws ParserException
      */
     private List<Route> getTravelCostsTimesList(Document document, Map<Integer, Emplacement> locations) throws ParserException {
+        if (document == null) {
+            throw new ParserException(new NullPointerException("Document is null"));
+        }
+        if (locations == null) {
+            throw new ParserException(new NullPointerException("locations is null"));
+        }
+
         List<String[]> rawRouteList = this.getSingleNodeTSV(document, "TRAVEL_COSTS_TIMES");
 
         Iterator<String[]> routeIter = rawRouteList.iterator();
@@ -402,6 +458,12 @@ public class InstanceFileParser {
      * @throws ParserException
      */
     private int getSingleNodeValueInteger(Document document, String tagName) throws ParserException {
+        if (document == null) {
+            throw new ParserException(new NullPointerException("Document is null"));
+        }
+        if (tagName == null) {
+            throw new ParserException(new NullPointerException("tagName is null"));
+        }
         NodeList nodeList = document.getElementsByTagName(tagName);
         if (nodeList.getLength() != 1) {
             throw new ParserException("Expected only one tag in the DOM", 1, nodeList.getLength());
@@ -421,6 +483,12 @@ public class InstanceFileParser {
      * @throws ParserException
      */
     private List<String[]> getSingleNodeTSV(Document document, String tagName) throws ParserException {
+        if (document == null) {
+            throw new ParserException(new NullPointerException("Document is null"));
+        }
+        if (tagName == null) {
+            throw new ParserException(new NullPointerException("tagName is null"));
+        }
         NodeList nodeList = document.getElementsByTagName(tagName);
         if (nodeList.getLength() != 1) {
             throw new ParserException("Expected only one tag in the DOM", 1, nodeList.getLength());
@@ -449,19 +517,12 @@ public class InstanceFileParser {
     private static InputStream createSuitableXMLRoot(InputStream inputStream) {
         List<InputStream> streams = new ArrayList<>();
         streams.add(new ByteArrayInputStream("<root>".getBytes()));
-        streams.add(inputStream);
+        if (inputStream != null) {
+            streams.add(inputStream);
+        }
         streams.add(new ByteArrayInputStream("</root>".getBytes()));
 
         return new SequenceInputStream(Collections.enumeration(streams));
     }
 
-    public static void main(String[] args) {
-        try {
-            InstanceFileParser ifp = new InstanceFileParser();
-            Instance i = ifp.parse(new File("resources/instances/instance_0-triangle.txt"));
-            System.out.println(i);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
 }

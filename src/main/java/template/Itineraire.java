@@ -7,22 +7,18 @@ package template;
 
 import algo.DumbSolver;
 import io.input.InstanceFileParser;
+import io.input.ParserException;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
 import java.io.File;
-import java.util.LinkedList;
+import java.util.List;
 import model.Depot;
 import model.Emplacement;
 import model.Instance;
 import model.Vehicule;
-
-import java.util.LinkedList;
-import java.util.List;
-import jdk.nashorn.internal.objects.NativeArray;
 
 /**
  *
@@ -37,8 +33,8 @@ public class Itineraire extends javax.swing.JFrame {
      * Creates new form itineraire
      */
     public Itineraire() {
-        initComponents();
-        initialisationFenetre();
+        this.initComponents();
+        this.initialisationFenetre();
     }
 
     @Override
@@ -46,15 +42,25 @@ public class Itineraire extends javax.swing.JFrame {
         super.paint(g);
         Color c = g.getColor();
         // DESSIN D'une Instance
-        Instance i = createInstance().getInstance();
+        DumbSolver ds = this.createInstance();
+        if (ds == null) {
+            return;
+        }
 
-        drawInstance(g, i);
+        Instance i = ds.getInstance();
+        if (i == null) {
+            return;
+        }
+
+        this.drawInstance(g, i);
         g.setColor(c);
 
     }
 
     private void drawEmplacement(Graphics g, Emplacement e) {
-        Color c = g.getColor();
+        if (e == null) {
+            return;
+        }
 
         if (e instanceof Depot) {
             g.setColor(Color.RED);
@@ -66,6 +72,9 @@ public class Itineraire extends javax.swing.JFrame {
     }
 
     private void drawInstance(Graphics g, Instance i) {
+        if (i == null) {
+            return;
+        }
         //Dessin du depot
         Depot d = i.getDepot();
 
@@ -84,7 +93,7 @@ public class Itineraire extends javax.swing.JFrame {
 
             }
             g.drawLine((int) source.getX() * 4 + 400, (int) source.getY() * 4 + 400, (int) d.getX() * 4 + 400, (int) d.getY() * 4 + 400);
-            code = code + 20;
+            code += 20;
             System.out.println("code :" + code);
         }
         drawEmplacement(g, d);
@@ -92,11 +101,11 @@ public class Itineraire extends javax.swing.JFrame {
     }
 
     private DumbSolver createInstance() {
-        Instance i = null;
+        Instance i;
         try {
             InstanceFileParser ifp = new InstanceFileParser();
             i = ifp.parse(new File("src/main/resources/instances/instance_0-triangle.txt"));
-        } catch (Exception ex) {
+        } catch (ParserException ex) {
             ex.printStackTrace();
             return null;
         }
@@ -108,7 +117,7 @@ public class Itineraire extends javax.swing.JFrame {
     private void initialisationFenetre() {
 
         this.setVisible(true);
-        this.setTitle("Itineraire by Thibaut Fenain");
+        this.setTitle("Itineraire");
         this.getContentPane().setBackground(Color.white);
         this.setBackground(Color.WHITE);
         this.setPreferredSize(new Dimension(400, 200));
