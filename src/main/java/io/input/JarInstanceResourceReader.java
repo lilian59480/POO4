@@ -19,6 +19,7 @@
 package io.input;
 
 import java.io.InputStream;
+import java.util.NoSuchElementException;
 
 /**
  * This class allow us to iterate over Instance files stored inside the Jar
@@ -63,6 +64,9 @@ public class JarInstanceResourceReader implements Iterable<InputStream> {
 
             @Override
             public InputStream next() {
+                if (!this.hasNext()) {
+                    throw new NoSuchElementException("Iterator does not have next element");
+                }
                 int i = currentIndex;
                 currentIndex++;
                 return loader.getResourceAsStream("/instances/instance_" + i + "-triangle.txt");
