@@ -51,14 +51,14 @@ public class DumbSolver implements ISolver {
         LOGGER.log(Level.FINE, "Solving a new instance");
         try {
             dumbSolve();
-        } catch (Exception ex) {
+        } catch (SolverException ex) {
             LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
             return false;
         }
         return true;
     }
 
-    private void dumbSolve() throws Exception {
+    private void dumbSolve() throws SolverException {
         this.instance.clear();
         List<Client> clients = this.instance.getClients();
 
@@ -75,7 +75,7 @@ public class DumbSolver implements ISolver {
                 Vehicule v = this.instance.addVehicule();
                 if (v == null) {
                     LOGGER.log(Level.WARNING, "Invalid vehicule !");
-                    throw new Exception("Invalid vehicule");
+                    throw new SolverException("Invalid vehicule");
                 }
                 LOGGER.log(Level.INFO, "Nouveau vehicule créé");
                 if (!v.addClient(c)) {
