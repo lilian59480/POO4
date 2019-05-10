@@ -30,6 +30,8 @@ import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Instance;
 
 /**
@@ -39,11 +41,16 @@ import model.Instance;
  */
 public class Cli {
 
+    private static final Logger LOGGER = Logger.getLogger(Cli.class.getName());
+
     private static final List<Class<? extends ISolver>> SOLVERS = Arrays.asList(
             DumbSolver.class
     );
 
     public static void main(String[] args) {
+        LOGGER.log(Level.INFO, "Solving a new instance");
+        LOGGER.log(Level.FINE, "Arguments : {0}", Arrays.toString(args));
+
         PrintStream ps = System.out;
         Cli.printIntro(ps);
         Cli.printLicence(ps);
@@ -103,6 +110,9 @@ public class Cli {
     private static void runAllSolversAllJarInstances(PrintStream ps) {
 
         ps.println("Run All solvers on all files instances stored in Jar");
+        LOGGER.log(Level.INFO, "Solvers available {0}", SOLVERS.toString());
+
+        JarInstanceResourceReader instanceLoader = new JarInstanceResourceReader();
 
         for (Class<? extends ISolver> solver : SOLVERS) {
             try {
@@ -112,21 +122,23 @@ public class Cli {
 
                 Constructor<? extends ISolver> cons = solver.getConstructor(Instance.class);
 
-                JarInstanceResourceReader instanceLoader = new JarInstanceResourceReader();
-
                 for (FilenameIterator<InputStream> iterator = instanceLoader.iterator(); iterator.hasNext();) {
                     ps.println("\t\t********************");
 
                     try (InputStream is = iterator.next()) {
+                        LOGGER.log(Level.INFO, "Loaded {0}", iterator.getFilename());
                         ps.println("\t\tResource " + iterator.getFilename() + " loaded from Jar");
 
                         InstanceFileParser ifp = new InstanceFileParser();
                         Instance instance = ifp.parse(is);
 
+                        LOGGER.log(Level.FINE, "Instance parsed : {0}", is.toString());
+
                         ISolver solverInst = cons.newInstance(instance);
                         boolean status = solverInst.solve();
 
                         if (!status) {
+                            LOGGER.log(Level.SEVERE, "Instance unsolvable! Exiting");
                             System.exit(1);
                         }
                     }
@@ -137,7 +149,7 @@ public class Cli {
                 ps.println("\tParseur OK");
 
             } catch (SecurityException | ReflectiveOperationException | IllegalArgumentException | ParserException | IOException ex) {
-                ex.printStackTrace();
+                LOGGER.log(Level.SEVERE, "Exception while solving Instances!", ex);
             }
         }
     }

@@ -15,6 +15,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.io.File;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Depot;
 import model.Emplacement;
 import model.Instance;
@@ -25,6 +27,8 @@ import model.Vehicule;
  * @author thibaut
  */
 public class Itineraire extends javax.swing.JFrame {
+
+    private static final Logger LOGGER = Logger.getLogger(Itineraire.class.getName());
 
     /**
      * entre 360 getHSBColor(, 1, 0.8)
@@ -94,7 +98,6 @@ public class Itineraire extends javax.swing.JFrame {
             }
             g.drawLine((int) source.getX() * 4 + 400, (int) source.getY() * 4 + 400, (int) d.getX() * 4 + 400, (int) d.getY() * 4 + 400);
             code += 20;
-            System.out.println("code :" + code);
         }
         drawEmplacement(g, d);
 
@@ -106,7 +109,7 @@ public class Itineraire extends javax.swing.JFrame {
             InstanceFileParser ifp = new InstanceFileParser();
             i = ifp.parse(new File("src/main/resources/instances/instance_0-triangle.txt"));
         } catch (ParserException ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
             return null;
         }
         DumbSolver ds = new DumbSolver(i);

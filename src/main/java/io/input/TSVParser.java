@@ -25,8 +25,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class that parses an TSV file.
@@ -34,6 +37,8 @@ import java.util.List;
  * @author Lilian Petitpas
  */
 public class TSVParser {
+
+    private static final Logger LOGGER = Logger.getLogger(TSVParser.class.getName());
 
     /**
      * Constructor.
@@ -93,6 +98,7 @@ public class TSVParser {
             while ((line = br.readLine()) != null) {
                 // Print the content on the console
                 String[] split = line.split("[\\s\t]+");
+                LOGGER.log(Level.FINEST, "Line parsed : {0}", Arrays.toString(split));
                 lines.add(split);
             }
         } catch (IOException ex) {

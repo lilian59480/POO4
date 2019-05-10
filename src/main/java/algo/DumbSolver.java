@@ -22,6 +22,8 @@ import io.input.InstanceFileParser;
 import io.output.SolutionWriter;
 import java.io.File;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Client;
 import model.Instance;
 import model.Vehicule;
@@ -33,21 +35,24 @@ import model.Vehicule;
 public class DumbSolver implements ISolver {
 
     private final Instance instance;
+    private static final Logger LOGGER = Logger.getLogger(DumbSolver.class.getName());
 
     public DumbSolver(Instance i) {
         this.instance = i;
     }
 
+    @Override
     public Instance getInstance() {
         return instance;
     }
 
+    @Override
     public boolean solve() {
+        LOGGER.log(Level.FINE, "Solving a new instance");
         try {
             dumbSolve();
         } catch (Exception ex) {
-            ex.printStackTrace();
-            return false;
+            LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
         }
         return true;
     }
@@ -65,15 +70,15 @@ public class DumbSolver implements ISolver {
                 }
             }
             if (!affecte) {
-                System.out.println("Plus de vehicule dispo pour affecter le client " + c);
+                LOGGER.log(Level.INFO, "Plus de vehicule dispo pour affecter le client {0}", c);
                 Vehicule v = this.instance.addVehicule();
                 if (v == null) {
-                    System.err.println("Invalid vehicule !");
+                    LOGGER.log(Level.WARNING, "Invalid vehicule !");
                     throw new Exception("Invalid vehicule");
                 }
-                System.out.println("Nouveau vehicule créé");
+                LOGGER.log(Level.INFO, "Nouveau vehicule créé");
                 if (!v.addClient(c)) {
-                    System.err.println("Erreur : Impossible d'affecter le client" + c);
+                    LOGGER.log(Level.WARNING, "Erreur : Impossible d affecter le client {0}", c);
                 }
             }
         }
@@ -86,9 +91,8 @@ public class DumbSolver implements ISolver {
             try {
                 InstanceFileParser ifp = new InstanceFileParser();
                 i = ifp.parse(new File("src/main/resources/instances/instance_" + id + "-triangle.txt"));
-                System.out.println(i);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
                 return;
             }
             DumbSolver ds = new DumbSolver(i);
@@ -96,8 +100,8 @@ public class DumbSolver implements ISolver {
             try {
                 SolutionWriter sw = new SolutionWriter();
                 sw.write(i, "target/instance_" + id + "-triangle_sol.txt");
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception ex) {
+                LOGGER.log(Level.SEVERE, "Exception while writing a solution", ex);
             }
         }
 

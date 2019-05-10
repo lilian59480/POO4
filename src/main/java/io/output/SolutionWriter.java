@@ -24,6 +24,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Emplacement;
 import model.Instance;
 import model.Planning;
@@ -35,12 +37,16 @@ import model.Vehicule;
  */
 public class SolutionWriter {
 
+    private static final Logger LOGGER = Logger.getLogger(SolutionWriter.class.getName());
+
     public boolean write(Instance i) throws WriterException {
         return this.write(i, "instance_latest_sol.txt");
     }
 
     public boolean write(Instance i, String filename) throws WriterException {
         File f = new File(filename);
+
+        LOGGER.log(Level.INFO, "Writing new solution at {0}", filename);
 
         try (PrintWriter writer = new PrintWriter(f, "UTF-8")) {
             Planning p = i.getPlanningCurrent();
@@ -54,6 +60,7 @@ public class SolutionWriter {
                 this.printTSVln(writer, al);
             }
         } catch (IOException ex) {
+            LOGGER.log(Level.SEVERE, "Exception while writing solution", ex);
             throw new WriterException(ex);
         }
 
@@ -81,13 +88,4 @@ public class SolutionWriter {
         w.println();
     }
 
-    public static void main(String[] args) {
-        SolutionWriter sw = new SolutionWriter();
-        Instance i = new Instance();
-        try {
-            sw.write(i, "test.txt");
-        } catch (WriterException ex) {
-            ex.printStackTrace();
-        }
-    }
 }

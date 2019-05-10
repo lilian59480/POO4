@@ -20,6 +20,8 @@ package io.input;
 
 import java.io.InputStream;
 import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class allow us to iterate over Instance files stored inside the Jar
@@ -28,6 +30,8 @@ import java.util.NoSuchElementException;
  * @author Lilian Petitpas <lilian.petitpas@outlook.com>
  */
 public class JarInstanceResourceReader implements Iterable<InputStream> {
+
+    private static final Logger LOGGER = Logger.getLogger(JarInstanceResourceReader.class.getName());
 
     /**
      * Maximum value for iterator index.
@@ -69,6 +73,7 @@ public class JarInstanceResourceReader implements Iterable<InputStream> {
                 }
                 int i = currentIndex;
                 currentIndex++;
+                LOGGER.log(Level.FINEST, "File jar:///instances/instance_{0}-triangle.txt retrieved", i);
                 return loader.getResourceAsStream("/instances/instance_" + i + "-triangle.txt");
             }
 
