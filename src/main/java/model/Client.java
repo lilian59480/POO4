@@ -29,24 +29,18 @@ public class Client {
 
     private int demande;
     private List<Emplacement> emplacements;
-    private Integer position;
+    private int position;
     private Vehicule vehicule;
 
     public Client() {
-        this.emplacements = new LinkedList<>();
-        this.position = -1;
+        this(0);
     }
 
     public Client(int demande) {
-        this();
+        this.position = -1;
+        this.emplacements = new LinkedList<>();
         this.demande = demande;
-    }
-    
-    public Client(int demande, List<Emplacement> emplacements) {
-        
-        this();
-        this.emplacements = emplacements;
-        this.demande = demande;
+        this.vehicule = null;
     }
 
     public boolean addEmplacement(Emplacement e) {
@@ -61,11 +55,11 @@ public class Client {
         return demande;
     }
 
-    public Integer getPosition() {
+    public int getPosition() {
         return position;
     }
 
-    public void setPosition(Integer position) {
+    public void setPosition(int position) {
         this.position = position;
     }
 
@@ -76,7 +70,7 @@ public class Client {
     public void setVehicule(Vehicule vehicule) {
         this.vehicule = vehicule;
     }
-    
+
     @Override
     public String toString() {
         return "Client{" + "demande=" + demande + ", emplacements=" + emplacements + ", position=" + position + ", vehicule=" + vehicule + '}';
