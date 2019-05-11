@@ -23,12 +23,16 @@ package model;
  * @author Corentin
  */
 public class Emplacement extends Point {
+
     private Client client;
     private int heureDebut;
     private int heureFin;
 
     public Emplacement(int heureDebut, int heureFin, double x, double y) {
         super(x, y);
+        if (heureFin < heureDebut) {
+            throw new IllegalArgumentException("heureFin must be greater or equals than heureDebut");
+        }
         this.heureDebut = heureDebut;
         this.heureFin = heureFin;
     }
@@ -48,7 +52,7 @@ public class Emplacement extends Point {
     public void setClient(Client client) {
         this.client = client;
     }
-    
+
     @Override
     public String toString() {
         return "Emplacement{" + "heureDebut=" + heureDebut + ", heureFin=" + heureFin + ", " + super.toString() + '}';

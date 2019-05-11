@@ -86,7 +86,7 @@ public class ClientTest {
         public void emplacementList() {
             int max = 7;
             for (int i = 0; i < max; i++) {
-                Emplacement e = new Emplacement(5 * i, i, 2 * i, 2 + i);
+                Emplacement e = new Emplacement(i, 5 * i + 1, 2 * i, 2 + i);
                 assertTrue(ClientTest.this.client.addEmplacement(e), "addEmplacement must return true here for i=" + i);
             }
 
