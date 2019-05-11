@@ -24,12 +24,12 @@ package model;
  */
 public class Depot extends Emplacement {
 
-    public Depot(int heureDebut, int heureFin, int x, int y) {
+    public Depot(int heureDebut, int heureFin, double x, double y) {
         super(heureDebut, heureFin, x, y);
     }
 
     public Depot(Emplacement e) {
-        super(e.getHeureDebut(), e.getHeureFin(), e.getX(), e.getY());
+        this(e.getHeureDebut(), e.getHeureFin(), e.getX(), e.getY());
     }
 
     @Override
