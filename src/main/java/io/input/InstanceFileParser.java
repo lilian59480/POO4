@@ -62,18 +62,18 @@ public class InstanceFileParser {
     /**
      * Factory for the XML Document builder.
      */
-    private static DocumentBuilderFactory dbf;
+    private DocumentBuilderFactory dbf;
 
     /**
      * XML Document builder, used to get a {@link org.w3c.dom.Document} from a
      * file.
      */
-    private static DocumentBuilder db;
+    private DocumentBuilder db;
 
     /**
      * TSV Parser, used for some data inside XML Nodes.
      */
-    private static TSVParser tsvParser;
+    private TSVParser tsvParser;
 
     /**
      * Constructor.
@@ -82,30 +82,19 @@ public class InstanceFileParser {
      * @todo We may have to discuss if we keep this API or not
      */
     public InstanceFileParser() throws ParserException {
-        if (InstanceFileParser.dbf == null) {
-            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-            documentBuilderFactory.setExpandEntityReferences(false);
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        documentBuilderFactory.setExpandEntityReferences(false);
 
-            try {
-                documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-                documentBuilderFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-                documentBuilderFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-            } catch (ParserConfigurationException ex) {
-                throw new ParserException(ex);
-            }
-            InstanceFileParser.dbf = documentBuilderFactory;
-        }
+        try {
+            documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            documentBuilderFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            documentBuilderFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            this.dbf = documentBuilderFactory;
+            this.db = this.dbf.newDocumentBuilder();
+            this.tsvParser = new TSVParser();
 
-        if (InstanceFileParser.db == null) {
-            try {
-                InstanceFileParser.db = InstanceFileParser.dbf.newDocumentBuilder();
-            } catch (ParserConfigurationException ex) {
-                throw new ParserException(ex);
-            }
-        }
-
-        if (InstanceFileParser.tsvParser == null) {
-            InstanceFileParser.tsvParser = new TSVParser();
+        } catch (ParserConfigurationException ex) {
+            throw new ParserException(ex);
         }
     }
 
@@ -136,7 +125,7 @@ public class InstanceFileParser {
         Document document;
 
         try {
-            document = InstanceFileParser.db.parse(validInputStream);
+            document = this.db.parse(validInputStream);
         } catch (SAXException | IOException ex) {
             throw new ParserException(ex);
         }
@@ -530,7 +519,7 @@ public class InstanceFileParser {
         Node singleNode = nodeList.item(0);
         String nodeText = singleNode.getTextContent();
 
-        return InstanceFileParser.tsvParser.parse(new StringReader(nodeText.substring(1)));
+        return this.tsvParser.parse(new StringReader(nodeText.substring(1)));
     }
 
     /**
