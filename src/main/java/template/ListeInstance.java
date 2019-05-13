@@ -5,30 +5,45 @@
  */
 package template;
 
+import io.input.FilenameIterator;
+import io.input.InstanceFileParser;
+import io.input.JarInstanceResourceReader;
+import io.input.ParserException;
 import java.awt.Color;
+import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import model.Instance;
 
 /**
  *
  * @author thibaut
  */
-public class List extends javax.swing.JFrame {
+public class ListeInstance extends javax.swing.JFrame {
+
+    private static final Logger LOGGER = Logger.getLogger(ListeInstance.class.getName());
+    private final DefaultListModel<Instance> dlm;
 
     /**
      * Creates new form List
      */
-    public List() {
-
-        DefaultListModel dlm = new DefaultListModel();
-        dlm.addElement("Thibaut Fenain");
-        dlm.addElement("Lillian PetitPas");
-        dlm.addElement("Corentin Apolinario");
-        dlm.addElement("Thomas Ternisien");
+    public ListeInstance() {
+        JarInstanceResourceReader instanceReader = new JarInstanceResourceReader();
+        this.dlm = new DefaultListModel();
+        for (FilenameIterator<InputStream> iterator = instanceReader.iterator(); iterator.hasNext();) {
+            try {
+                InputStream next = iterator.next();
+                InstanceFileParser ifp = new InstanceFileParser();
+                Instance instance = ifp.parse(next);
+                this.dlm.addElement(instance);
+            } catch (ParserException ex) {
+                LOGGER.log(Level.SEVERE, "Exception while reading Instances!", ex);
+            }
+        }
 
         initComponents();
         initialisationFenetre();
-        jList1.setModel(dlm);
-
     }
 
     private void initialisationFenetre() {
@@ -52,34 +67,30 @@ public class List extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        jListInstance = new javax.swing.JList<>();
+        jButtonSolveInstance = new javax.swing.JButton();
+        jButtonDisplayInstance = new javax.swing.JButton();
+        jTitle = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 51));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setForeground(new java.awt.Color(204, 204, 255));
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(jList1);
+        jListInstance.setModel(dlm);
+        jScrollPane1.setViewportView(jListInstance);
 
-        jButton1.setText("Touver une solution");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonSolveInstance.setText("Touver une solution");
+        jButtonSolveInstance.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtonSolveInstanceActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Afficher une solution");
+        jButtonDisplayInstance.setText("Afficher une solution");
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        jLabel1.setText("Deliver2I");
+        jTitle.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        jTitle.setText("Deliver2I");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -93,47 +104,47 @@ public class List extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jButton2)
+                        .addComponent(jButtonDisplayInstance)
                         .addGap(37, 37, 37)
-                        .addComponent(jButton1)
+                        .addComponent(jButtonSolveInstance)
                         .addGap(54, 54, 54))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(228, 228, 228))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(47, 47, 47)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 368, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 109, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(jButtonSolveInstance)
+                    .addComponent(jButtonDisplayInstance))
                 .addGap(29, 29, 29))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButtonSolveInstanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSolveInstanceActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_jButtonSolveInstanceActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        new List();
+        new ListeInstance();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JList<String> jList1;
+    private javax.swing.JButton jButtonDisplayInstance;
+    private javax.swing.JButton jButtonSolveInstance;
+    private javax.swing.JList<Instance> jListInstance;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel jTitle;
     // End of variables declaration//GEN-END:variables
 }
