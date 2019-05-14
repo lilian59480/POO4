@@ -99,10 +99,7 @@ public class Planning {
         if (!Objects.equals(this.vehicules, other.vehicules)) {
             return false;
         }
-        if (!Objects.equals(this.instance, other.instance)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.instance, other.instance);
     }
 
     @Override

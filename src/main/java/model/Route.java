@@ -77,10 +77,7 @@ public class Route {
         if (!Objects.equals(this.from, other.from)) {
             return false;
         }
-        if (!Objects.equals(this.to, other.to)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.to, other.to);
     }
 
     @Override
