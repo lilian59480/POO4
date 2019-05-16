@@ -18,11 +18,17 @@
  */
 package model;
 
+import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  *
  * @author Corentin
  */
-public class Depot extends Emplacement {
+@Entity
+@Table(name = "DEPOT")
+public class Depot extends Emplacement implements Serializable {
 
     public Depot(int heureDebut, int heureFin, double x, double y) {
         super(heureDebut, heureFin, x, y);

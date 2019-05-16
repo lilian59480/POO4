@@ -18,12 +18,18 @@
  */
 package model;
 
+import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  *
  * @author Corentin
  */
-public class Emplacement extends Point {
-
+@Entity
+@Table(name = "EMPLACEMENT")
+public class Emplacement extends Point implements Serializable {
+    
     private Client client;
     private int heureDebut;
     private int heureFin;

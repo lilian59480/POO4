@@ -18,16 +18,46 @@
  */
 package model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  *
  * @author Corentin
  */
-public class Point {
+@Entity
+@Table(
+        name = "POINT",
+        uniqueConstraints = {
+            @UniqueConstraint(
+                    columnNames = {
+                        "X",
+                        "Y"
+                    }
+            )
+        }
+)
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "POINTTYPE", discriminatorType = DiscriminatorType.INTEGER)
+public abstract class Point implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    protected int id;
     private double x;
     private double y;
     private Map<Point, Route> routeTo;
