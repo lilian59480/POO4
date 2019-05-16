@@ -32,16 +32,16 @@ import model.Vehicule;
  *
  * @author Corentin
  */
-public class DumbSolver implements ISolver {
+public class NaiveSolver implements ISolver {
 
     private Instance instance;
-    private static final Logger LOGGER = Logger.getLogger(DumbSolver.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(NaiveSolver.class.getName());
 
-    public DumbSolver() {
+    public NaiveSolver() {
         this(null);
     }
 
-    public DumbSolver(Instance i) {
+    public NaiveSolver(Instance i) {
         this.instance = i;
     }
 
@@ -106,7 +106,7 @@ public class DumbSolver implements ISolver {
                 LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
                 return;
             }
-            DumbSolver ds = new DumbSolver(i);
+            NaiveSolver ds = new NaiveSolver(i);
             ds.solve();
             try {
                 SolutionWriter sw = new SolutionWriter();

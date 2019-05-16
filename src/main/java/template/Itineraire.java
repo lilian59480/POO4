@@ -5,7 +5,7 @@
  */
 package template;
 
-import algo.DumbSolver;
+import algo.NaiveSolver;
 import io.input.InstanceFileParser;
 import io.input.ParserException;
 import java.awt.BasicStroke;
@@ -46,7 +46,7 @@ public class Itineraire extends javax.swing.JFrame {
         super.paint(g);
         Color c = g.getColor();
         // DESSIN D'une Instance
-        DumbSolver ds = this.createInstance();
+        NaiveSolver ds = this.createInstance();
         if (ds == null) {
             return;
         }
@@ -103,7 +103,7 @@ public class Itineraire extends javax.swing.JFrame {
 
     }
 
-    private DumbSolver createInstance() {
+    private NaiveSolver createInstance() {
         Instance i;
         try {
             InstanceFileParser ifp = new InstanceFileParser();
@@ -112,7 +112,7 @@ public class Itineraire extends javax.swing.JFrame {
             LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
             return null;
         }
-        DumbSolver ds = new DumbSolver(i);
+        NaiveSolver ds = new NaiveSolver(i);
         ds.solve();
         return ds;
     }

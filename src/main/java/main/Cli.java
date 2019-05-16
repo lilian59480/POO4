@@ -18,7 +18,7 @@
  */
 package main;
 
-import algo.DumbSolver;
+import algo.NaiveSolver;
 import algo.ISolver;
 import io.input.FilenameIterator;
 import io.input.InstanceFileParser;
@@ -45,17 +45,16 @@ public class Cli {
 
     private static final Logger LOGGER = Logger.getLogger(Cli.class.getName());
 
-    private static final List<Class<? extends ISolver>> SOLVERS = Arrays.asList(
-            DumbSolver.class
+    private static final List<Class<? extends ISolver>> SOLVERS = Arrays.asList(NaiveSolver.class
     );
 
-    private final PrintStream ps = System.out;
+    private static final PrintStream PS = System.out;
 
-    private final JarInstanceResourceReader instanceLoader = new JarInstanceResourceReader();
+    private static final JarInstanceResourceReader JAR_INSTANCE_RR = new JarInstanceResourceReader();
 
     private final InstanceFileParser ifp;
 
-    private final SolutionWriter sw = new SolutionWriter();
+    private static final SolutionWriter SW = new SolutionWriter();
 
     public static void main(String[] args) {
         LOGGER.log(Level.INFO, "Solving a new instance");
@@ -91,45 +90,45 @@ public class Cli {
     }
 
     private void printIntro() {
-        this.ps.println("+------------+");
-        this.ps.println("|POO4 Project|");
-        this.ps.println("+------------+");
+        Cli.PS.println("+------------+");
+        Cli.PS.println("|POO4 Project|");
+        Cli.PS.println("+------------+");
 
-        this.ps.println("Made by");
-        this.ps.println("+ Lilian Petitpas");
-        this.ps.println("+ Thomas Ternisien");
-        this.ps.println("+ Thibaut Fenain");
-        this.ps.println("+ Corentin Apolinario");
+        Cli.PS.println("Made by");
+        Cli.PS.println("+ Lilian Petitpas");
+        Cli.PS.println("+ Thomas Ternisien");
+        Cli.PS.println("+ Thibaut Fenain");
+        Cli.PS.println("+ Corentin Apolinario");
     }
 
     private void printLicence() {
-        this.ps.println("******************");
+        Cli.PS.println("******************");
 
-        this.ps.println("POO4-Project Copyright (C) 2019 "
+        Cli.PS.println("POO4-Project Copyright (C) 2019 "
                 + "Lilian Petitpas, "
                 + "Thomas Ternisien, "
                 + "Thibaut Fenain, "
                 + "Corentin Apolinario");
-        this.ps.println("");
-        this.ps.println("This program comes with ABSOLUTELY NO WARRANTY");
-        this.ps.println("This is free software, and you are welcome to "
+        Cli.PS.println("");
+        Cli.PS.println("This program comes with ABSOLUTELY NO WARRANTY");
+        Cli.PS.println("This is free software, and you are welcome to "
                 + "redistribute under certain conditions");
 
-        this.ps.println("******************");
+        Cli.PS.println("******************");
     }
 
     private void printHelp() {
-        this.ps.println("Usage : cli.jar [option]");
+        Cli.PS.println("Usage : cli.jar [option]");
 
-        this.ps.println("Options :");
-        this.ps.println("\thelp\tPrint help");
-        this.ps.println("\tusage\tPrint help");
+        Cli.PS.println("Options :");
+        Cli.PS.println("\thelp\tPrint help");
+        Cli.PS.println("\tusage\tPrint help");
 
     }
 
     private void runAllInstancesOnAllSolvers() {
 
-        this.ps.println("Run All solvers on all files instances stored in Jar");
+        Cli.PS.println("Run All solvers on all files instances stored in Jar");
         LOGGER.log(Level.INFO, "Solvers available {0}", SOLVERS);
 
         for (Class<? extends ISolver> solver : SOLVERS) {
@@ -143,21 +142,21 @@ public class Cli {
                 return;
             }
 
-            this.ps.println("\t********************");
+            Cli.PS.println("\t********************");
         }
     }
 
     private void runAllInstancesOnOneSolver(ISolver solver) {
         try {
 
-            this.ps.println("\tRun " + solver + " on all files instances stored in Jar");
+            Cli.PS.println("\tRun " + solver + " on all files instances stored in Jar");
 
-            for (FilenameIterator<InputStream> iterator = instanceLoader.iterator(); iterator.hasNext();) {
-                this.ps.println("\t\t********************");
+            for (FilenameIterator<InputStream> iterator = Cli.JAR_INSTANCE_RR.iterator(); iterator.hasNext();) {
+                Cli.PS.println("\t\t********************");
 
                 try (InputStream is = iterator.next()) {
                     LOGGER.log(Level.INFO, "Loaded {0}", iterator.getFilename());
-                    this.ps.println("\t\tResource " + iterator.getFilename() + " loaded from Jar");
+                    Cli.PS.println("\t\tResource " + iterator.getFilename() + " loaded from Jar");
 
                     Instance instance = ifp.parse(is);
 
@@ -167,7 +166,7 @@ public class Cli {
 
                 }
 
-                this.ps.println("\t\tInstance OK");
+                Cli.PS.println("\t\tInstance OK");
             }
 
         } catch (ParserException | IOException ex) {
@@ -178,7 +177,7 @@ public class Cli {
 
     private void runOneInstancesOnOneSolver(ISolver solver, Instance i, String filename) {
         solver.setInstance(i);
-        this.ps.println("\t\t\tSolving ...");
+        Cli.PS.println("\t\t\tSolving ...");
         boolean status = solver.solve();
         if (!status) {
             LOGGER.log(Level.SEVERE, "Instance unsolvable!");
@@ -190,7 +189,7 @@ public class Cli {
         String baseFilename = filename.substring(11, filename.length() - 4);
 
         try {
-            this.sw.write(i, baseFilename + "_sol.txt");
+            Cli.SW.write(i, baseFilename + "_sol.txt");
         } catch (WriterException ex) {
             LOGGER.log(Level.SEVERE, "Impossible to write solution file", ex);
         }

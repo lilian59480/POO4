@@ -71,6 +71,10 @@ public class Planning {
         this.cout = cost;
     }
 
+    public double getCout() {
+        return this.cout;
+    }
+
     public void clear() {
         this.vehicules.clear();
         this.cout = 0.0;
