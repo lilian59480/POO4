@@ -145,10 +145,6 @@ public class Vehicule {
         return depot;
     }
 
-    public List<Emplacement> getDestinations() {
-        return destinations;
-    }
-
     @Override
     public int hashCode() {
         int hash = 5;

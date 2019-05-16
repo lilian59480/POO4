@@ -87,7 +87,7 @@ public class Itineraire extends javax.swing.JFrame {
 
         for (Vehicule v : vehicules) {
             Emplacement source = d;
-            for (Emplacement destination : v.getDestinations()) {
+            for (Emplacement destination : v.getEmplacements()) {
                 g.setColor(Color.getHSBColor(code / 360.0f, 1, 0.8f));
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setStroke(new BasicStroke(3));
