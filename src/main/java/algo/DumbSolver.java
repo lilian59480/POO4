@@ -34,8 +34,12 @@ import model.Vehicule;
  */
 public class DumbSolver implements ISolver {
 
-    private final Instance instance;
+    private Instance instance;
     private static final Logger LOGGER = Logger.getLogger(DumbSolver.class.getName());
+
+    public DumbSolver() {
+        this(null);
+    }
 
     public DumbSolver(Instance i) {
         this.instance = i;
@@ -44,6 +48,11 @@ public class DumbSolver implements ISolver {
     @Override
     public Instance getInstance() {
         return instance;
+    }
+
+    @Override
+    public void setInstance(Instance i) {
+        this.instance = i;
     }
 
     @Override

@@ -24,6 +24,8 @@ import io.input.FilenameIterator;
 import io.input.InstanceFileParser;
 import io.input.JarInstanceResourceReader;
 import io.input.ParserException;
+import io.output.SolutionWriter;
+import io.output.WriterException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -47,111 +49,152 @@ public class Cli {
             DumbSolver.class
     );
 
+    private final PrintStream ps = System.out;
+
+    private final JarInstanceResourceReader instanceLoader = new JarInstanceResourceReader();
+
+    private final InstanceFileParser ifp;
+
+    private final SolutionWriter sw = new SolutionWriter();
+
     public static void main(String[] args) {
         LOGGER.log(Level.INFO, "Solving a new instance");
         LOGGER.log(Level.FINE, "Arguments : {0}", Arrays.toString(args));
 
-        PrintStream ps = System.out;
-        Cli.printIntro(ps);
-        Cli.printLicence(ps);
+        Cli self;
+        try {
+            self = new Cli();
+        } catch (ParserException ex) {
+            LOGGER.log(Level.SEVERE, "Impossible to initialise Cli", ex);
+            System.exit(-1);
+            return;
+        }
+        self.printIntro();
+        self.printLicence();
 
         if (args.length >= 1) {
             if ("help".equals(args[0]) || "usage".equals(args[0])) {
-                Cli.printHelp(ps);
+                self.printHelp();
                 return;
             }
 
             // Unknown argument
-            ps.println("Unknown argument");
-            Cli.printHelp(ps);
+            self.printHelp();
 
         } else {
-            Cli.runAllSolversAllJarInstances(ps);
+            self.runAllInstancesOnAllSolvers();
         }
     }
 
-    private static void printIntro(PrintStream ps) {
-        ps.println("+------------+");
-        ps.println("|POO4 Project|");
-        ps.println("+------------+");
-
-        ps.println("Made by");
-        ps.println("+ Lilian Petitpas");
-        ps.println("+ Thomas Ternisien");
-        ps.println("+ Thibaut Fenain");
-        ps.println("+ Corentin Apolinario");
+    public Cli() throws ParserException {
+        this.ifp = new InstanceFileParser();
     }
 
-    private static void printLicence(PrintStream ps) {
-        ps.println("******************");
+    private void printIntro() {
+        this.ps.println("+------------+");
+        this.ps.println("|POO4 Project|");
+        this.ps.println("+------------+");
 
-        ps.println("POO4-Project Copyright (C) 2019 "
+        this.ps.println("Made by");
+        this.ps.println("+ Lilian Petitpas");
+        this.ps.println("+ Thomas Ternisien");
+        this.ps.println("+ Thibaut Fenain");
+        this.ps.println("+ Corentin Apolinario");
+    }
+
+    private void printLicence() {
+        this.ps.println("******************");
+
+        this.ps.println("POO4-Project Copyright (C) 2019 "
                 + "Lilian Petitpas, "
                 + "Thomas Ternisien, "
                 + "Thibaut Fenain, "
                 + "Corentin Apolinario");
-        ps.println("");
-        ps.println("This program comes with ABSOLUTELY NO WARRANTY");
-        ps.println("This is free software, and you are welcome to "
+        this.ps.println("");
+        this.ps.println("This program comes with ABSOLUTELY NO WARRANTY");
+        this.ps.println("This is free software, and you are welcome to "
                 + "redistribute under certain conditions");
 
-        ps.println("******************");
+        this.ps.println("******************");
     }
 
-    private static void printHelp(PrintStream ps) {
-        ps.println("Usage : cli.jar [option]");
+    private void printHelp() {
+        this.ps.println("Usage : cli.jar [option]");
 
-        ps.println("Options :");
-        ps.println("\thelp\tPrint help");
-        ps.println("\tusage\tPrint help");
+        this.ps.println("Options :");
+        this.ps.println("\thelp\tPrint help");
+        this.ps.println("\tusage\tPrint help");
 
     }
 
-    private static void runAllSolversAllJarInstances(PrintStream ps) {
+    private void runAllInstancesOnAllSolvers() {
 
-        ps.println("Run All solvers on all files instances stored in Jar");
+        this.ps.println("Run All solvers on all files instances stored in Jar");
         LOGGER.log(Level.INFO, "Solvers available {0}", SOLVERS);
 
-        JarInstanceResourceReader instanceLoader = new JarInstanceResourceReader();
-
         for (Class<? extends ISolver> solver : SOLVERS) {
+
             try {
+                Constructor<? extends ISolver> cons = solver.getConstructor();
+                ISolver solverInst = cons.newInstance();
+                this.runAllInstancesOnOneSolver(solverInst);
+            } catch (SecurityException | ReflectiveOperationException | IllegalArgumentException ex) {
+                LOGGER.log(Level.SEVERE, "Reflexion exception", ex);
+                return;
+            }
 
-                ps.println("\t********************");
-                ps.println("\tRun " + solver.getCanonicalName() + " on all files instances stored in Jar");
+            this.ps.println("\t********************");
+        }
+    }
 
-                Constructor<? extends ISolver> cons = solver.getConstructor(Instance.class);
+    private void runAllInstancesOnOneSolver(ISolver solver) {
+        try {
 
-                for (FilenameIterator<InputStream> iterator = instanceLoader.iterator(); iterator.hasNext();) {
-                    ps.println("\t\t********************");
+            this.ps.println("\tRun " + solver + " on all files instances stored in Jar");
 
-                    try (InputStream is = iterator.next()) {
-                        LOGGER.log(Level.INFO, "Loaded {0}", iterator.getFilename());
-                        ps.println("\t\tResource " + iterator.getFilename() + " loaded from Jar");
+            for (FilenameIterator<InputStream> iterator = instanceLoader.iterator(); iterator.hasNext();) {
+                this.ps.println("\t\t********************");
 
-                        InstanceFileParser ifp = new InstanceFileParser();
-                        Instance instance = ifp.parse(is);
+                try (InputStream is = iterator.next()) {
+                    LOGGER.log(Level.INFO, "Loaded {0}", iterator.getFilename());
+                    this.ps.println("\t\tResource " + iterator.getFilename() + " loaded from Jar");
 
-                        LOGGER.log(Level.FINE, "Instance parsed : {0}", is);
+                    Instance instance = ifp.parse(is);
 
-                        ISolver solverInst = cons.newInstance(instance);
-                        boolean status = solverInst.solve();
+                    LOGGER.log(Level.FINE, "Instance parsed : {0}", is);
 
-                        if (!status) {
-                            LOGGER.log(Level.SEVERE, "Instance unsolvable! Exiting");
-                            System.exit(1);
-                        }
-                    }
+                    this.runOneInstancesOnOneSolver(solver, instance, iterator.getFilename());
 
-                    ps.println("\t\tInstance OK");
                 }
 
-                ps.println("\tParseur OK");
-
-            } catch (SecurityException | ReflectiveOperationException | IllegalArgumentException | ParserException | IOException ex) {
-                LOGGER.log(Level.SEVERE, "Exception while solving Instances!", ex);
+                this.ps.println("\t\tInstance OK");
             }
+
+        } catch (ParserException | IOException ex) {
+            LOGGER.log(Level.SEVERE, "Exception while solving Instances!", ex);
         }
+
+    }
+
+    private void runOneInstancesOnOneSolver(ISolver solver, Instance i, String filename) {
+        solver.setInstance(i);
+        this.ps.println("\t\t\tSolving ...");
+        boolean status = solver.solve();
+        if (!status) {
+            LOGGER.log(Level.SEVERE, "Instance unsolvable!");
+            return;
+        }
+
+        // @TODO : Make something better, with proper check
+        // Maybe regex ?
+        String baseFilename = filename.substring(11, filename.length() - 4);
+
+        try {
+            this.sw.write(i, baseFilename + "_sol.txt");
+        } catch (WriterException ex) {
+            LOGGER.log(Level.SEVERE, "Impossible to write solution file", ex);
+        }
+
     }
 
 }
