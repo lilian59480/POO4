@@ -20,12 +20,16 @@ package model;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Corentin
  */
 public class Instance {
+
+    private static final Logger LOGGER = Logger.getLogger(Instance.class.getName());
 
     private int capaciteVehicule;
     private int coutVehicule;
@@ -66,8 +70,7 @@ public class Instance {
 
     public void setVehicules(List<Vehicule> vehicules) {
         this.vehicules = vehicules;
-        for(Vehicule v : this.vehicules)
-        {
+        for (Vehicule v : this.vehicules) {
             this.getPlanningCurrent().addVehicule(v);
         }
     }
@@ -80,15 +83,14 @@ public class Instance {
         this.plannings.add(planningCurrent);
     }
 
-    public void addNewPlanning()
-    {
+    public void addNewPlanning() {
         Planning p = new Planning(this);
-        for(Vehicule v : this.vehicules){
+        for (Vehicule v : this.vehicules) {
             p.addVehicule(v);
         }
         this.plannings.add(p);
     }
-    
+
     public void clear() {
         for (Client c : this.clients) {
             c.clear();
@@ -110,9 +112,8 @@ public class Instance {
     public Depot getDepot() {
         return depot;
     }
-    
-    public Vehicule addVehicule()
-    {
+
+    public Vehicule addVehicule() {
         Vehicule v = new Vehicule(this.depot, this.capaciteVehicule);
         v.setInstance(this);
         this.vehicules.add(v);
@@ -131,7 +132,25 @@ public class Instance {
     public int getCoutVehicule() {
         return coutVehicule;
     }
- 
+
+    /**
+     * Check the validity of this instance.
+     *
+     * Check the validity of all clients internally.
+     *
+     * @return True if the instance is valid, false otherwise
+     */
+    public boolean check() {
+        boolean valid = true;
+        for (Client c : this.clients) {
+            if (!c.check()) {
+                valid = false;
+                LOGGER.log(Level.WARNING, "Invalid instance solution");
+            }
+        }
+        return valid;
+    }
+
     @Override
     public String toString() {
         return "Instance{" + "capaciteVehicule=" + capaciteVehicule + ", coutVehicule=" + coutVehicule + ", depot=" + depot + ", clients=" + clients + ", vehicules=" + vehicules + ", routes=" + routes + ", plannings=" + plannings + '}';

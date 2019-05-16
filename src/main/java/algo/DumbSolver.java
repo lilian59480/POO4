@@ -64,7 +64,8 @@ public class DumbSolver implements ISolver {
             LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
             return false;
         }
-        return true;
+        // Check for instance validity
+        return this.instance.check();
     }
 
     private void dumbSolve() throws SolverException {

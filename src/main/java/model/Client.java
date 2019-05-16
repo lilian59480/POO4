@@ -81,4 +81,15 @@ public class Client {
         this.vehicule = null;
     }
 
+    /**
+     * Check if a client is valid.
+     *
+     * Check if a vehicule is set to this client.
+     *
+     * @return True if this client is valid, false otherwise
+     */
+    public boolean check() {
+        return this.vehicule != null;
+    }
+
 }

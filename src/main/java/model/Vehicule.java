@@ -183,21 +183,4 @@ public class Vehicule {
         return "Vehicule{" + "depot=" + depot + ", destinations=" + destinations + ", cout=" + cout + ", capacite=" + capacite + ", capaciteUtilisee=" + capaciteUtilisee + '}';
     }
 
-//    public static void main(String[] args) {
-//        Depot depot = new Depot(0, 700, 0, 0);
-//        Vehicule v = new Vehicule(depot, 200);
-//
-//        Emplacement e1 = new Emplacement(0, 200, 100, 0);
-//        Route r = new Route(depot, e1, 10, 100);
-//        Route r2 = new Route(e1, depot, 10, 100);
-//        depot.addRouteTo(r);
-//        e1.addRouteTo(r2);
-//
-//        Client c = new Client(100);
-//        c.addEmplacement(e1);
-//
-//        v.addClient(c);
-//        System.out.println(c.toString());
-//        System.out.println(v.toString());
-//    }
 }
