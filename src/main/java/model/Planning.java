@@ -111,4 +111,10 @@ public class Planning {
         return "Planning{" + "vehicules=" + vehicules + ", cout=" + cout + '}';
     }
 
+    public boolean check() {
+        boolean valid = true;
+
+        return valid;
+    }
+
 }

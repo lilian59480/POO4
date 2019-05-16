@@ -18,8 +18,8 @@
  */
 package main;
 
-import algo.NaiveSolver;
 import algo.ISolver;
+import algo.NaiveSolver;
 import io.input.FilenameIterator;
 import io.input.InstanceFileParser;
 import io.input.JarInstanceResourceReader;
@@ -29,7 +29,6 @@ import io.output.WriterException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -45,7 +44,8 @@ public class Cli {
 
     private static final Logger LOGGER = Logger.getLogger(Cli.class.getName());
 
-    private static final List<Class<? extends ISolver>> SOLVERS = Arrays.asList(NaiveSolver.class
+    private static final List<ISolver> SOLVERS = Arrays.asList(
+            new NaiveSolver()
     );
 
     private static final PrintStream PS = System.out;
@@ -131,17 +131,8 @@ public class Cli {
         Cli.PS.println("Run All solvers on all files instances stored in Jar");
         LOGGER.log(Level.INFO, "Solvers available {0}", SOLVERS);
 
-        for (Class<? extends ISolver> solver : SOLVERS) {
-
-            try {
-                Constructor<? extends ISolver> cons = solver.getConstructor();
-                ISolver solverInst = cons.newInstance();
-                this.runAllInstancesOnOneSolver(solverInst);
-            } catch (SecurityException | ReflectiveOperationException | IllegalArgumentException ex) {
-                LOGGER.log(Level.SEVERE, "Reflexion exception", ex);
-                return;
-            }
-
+        for (ISolver solverInst : SOLVERS) {
+            this.runAllInstancesOnOneSolver(solverInst);
             Cli.PS.println("\t********************");
         }
     }
