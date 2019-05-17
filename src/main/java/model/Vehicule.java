@@ -38,20 +38,33 @@ public class Vehicule {
     private int time;
 
     public Vehicule() {
-        this.destinations = new ArrayList<>();
-        this.cout = 0;
-        this.capaciteUtilisee = 0;
-        this.capacite = 0;
+        this(0);
     }
 
     public Vehicule(int capacite) {
-        this.capacite = capacite;
+        this(null, 0);
     }
 
     public Vehicule(Depot depot, int capacite) {
-        this();
         this.depot = depot;
+        this.destinations = new ArrayList<>();
+        this.cout = 0;
+        this.capaciteUtilisee = 0;
         this.capacite = capacite;
+    }
+
+    public boolean check() {
+        boolean valid = true;
+        valid &= (this.getCapaciteRestante() >= 0);
+
+        Emplacement last = this.getDepot();
+        int currentTime = 0;
+        // TODO Check time
+        for (Emplacement destination : this.destinations) {
+            // Check that we can go to next destination
+            valid = false;
+        }
+        return valid;
     }
 
     public List<Emplacement> getEmplacements() {

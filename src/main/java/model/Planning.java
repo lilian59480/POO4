@@ -113,7 +113,9 @@ public class Planning {
 
     public boolean check() {
         boolean valid = true;
-
+        for (Vehicule vehicule : this.vehicules) {
+            valid &= vehicule.check();
+        }
         return valid;
     }
 

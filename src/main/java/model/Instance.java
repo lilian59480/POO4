@@ -143,10 +143,15 @@ public class Instance {
     public boolean check() {
         boolean valid = true;
         for (Client c : this.clients) {
-            if (!c.check()) {
-                valid = false;
-                LOGGER.log(Level.WARNING, "Invalid instance solution");
-            }
+            valid &= c.check();
+        }
+
+        for (Vehicule v : this.vehicules) {
+            valid &= v.check();
+        }
+
+        if (!valid) {
+            LOGGER.log(Level.WARNING, "Invalid instance solution");
         }
         return valid;
     }
