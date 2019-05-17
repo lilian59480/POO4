@@ -96,6 +96,15 @@ public class Instance {
     }
 
     /**
+     * Get vehicule capacity.
+     *
+     * @return The vehicule capacity.
+     */
+    public int getCapaciteVehicule() {
+        return this.capaciteVehicule;
+    }
+
+    /**
      * Set vehicule cost.
      *
      * @param coutVehicule The CoutVehicule.
@@ -181,6 +190,9 @@ public class Instance {
         }
         for (Vehicule v : this.vehicules) {
             v.clear();
+        }
+        while (this.nbVehicules < this.vehicules.size()) {
+            this.vehicules.remove(this.vehicules.size() - 1);
         }
         this.addNewPlanning();
     }

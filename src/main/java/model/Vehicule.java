@@ -160,6 +160,7 @@ public class Vehicule {
      */
     public void clear() {
         this.cout = 0.0;
+        this.time = 0;
         this.capaciteUtilisee = 0;
         this.destinations.clear();
     }
@@ -237,6 +238,71 @@ public class Vehicule {
         }
 
         return false;
+    }
+
+    /**
+     * Add new emplacement.
+     *
+     * @param e New emplacement.
+     * @return True if we can add it.
+     */
+    public boolean addEmplacement(Emplacement e) {
+        if (e == null) {
+            return false;
+        }
+
+        Client c = e.getClient();
+
+        //Test if enough remaining capacity
+        if (this.getCapaciteRestante() < c.getDemande()) {
+            return false;
+        }
+
+        int position = this.destinations.size();
+
+        Emplacement lastEmplacement
+                = position != 0 ? this.destinations.get(position - 1)
+                        : depot;
+
+        // Test if enough remaining time
+        int timeToDestination = lastEmplacement.getTempsTo(e);
+        int timeAtDestination = time + timeToDestination;
+        timeAtDestination = timeAtDestination < e.getHeureDebut() ? e.getHeureDebut()
+                : this.time + timeToDestination;
+        int timeAtDepot = timeAtDestination + e.getTempsTo(depot);
+        if (timeAtDestination > e.getHeureFin() || timeAtDepot > depot.getHeureFin()) {
+            return false;
+        }
+
+        c.setPosition(position + 1);
+
+        if (!destinations.add(e)) {
+            return false;
+        }
+
+        // Il faut ajouter la distance client -> depot et depot -> client
+        // Ne pas oublier d'enlever la distance pour le dernier client
+        if (position == 0) {
+            double depotToClient = this.depot.getDistanceTo(e);
+            double clientToDepot = e.getDistanceTo(depot);
+            this.cout = depotToClient + clientToDepot;
+        } else {
+            double diffCout = -lastEmplacement.getDistanceTo(depot);
+            diffCout += lastEmplacement.getDistanceTo(e);
+            diffCout += e.getDistanceTo(depot);
+
+            this.cout += diffCout;
+        }
+
+        this.capaciteUtilisee += c.getDemande();
+        this.time = timeAtDestination;
+
+        c.setVehicule(this);
+
+        planning.recalculerCoutTotal();
+
+        return true;
+
     }
 
     /**
