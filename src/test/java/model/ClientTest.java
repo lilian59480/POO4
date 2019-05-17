@@ -34,17 +34,29 @@ import org.junit.jupiter.api.Test;
 @DisplayName("Client")
 public class ClientTest {
 
+    /**
+     * Client instance.
+     */
     private Client client;
 
+    /**
+     * Create a new client before each tests.
+     */
     @BeforeEach
     void createNewClient() {
         this.client = new Client(200);
     }
 
+    /**
+     * Check for position.
+     */
     @Nested
     @DisplayName("Setting position")
     class SettingPosition {
 
+        /**
+         * Check if a positive position is working.
+         */
         @Test
         @DisplayName("Positive position should work")
         public void changePositivePosition() {
@@ -55,10 +67,16 @@ public class ClientTest {
 
     }
 
+    /**
+     * Check for emplacement.
+     */
     @Nested
     @DisplayName("Setting emplacement")
     class SettingEmplacement {
 
+        /**
+         * Check if a valid emplacement is working.
+         */
         @Test
         @DisplayName("Valid emplacement should work")
         public void addEmplacement() {
@@ -66,6 +84,9 @@ public class ClientTest {
             assertTrue(ClientTest.this.client.addEmplacement(e), "addEmplacement must return true here");
         }
 
+        /**
+         * Check if a null emplacement is not working.
+         */
         @Test
         @DisplayName("Null emplacement should not work")
         public void addNullEmplacement() {
@@ -73,6 +94,9 @@ public class ClientTest {
             assertFalse(ClientTest.this.client.addEmplacement(e), "addEmplacement must return false here");
         }
 
+        /**
+         * Check if an emplacement have client set.
+         */
         @Test
         @DisplayName("Emplacement should have Client information")
         public void emplacementSetClient() {
@@ -81,6 +105,9 @@ public class ClientTest {
             assertEquals(ClientTest.this.client, e.getClient(), "Emplacement.getClient is different from Client");
         }
 
+        /**
+         * Check if the emplacement list is updated.
+         */
         @Test
         @DisplayName("Emplacement list should be updated")
         public void emplacementList() {

@@ -29,6 +29,9 @@ import org.junit.jupiter.api.Test;
 @DisplayName("NaiveSolver")
 public class NaiveSolver {
 
+    /**
+     * @todo Create test.
+     */
     @Test
     @DisplayName("Is working with a valid Reader")
     public void isWorkingWithValidReader() {

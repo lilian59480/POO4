@@ -57,6 +57,9 @@ import org.xml.sax.SAXException;
  */
 public class InstanceFileParser {
 
+    /**
+     * Class logger.
+     */
     private static final Logger LOGGER = Logger.getLogger(InstanceFileParser.class.getName());
 
     /**

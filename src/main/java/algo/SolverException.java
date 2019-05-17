@@ -25,6 +25,9 @@ package algo;
  */
 public class SolverException extends Exception {
 
+    /**
+     * Serial UID, for serialisation.
+     */
     private static final long serialVersionUID = 20190510192031L;
 
     /**

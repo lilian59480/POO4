@@ -22,60 +22,112 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Point model representation.
  *
  * @author Corentin
  */
 public class Point {
 
+    /**
+     * Id.
+     */
     private int id;
-    private double x;
-    private double y;
-    private Map<Point, Route> routeTo;
-    private Map<Point, Route> routeFrom;
 
+    /**
+     * X coordiante.
+     */
+    private double x;
+
+    /**
+     * Y coordinate.
+     */
+    private double y;
+
+    /**
+     * Map of route to a specific Point.
+     */
+    private Map<Point, Route> routeTo;
+
+    /**
+     * Point constructor, to the origin.
+     */
     public Point() {
-        this.routeTo = new HashMap<>();
-        this.routeFrom = new HashMap<>();
+        this(0, 0);
     }
 
+    /**
+     * Point constructor.
+     *
+     * @param x X coordinate.
+     * @param y Y coordinate.
+     */
     public Point(double x, double y) {
-        this();
         this.x = x;
         this.y = y;
+        this.routeTo = new HashMap<>();
     }
 
+    /**
+     * Get id.
+     *
+     * @return The id.
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Set id.
+     *
+     * @param id The new id.
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     * Get the route to a specified point.
+     *
+     * @param p Point.
+     * @return A road to this point or null if there is no route.
+     */
     public Route getRouteTo(Point p) {
         return this.routeTo.get(p);
     }
 
-    public Route getRouteFrom(Point p) {
-        return this.routeFrom.get(p);
-    }
-
+    /**
+     * Get a list of roads.
+     *
+     * @return A map or Point-Road
+     */
     public Map<Point, Route> getRoutesTo() {
         return this.routeTo;
     }
 
-    public Map<Point, Route> getRoutesFrom() {
-        return this.routeFrom;
-    }
-
+    /**
+     * Get X coordinate.
+     *
+     * @return X coordinate.
+     */
     public double getX() {
         return x;
     }
 
+    /**
+     * Get Y coordinate.
+     *
+     * @return Y coordinate.
+     */
     public double getY() {
         return y;
     }
 
+    /**
+     * Get distance between 2 points.
+     *
+     * @param p The destination point.
+     * @return A cost, or +Inf if there is no road.
+     */
     public double getDistanceTo(Point p) {
         Route r = this.routeTo.get(p);
         if (r == null) {
@@ -84,6 +136,12 @@ public class Point {
         return r.getCout();
     }
 
+    /**
+     * Get duration between 2 points.
+     *
+     * @param p The destination point.
+     * @return A duration or 2147483647 if there is no road.
+     */
     public int getTempsTo(Point p) {
         Route r = this.routeTo.get(p);
         if (r == null) {
@@ -92,27 +150,20 @@ public class Point {
         return r.getTemps();
     }
 
+    /**
+     * Add a new route.
+     *
+     * @param r The route to add.
+     * @return True if the route is valid.
+     */
     public boolean addRouteTo(Route r) {
         if (r.getFrom() == null || r.getTo() == null || r.getFrom() != this) {
             return false;
         }
-//        if (this.routeTo.containsKey(r.getTo()) || !r.getTo().addRouteFrom(r)) {
-//            return false;
-//        }
         this.routeTo.put(r.getTo(), r);
         return true;
     }
 
-    private boolean addRouteFrom(Route r) {
-        if (r.getTo() != this || this.routeFrom.containsKey(r.getTo())) {
-            return false;
-        }
-        this.routeFrom.put(r.getFrom(), r);
-        return true;
-    }
-
-    
-    
     @Override
     public String toString() {
         return "Point{" + "x=" + x + ", y=" + y + '}';

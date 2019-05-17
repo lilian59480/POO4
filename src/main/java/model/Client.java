@@ -22,20 +22,44 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * Client model representation.
  *
  * @author Corentin
  */
 public class Client {
 
+    /**
+     * Demand of the client.
+     */
     private int demande;
+
+    /**
+     * List of Client's Emplacements.
+     */
     private List<Emplacement> emplacements;
+
+    /**
+     * Current position.
+     */
     private int position;
+
+    /**
+     * Vehicule linked.
+     */
     private Vehicule vehicule;
 
+    /**
+     * Client constructor, with a null demand.
+     */
     public Client() {
         this(0);
     }
 
+    /**
+     * Client constructor with a specific demand.
+     *
+     * @param demande Client's demand.
+     */
     public Client(int demande) {
         this.position = -1;
         this.emplacements = new LinkedList<>();
@@ -43,6 +67,12 @@ public class Client {
         this.vehicule = null;
     }
 
+    /**
+     * Add a emplacement and set Emplacement client to itself.
+     *
+     * @param e Emplacement to add
+     * @return True if we can add this emplacement.
+     */
     public boolean addEmplacement(Emplacement e) {
         if (e == null) {
             return false;
@@ -51,22 +81,47 @@ public class Client {
         return this.emplacements.add(e);
     }
 
+    /**
+     * Get demand.
+     *
+     * @return The demand.
+     */
     public int getDemande() {
         return demande;
     }
 
+    /**
+     * Get position.
+     *
+     * @return The position.
+     */
     public int getPosition() {
         return position;
     }
 
+    /**
+     * Set new position.
+     *
+     * @param position The position.
+     */
     public void setPosition(int position) {
         this.position = position;
     }
 
+    /**
+     * Get emplacement list.
+     *
+     * @return The list of emplacements.
+     */
     public List<Emplacement> getEmplacements() {
         return emplacements;
     }
 
+    /**
+     * Set new vehicule.
+     *
+     * @param vehicule The vehicule.
+     */
     public void setVehicule(Vehicule vehicule) {
         this.vehicule = vehicule;
     }
@@ -76,6 +131,9 @@ public class Client {
         return "Client{" + "demande=" + demande + ", emplacements=" + emplacements + ", position=" + position + ", vehicule=" + vehicule + '}';
     }
 
+    /**
+     * Clear this instance.
+     */
     public void clear() {
         this.position = -1;
         this.vehicule = null;

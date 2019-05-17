@@ -19,15 +19,31 @@
 package model;
 
 /**
+ * Depot model representation.
  *
  * @author Corentin
  */
 public class Depot extends Emplacement {
 
+    /**
+     * Depot constructor.
+     *
+     * @param heureDebut Start time window.
+     * @param heureFin End time window.
+     * @param x X position.
+     * @param y Y position.
+     */
     public Depot(int heureDebut, int heureFin, double x, double y) {
         super(heureDebut, heureFin, x, y);
     }
 
+    /**
+     * Depot constuctor, from an Emplacement.
+     *
+     * You can use this constructor to create a Depot from an Emplacement.
+     *
+     * @param e Emplacement subclass to make a Depot from it.
+     */
     public Depot(Emplacement e) {
         this(e.getHeureDebut(), e.getHeureFin(), e.getX(), e.getY());
     }

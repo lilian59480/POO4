@@ -30,6 +30,9 @@ import org.junit.jupiter.api.Test;
 @DisplayName("Instance")
 public class InstanceTest {
 
+    /**
+     * Check if a new instance have a planning.
+     */
     @Test
     @DisplayName("New instance should have a planning")
     public void newInstanceHavePlanning() {

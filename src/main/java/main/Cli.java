@@ -38,24 +38,49 @@ import model.Instance;
 /**
  * CLI function, used as an entry point for this project
  *
- * @author Lilian Petitpas <lilian.petitpas@outlook.com>
+ * @author Lilian Petitpas
  */
 public class Cli {
 
+    /**
+     * Class logger.
+     */
     private static final Logger LOGGER = Logger.getLogger(Cli.class.getName());
 
+    /**
+     * List of solvers available.
+     *
+     * @todo Use a factory?
+     */
     private static final List<ISolver> SOLVERS = Arrays.asList(
             new NaiveSolver()
     );
 
+    /**
+     * PrintStream used to print progress to the user.
+     */
     private static final PrintStream PS = System.out;
 
+    /**
+     * Instance Reader.
+     */
     private static final JarInstanceResourceReader JAR_INSTANCE_RR = new JarInstanceResourceReader();
 
+    /**
+     * Instance file parser.
+     */
     private final InstanceFileParser ifp;
 
+    /**
+     * Solution writer.
+     */
     private static final SolutionWriter SW = new SolutionWriter();
 
+    /**
+     * Cli Entry point.
+     *
+     * @param args Arguments, 1st can be "help" or "usage"
+     */
     public static void main(String[] args) {
         LOGGER.log(Level.INFO, "Solving a new instance");
         LOGGER.log(Level.FINE, "Arguments : {0}", Arrays.toString(args));
@@ -79,16 +104,25 @@ public class Cli {
 
             // Unknown argument
             self.printHelp();
+            return;
 
-        } else {
-            self.runAllInstancesOnAllSolvers();
         }
+
+        self.runAllInstancesOnAllSolvers();
     }
 
+    /**
+     * Cli constructor.
+     *
+     * @throws ParserException If we can't instantiate the parser.
+     */
     public Cli() throws ParserException {
         this.ifp = new InstanceFileParser();
     }
 
+    /**
+     * Print intro text.
+     */
     private void printIntro() {
         Cli.PS.println("+------------+");
         Cli.PS.println("|POO4 Project|");
@@ -101,6 +135,9 @@ public class Cli {
         Cli.PS.println("+ Corentin Apolinario");
     }
 
+    /**
+     * Print licence text.
+     */
     private void printLicence() {
         Cli.PS.println("******************");
 
@@ -117,6 +154,9 @@ public class Cli {
         Cli.PS.println("******************");
     }
 
+    /**
+     * Print help text.
+     */
     private void printHelp() {
         Cli.PS.println("Usage : cli.jar [option]");
 
@@ -126,6 +166,9 @@ public class Cli {
 
     }
 
+    /**
+     * Run all instances on all defined solvers.
+     */
     private void runAllInstancesOnAllSolvers() {
 
         Cli.PS.println("Run All solvers on all files instances stored in Jar");
@@ -137,6 +180,11 @@ public class Cli {
         }
     }
 
+    /**
+     * Run all instances on a specific solver.
+     *
+     * @param solver The solver to use.
+     */
     private void runAllInstancesOnOneSolver(ISolver solver) {
         try {
 
@@ -153,7 +201,7 @@ public class Cli {
 
                     LOGGER.log(Level.FINE, "Instance parsed : {0}", is);
 
-                    this.runOneInstancesOnOneSolver(solver, instance, iterator.getFilename());
+                    this.runOneInstancesOnOneSolver(solver, instance, Cli.defineSolutionFilename(iterator.getFilename()));
 
                 }
 
@@ -166,6 +214,13 @@ public class Cli {
 
     }
 
+    /**
+     * Solve an instance.
+     *
+     * @param solver The solver to use.
+     * @param i The instance to solve.
+     * @param filename Filename to use when writing the solution.
+     */
     private void runOneInstancesOnOneSolver(ISolver solver, Instance i, String filename) {
         solver.setInstance(i);
         Cli.PS.println("\t\t\tSolving ...");
@@ -175,16 +230,23 @@ public class Cli {
             return;
         }
 
-        // @TODO : Make something better, with proper check
-        // Maybe regex ?
-        String baseFilename = filename.substring(11, filename.length() - 4);
-
         try {
-            Cli.SW.write(i, baseFilename + "_sol.txt");
+            Cli.SW.write(i, filename + "_sol.txt");
         } catch (WriterException ex) {
             LOGGER.log(Level.SEVERE, "Impossible to write solution file", ex);
         }
 
+    }
+
+    /**
+     * Get the solution filename to be compatible witj specification.
+     *
+     * @todo Use a better and fool proof algorithm.
+     * @param instanceFilename Path of the instance
+     * @return Filename of the solution.
+     */
+    private static String defineSolutionFilename(String instanceFilename) {
+        return instanceFilename.substring(11, instanceFilename.length() - 4) + "_sol.txt";
     }
 
 }

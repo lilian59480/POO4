@@ -24,22 +24,60 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Instance model representation.
  *
  * @author Corentin
  */
 public class Instance {
 
+    /**
+     * Class logger.
+     */
     private static final Logger LOGGER = Logger.getLogger(Instance.class.getName());
 
+    /**
+     * Vehicule capacity.
+     */
     private int capaciteVehicule;
+
+    /**
+     * Vehicule cost.
+     */
     private int coutVehicule;
+
+    /**
+     * Number of vehicule.
+     */
     private int nbVehicules;
+
+    /**
+     * Depot.
+     */
     private Depot depot;
+
+    /**
+     * List of clients.
+     */
     private List<Client> clients;
+
+    /**
+     * List of vehicules.
+     */
     private List<Vehicule> vehicules;
+
+    /**
+     * List of routes.
+     */
     private List<Route> routes;
+
+    /**
+     * List of plannings.
+     */
     private List<Planning> plannings;
 
+    /**
+     * Instance constructor.
+     */
     public Instance() {
         this.clients = new LinkedList<>();
         this.routes = new LinkedList<>();
@@ -48,26 +86,56 @@ public class Instance {
         this.plannings.add(new Planning(this));
     }
 
+    /**
+     * Set vehicule capacity.
+     *
+     * @param capaciteVehicule The CapaciteVehicule.
+     */
     public void setCapaciteVehicule(int capaciteVehicule) {
         this.capaciteVehicule = capaciteVehicule;
     }
 
+    /**
+     * Set vehicule cost.
+     *
+     * @param coutVehicule The CoutVehicule.
+     */
     public void setCoutVehicule(int coutVehicule) {
         this.coutVehicule = coutVehicule;
     }
 
+    /**
+     * Set depot.
+     *
+     * @param depot The Depot.
+     */
     public void setDepot(Depot depot) {
         this.depot = depot;
     }
 
+    /**
+     * Set client list.
+     *
+     * @param clients A list of clients.
+     */
     public void setClients(List<Client> clients) {
         this.clients = clients;
     }
 
+    /**
+     * Set routes list.
+     *
+     * @param routes A list of routes.
+     */
     public void setRoutes(List<Route> routes) {
         this.routes = routes;
     }
 
+    /**
+     * Set vehicule list.
+     *
+     * @param vehicules A list of vehicules.
+     */
     public void setVehicules(List<Vehicule> vehicules) {
         this.vehicules = vehicules;
         for (Vehicule v : this.vehicules) {
@@ -75,14 +143,27 @@ public class Instance {
         }
     }
 
+    /**
+     * Get current planning.
+     *
+     * @return The current planning.
+     */
     public Planning getPlanningCurrent() {
         return plannings.get(plannings.size() - 1);
     }
 
+    /**
+     * Set new planning.
+     *
+     * @param planningCurrent The new planning.
+     */
     public void setPlanningCurrent(Planning planningCurrent) {
         this.plannings.add(planningCurrent);
     }
 
+    /**
+     * Add new planning.
+     */
     public void addNewPlanning() {
         Planning p = new Planning(this);
         for (Vehicule v : this.vehicules) {
@@ -91,6 +172,9 @@ public class Instance {
         this.plannings.add(p);
     }
 
+    /**
+     * Clear this instance.
+     */
     public void clear() {
         for (Client c : this.clients) {
             c.clear();
@@ -101,18 +185,38 @@ public class Instance {
         this.addNewPlanning();
     }
 
+    /**
+     * Get clients.
+     *
+     * @return A list of clients.
+     */
     public List<Client> getClients() {
         return clients;
     }
 
+    /**
+     * Get vehicules.
+     *
+     * @return A list of vehicules.
+     */
     public List<Vehicule> getVehicules() {
         return vehicules;
     }
 
+    /**
+     * Get depot.
+     *
+     * @return The depot.
+     */
     public Depot getDepot() {
         return depot;
     }
 
+    /**
+     * Add a new vehicule.
+     *
+     * @return A new vehicule.
+     */
     public Vehicule addVehicule() {
         Vehicule v = new Vehicule(this.depot, this.capaciteVehicule);
         v.setInstance(this);
@@ -121,14 +225,29 @@ public class Instance {
         return v;
     }
 
+    /**
+     * Get number of vehicules.
+     *
+     * @return Number of vehicules allocated.
+     */
     public int getNbVehicules() {
         return nbVehicules;
     }
 
+    /**
+     * Set number of vehicules.
+     *
+     * @param nbVehicule New number of vehicule.
+     */
     public void setNbVehicules(int nbVehicule) {
         this.nbVehicules = nbVehicule;
     }
 
+    /**
+     * Get Vehicule cost.
+     *
+     * @return The CoutVehicule.
+     */
     public int getCoutVehicule() {
         return coutVehicule;
     }

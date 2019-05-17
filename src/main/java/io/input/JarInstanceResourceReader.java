@@ -27,10 +27,13 @@ import java.util.logging.Logger;
  * This class allow us to iterate over Instance files stored inside the Jar
  * archive.
  *
- * @author Lilian Petitpas <lilian.petitpas@outlook.com>
+ * @author Lilian Petitpas
  */
 public class JarInstanceResourceReader implements Iterable<InputStream> {
 
+    /**
+     * Class logger.
+     */
     private static final Logger LOGGER = Logger.getLogger(JarInstanceResourceReader.class.getName());
 
     /**

@@ -33,8 +33,14 @@ import org.junit.jupiter.api.Test;
 @DisplayName("TSVParser")
 public class InstanceParserTest {
 
+    /**
+     * InstanceFileParser.
+     */
     private final InstanceFileParser parser;
 
+    /**
+     * Test data.
+     */
     private final String testString = "<NB_CUSTOMERS>15</NB_CUSTOMERS>\n"
             + "<NB_LOCATIONS>62</NB_LOCATIONS>\n"
             + "<NB_VEHICLES>4</NB_VEHICLES>\n"
@@ -55,10 +61,18 @@ public class InstanceParserTest {
             + "</TRAVEL_COSTS_TIMES>\n"
             + "";
 
+    /**
+     * Test constructor.
+     *
+     * @throws ParserException
+     */
     public InstanceParserTest() throws ParserException {
         this.parser = new InstanceFileParser();
     }
 
+    /**
+     * Check if the parser is working with a valid InputStream.
+     */
     @Test
     @DisplayName("Is working with a valid InputStream")
     @Disabled("Current parser is not returning a valid Instance")

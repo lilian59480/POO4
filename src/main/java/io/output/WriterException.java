@@ -25,9 +25,10 @@ package io.output;
  */
 public class WriterException extends Exception {
 
+    /**
+     * Serial UID, for serialisation.
+     */
     private static final long serialVersionUID = 20190429110615L;
-
-    private static final String COMPARISON_MSG = "%s\nExpected %s, got %s";
 
     /**
      * Constructs an instance of {@code WriterException} with a detail message.
@@ -46,18 +47,6 @@ public class WriterException extends Exception {
      */
     public WriterException(Throwable cause) {
         super(cause);
-    }
-
-    /**
-     * Constructs an instance of {@code WriterException} with a detail message
-     * and a comparison between 2 values.
-     *
-     * @param msg the detail message.
-     * @param expected Expected value by the writer
-     * @param got Value the writer have retrieved
-     */
-    public WriterException(String msg, Object expected, Object got) {
-        super(String.format(WriterException.COMPARISON_MSG, msg, expected, got));
     }
 
 }

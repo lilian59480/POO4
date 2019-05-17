@@ -23,28 +23,74 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * Vehicule model representation.
  *
  * @author Corentin
  */
 public class Vehicule {
 
+    /**
+     * Depot.
+     */
     private Depot depot;
+
+    /**
+     * A list of destinations.
+     */
     private List<Emplacement> destinations;
+
+    /**
+     * Current planning.
+     */
     private Planning planning;
+
+    /**
+     * Instance.
+     */
     private Instance instance;
+
+    /**
+     * Cost.
+     */
     private double cout;
+
+    /**
+     * Capacity.
+     */
     private int capacite;
+
+    /**
+     * Used capacity.
+     */
     private int capaciteUtilisee;
+
+    /**
+     * Current time.
+     */
     private int time;
 
+    /**
+     * Vehicule constructor with empty capacity.
+     */
     public Vehicule() {
         this(0);
     }
 
+    /**
+     * Vehicule constructor with no depot.
+     *
+     * @param capacite Vehicule capacity.
+     */
     public Vehicule(int capacite) {
         this(null, 0);
     }
 
+    /**
+     * Vehicule constructor.
+     *
+     * @param depot Depot.
+     * @param capacite Vehicule capacity.
+     */
     public Vehicule(Depot depot, int capacite) {
         this.depot = depot;
         this.destinations = new ArrayList<>();
@@ -53,6 +99,11 @@ public class Vehicule {
         this.capacite = capacite;
     }
 
+    /**
+     * Check if this Vehicule is consistant.
+     *
+     * @return True if this vehicule is valid.
+     */
     public boolean check() {
         boolean valid = true;
         valid &= (this.getCapaciteRestante() >= 0);
@@ -67,33 +118,67 @@ public class Vehicule {
         return valid;
     }
 
+    /**
+     * Get a list of emplacements.
+     *
+     * @return Emplacement list.
+     */
     public List<Emplacement> getEmplacements() {
         return this.destinations;
     }
 
+    /**
+     * Set a new planning.
+     *
+     * @param planning New planning.
+     */
     public void setPlanning(Planning planning) {
         this.planning = planning;
     }
 
+    /**
+     * Set a new Instance.
+     *
+     * @param instance New instance.
+     */
     public void setInstance(Instance instance) {
         this.instance = instance;
         this.planning = instance.getPlanningCurrent();
     }
 
+    /**
+     * Get cost.
+     *
+     * @return The cout.
+     */
     public double getCout() {
         return cout;
     }
 
+    /**
+     * Clear this vehicule.
+     */
     public void clear() {
         this.cout = 0.0;
         this.capaciteUtilisee = 0;
         this.destinations.clear();
     }
 
+    /**
+     * Get free capacity.
+     *
+     * @return Capacity - Used capacity.
+     */
     public int getCapaciteRestante() {
         return this.capacite - this.capaciteUtilisee;
     }
 
+    /**
+     * Add new client.
+     *
+     * @param c New client.
+     * @return True if we can add it.
+     */
     public boolean addClient(Client c) {
         if (c == null) {
             return false;
@@ -154,6 +239,11 @@ public class Vehicule {
         return false;
     }
 
+    /**
+     * Get depot.
+     *
+     * @return The depot.
+     */
     public Depot getDepot() {
         return depot;
     }

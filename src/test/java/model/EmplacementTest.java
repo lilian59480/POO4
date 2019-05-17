@@ -33,6 +33,9 @@ import org.junit.jupiter.api.function.Executable;
 @DisplayName("Emplacement")
 public class EmplacementTest {
 
+    /**
+     * Check if HeureDebut is less than HeureFin.
+     */
     @Test
     @DisplayName("HeureDebut should be less than HeureFin")
     public void checkHeure() {

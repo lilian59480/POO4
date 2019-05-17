@@ -23,35 +23,71 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * Planning model representation.
  *
  * @author Corentin
  */
 public class Planning {
 
+    /**
+     * List of vehicules.
+     */
     private List<Vehicule> vehicules;
+
+    /**
+     * An instance.
+     */
     private Instance instance;
+
+    /**
+     * Final cost of this planning.
+     */
     private double cout;
 
+    /**
+     * Planning constructor, not linked to a planning.
+     */
     public Planning() {
-        this.vehicules = new LinkedList<>();
-        this.cout = 0.0;
+        this(null);
     }
 
+    /**
+     * Planning construcor.
+     *
+     * @param instance A new planning.
+     */
     public Planning(Instance instance) {
-        this();
-        this.instance = instance;
+        this(0.0, instance, new LinkedList<Vehicule>());
     }
 
+    /**
+     * Planning constuctor.
+     *
+     * @param cout Cost of this planning.
+     * @param instance Instance linked to this planning.
+     * @param vehiculeSet List of vehicules.
+     */
     public Planning(double cout, Instance instance, List<Vehicule> vehiculeSet) {
         this.cout = cout;
         this.instance = instance;
         this.vehicules = vehiculeSet;
     }
 
+    /**
+     * Get a list of vehicules.
+     *
+     * @return A list of vehicules.
+     */
     public List<Vehicule> getVehicules() {
         return this.vehicules;
     }
 
+    /**
+     * Add a new vehicule to the planning.
+     *
+     * @param v The vehicule to add.
+     * @return True if the vehicule can be added.
+     */
     public boolean addVehicule(Vehicule v) {
         if (v == null) {
             return false;
@@ -61,6 +97,9 @@ public class Planning {
         return this.vehicules.add(v);
     }
 
+    /**
+     * Recalculate the cost of this planning from the beginning.
+     */
     public void recalculerCoutTotal() {
         double cost = 0;
         for (Vehicule vehicule : vehicules) {
@@ -71,10 +110,18 @@ public class Planning {
         this.cout = cost;
     }
 
+    /**
+     * Get final cost.
+     *
+     * @return The cost.
+     */
     public double getCout() {
         return this.cout;
     }
 
+    /**
+     * Clear this planning.
+     */
     public void clear() {
         this.vehicules.clear();
         this.cout = 0.0;
@@ -111,6 +158,11 @@ public class Planning {
         return "Planning{" + "vehicules=" + vehicules + ", cout=" + cout + '}';
     }
 
+    /**
+     * Check if this planning is valid.
+     *
+     * @return True if valid, false otherwise.
+     */
     public boolean check() {
         boolean valid = true;
         for (Vehicule vehicule : this.vehicules) {
