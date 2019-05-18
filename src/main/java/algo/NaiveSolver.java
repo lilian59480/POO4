@@ -18,9 +18,6 @@
  */
 package algo;
 
-import io.input.InstanceFileParser;
-import io.output.SolutionWriter;
-import java.io.File;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -132,32 +129,4 @@ public class NaiveSolver implements ISolver {
         }
     }
 
-    /**
-     * Main function.
-     *
-     * @todo Remove this please.
-     * @param args
-     */
-    public static void main(String[] args) {
-        Instance i = null;
-        for (int j = 0; j < 40; j++) {
-            int id = j;
-            try {
-                InstanceFileParser ifp = new InstanceFileParser();
-                i = ifp.parse(new File("src/main/resources/instances/instance_" + id + "-triangle.txt"));
-            } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
-                return;
-            }
-            NaiveSolver ds = new NaiveSolver(i);
-            ds.solve();
-            try {
-                SolutionWriter sw = new SolutionWriter();
-                sw.write(i, "target/instance_" + id + "-triangle_sol.txt");
-            } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, "Exception while writing a solution", ex);
-            }
-        }
-
-    }
 }

@@ -50,5 +50,6 @@ public class Gui {
     public void show() {
         LOGGER.log(Level.INFO, "Starting application");
         ListeInstance li = new ListeInstance();
+        li.setVisible(true);
     }
 }

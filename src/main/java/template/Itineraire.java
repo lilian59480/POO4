@@ -30,6 +30,7 @@ import java.io.File;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import model.Depot;
 import model.Emplacement;
 import model.Instance;
@@ -41,7 +42,7 @@ import model.Vehicule;
  * @todo Follow wireframes.
  * @author thibaut
  */
-public class Itineraire extends javax.swing.JFrame {
+public class Itineraire extends JFrame { // NOSONAR
 
     /**
      * Class logger.
@@ -195,17 +196,6 @@ public class Itineraire extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    /**
-     * Main
-     *
-     * @todo Remove this.
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        Itineraire i = new Itineraire();
-
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
