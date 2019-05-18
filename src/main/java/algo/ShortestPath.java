@@ -43,7 +43,7 @@ public class ShortestPath implements ISolver {
 
     private Instance instance;
     private static final Logger LOGGER = Logger.getLogger(NaiveSolver.class.getName());
-    private List<Emplacement> chromosome;
+    private List<Emplacement> chromosome; //Chromosome[0] is depot
 
     public ShortestPath() {
         this(null);
@@ -74,16 +74,13 @@ public class ShortestPath implements ISolver {
             int numV = 0;
             int nbV = this.instance.getNbVehicules();
             Vehicule v = vehicules.get(numV);
-            if (!v.addEmplacement(this.chromosome.get(0))) {
-                LOGGER.log(Level.WARNING, "Invalid vehicule !");
-                throw new SolverException("Invalid vehicule");
-            }
             for (int i = 1; i < this.chromosome.size(); i++) {
                 if (tournee.get(i).compareTo(tournee.get(i - 1)) != 0) {
                     numV++;
                     if (numV < nbV) {
                         v = vehicules.get(numV);
                     } else {
+                        LOGGER.log(Level.INFO, "Ajout d'un extra vehicule");
                         v = this.instance.addVehicule();
                     }
                 }
@@ -102,7 +99,7 @@ public class ShortestPath implements ISolver {
     }
 
     private List<Integer> findShortestPath() throws SolverException {
-        Depot depot = this.instance.getDepot();
+        Depot depot = (Depot) this.chromosome.get(0);
         int capaV = this.instance.getCapaciteVehicule();
         int closeTime = this.instance.getDepot().getHeureFin();
         List<Double> V = new LinkedList<>(); //list des couts les + faible pour chaque emplacement
@@ -111,7 +108,7 @@ public class ShortestPath implements ISolver {
         P.add(0);
         for (int i = 1; i < this.chromosome.size(); i++) {
             V.add(Double.MAX_VALUE);
-            P.add(0); //Not sure I should do this
+            P.add(0);
         }
         for (int i = 1; i < this.chromosome.size(); i++) {
             int time = 0, load = 0;
@@ -141,7 +138,7 @@ public class ShortestPath implements ISolver {
                 }
                 if (V.get(i - 1) + cost < V.get(j)) {
                     V.set(j, V.get(i - 1) + cost);
-                    P.set(j, i - 1 > 0 ? this.chromosome.get(i - 1).getId() : depot.getId());
+                    P.set(j, this.chromosome.get(i - 1).getId());
                 }
             }
         }
@@ -160,6 +157,7 @@ public class ShortestPath implements ISolver {
         if (this.instance.getPlanningCurrent().getVehicules().size() > 0) {
             this.chromosome = new LinkedList<>();
             Planning p = this.instance.getPlanningCurrent();
+            this.chromosome.add(this.instance.getDepot());
             List<Vehicule> vehicules = p.getVehicules();
             for (Vehicule vehicule : vehicules) {
                 List<Emplacement> ems = vehicule.getEmplacements();
@@ -167,6 +165,7 @@ public class ShortestPath implements ISolver {
             }
         } else { //No planning to optimise
             this.chromosome = new LinkedList<>();
+            this.chromosome.add(this.instance.getDepot());
             for (Client cli : this.instance.getClients()) {
                 this.chromosome.add(cli.getEmplacements().get(0));
             }
@@ -189,9 +188,7 @@ public class ShortestPath implements ISolver {
             ds.solve();
             System.out.println("---Cout ns: " + i.getPlanningCurrent().getCout());
             ShortestPath sp = new ShortestPath(i);
-            System.out.println(sp);
             sp.solve();
-            //TODO: for some reasons the calculated cost is not the same as the real one
             System.out.println("---Cout sp: " + i.getPlanningCurrent().getCout());
             try {
                 SolutionWriter sw = new SolutionWriter();
