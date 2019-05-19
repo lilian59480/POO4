@@ -30,6 +30,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.MapKey;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -60,12 +62,12 @@ public abstract class Point implements Serializable {
     protected int id;
     private double x;
     private double y;
+    @OneToMany(mappedBy = "from")
+    @MapKey(name = "to" )
     private Map<Point, Route> routeTo;
-    private Map<Point, Route> routeFrom;
 
     public Point() {
         this.routeTo = new HashMap<>();
-        this.routeFrom = new HashMap<>();
     }
 
     public Point(double x, double y) {
@@ -86,16 +88,8 @@ public abstract class Point implements Serializable {
         return this.routeTo.get(p);
     }
 
-    public Route getRouteFrom(Point p) {
-        return this.routeFrom.get(p);
-    }
-
     public Map<Point, Route> getRoutesTo() {
         return this.routeTo;
-    }
-
-    public Map<Point, Route> getRoutesFrom() {
-        return this.routeFrom;
     }
 
     public double getX() {
@@ -123,7 +117,7 @@ public abstract class Point implements Serializable {
     }
 
     public boolean addRouteTo(Route r) {
-        if (r.getFrom() == null || r.getTo() == null || r.getFrom() != this) {
+        if (r.getFrom() != this || r.getTo() == null) {
             return false;
         }
 //        if (this.routeTo.containsKey(r.getTo()) || !r.getTo().addRouteFrom(r)) {
@@ -132,16 +126,6 @@ public abstract class Point implements Serializable {
         this.routeTo.put(r.getTo(), r);
         return true;
     }
-
-    private boolean addRouteFrom(Route r) {
-        if (r.getTo() != this || this.routeFrom.containsKey(r.getTo())) {
-            return false;
-        }
-        this.routeFrom.put(r.getFrom(), r);
-        return true;
-    }
-
-    
     
     @Override
     public String toString() {

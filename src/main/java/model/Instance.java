@@ -28,6 +28,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -48,10 +50,15 @@ public class Instance implements Serializable {
     private int capaciteVehicule;
     private int coutVehicule;
     private int nbVehicules;
+    @OneToOne
     private Depot depot;
+    @OneToMany
     private List<Client> clients;
+    @OneToMany(mappedBy = "instance")
     private List<Vehicule> vehicules;
+    @OneToMany
     private List<Route> routes;
+    @OneToMany(mappedBy = "instance")
     private List<Planning> plannings;
 
     public Instance() {

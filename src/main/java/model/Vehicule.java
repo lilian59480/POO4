@@ -27,6 +27,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -42,13 +44,18 @@ public class Vehicule implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private int id;
+    @ManyToOne
     private Depot depot;
+    @OneToMany
     private List<Emplacement> destinations;
+    @ManyToOne
     private Planning planning;
+    @ManyToOne
     private Instance instance;
     private double cout;
     private int capacite;
     private int capaciteUtilisee;
+    @Column(name = "VEHICLETIME")
     private int time;
 
     public Vehicule() {
@@ -59,13 +66,13 @@ public class Vehicule implements Serializable {
     }
 
     public Vehicule(int capacite) {
+        this();
         this.capacite = capacite;
     }
 
     public Vehicule(Depot depot, int capacite) {
-        this();
+        this(capacite);
         this.depot = depot;
-        this.capacite = capacite;
     }
 
     public List<Emplacement> getEmplacements() {
@@ -88,6 +95,7 @@ public class Vehicule implements Serializable {
     public void clear() {
         this.cout = 0.0;
         this.capaciteUtilisee = 0;
+        this.time = 0;
         this.destinations.clear();
     }
 
