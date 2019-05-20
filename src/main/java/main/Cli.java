@@ -29,11 +29,13 @@ import io.output.WriterException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Instance;
+import model.Planning;
 
 /**
  * CLI function, used as an entry point for this project
@@ -167,6 +169,39 @@ public class Cli {
     }
 
     /**
+     * Print cost summary, in a beautiful table.
+     */
+    private void printCostSummary(ISolver solver, List<Instance> instanceList) {
+        Cli.PS.println("Summary for :");
+        Cli.PS.println(solver);
+
+        Cli.PS.println("+----+--------------+--------+---------+");
+        Cli.PS.println("| ID |     Cost     | Ext V. | Checker |");
+        Cli.PS.println("+----+--------------+--------+---------+");
+
+        int index = 0;
+        for (Instance instance : instanceList) {
+            Planning p = instance.getPlanningCurrent();
+            int id = index;
+            double cost = p.getCout();
+
+            int externalVehicules = p.getVehicules().size() - instance.getNbVehicules();
+
+            boolean valid = p.check();
+            String unicodeValid = "V";
+            if (!valid) {
+                unicodeValid = "X";
+            }
+
+            Cli.PS.printf("| %2d | %12.2f |   %2d   |    %s    |\n", id, (float) cost, externalVehicules, unicodeValid);
+            index++;
+        }
+
+        Cli.PS.println("+----+--------------+--------+---------+");
+
+    }
+
+    /**
      * Run all instances on all defined solvers.
      */
     private void runAllInstancesOnAllSolvers() {
@@ -186,6 +221,7 @@ public class Cli {
      * @param solver The solver to use.
      */
     private void runAllInstancesOnOneSolver(ISolver solver) {
+        List<Instance> instanceList = new ArrayList<>();
         try {
 
             Cli.PS.println("\tRun " + solver + " on all files instances stored in Jar");
@@ -202,7 +238,7 @@ public class Cli {
                     LOGGER.log(Level.FINE, "Instance parsed : {0}", is);
 
                     this.runOneInstancesOnOneSolver(solver, instance, Cli.defineSolutionFilename(iterator.getFilename()));
-
+                    instanceList.add(instance);
                 }
 
                 Cli.PS.println("\t\tInstance OK");
@@ -211,6 +247,8 @@ public class Cli {
         } catch (ParserException | IOException ex) {
             LOGGER.log(Level.SEVERE, "Exception while solving Instances!", ex);
         }
+
+        this.printCostSummary(solver, instanceList);
 
     }
 
