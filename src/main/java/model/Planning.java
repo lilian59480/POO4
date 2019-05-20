@@ -41,13 +41,14 @@ import javax.persistence.Table;
 public class Planning implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /**
-     * List of vehicules.
-     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private int id;
+
+    /**
+     * List of vehicules.
+     */
     @OneToMany(mappedBy = "planning")
     private List<Vehicule> vehicules;
 

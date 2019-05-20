@@ -113,7 +113,6 @@ public class Vehicule implements Serializable {
      * @param capacite Vehicule capacity.
      */
     public Vehicule(Depot depot, int capacite) {
-        this();
         this.depot = depot;
         this.destinations = new ArrayList<>();
         this.cout = 0;

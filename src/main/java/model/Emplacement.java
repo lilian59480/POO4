@@ -52,6 +52,14 @@ public class Emplacement extends Point implements Serializable {
     /**
      * Emplacement constructor.
      *
+     */
+    public Emplacement() {
+        this(0, 0, 0, 0);
+    }
+    
+    /**
+     * Emplacement constructor.
+     *
      * @param heureDebut Start time window.
      * @param heureFin End time window.
      * @param x X position.

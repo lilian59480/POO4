@@ -67,6 +67,14 @@ public class Route implements Serializable {
     /**
      * Route constructor.
      *
+     */
+    public Route() {
+        this(null, null, 0, 0);
+    }
+    
+    /**
+     * Route constructor.
+     *
      * @param from Beginning of the road.
      * @param to End of the road.
      * @param cout Cost of travel.
@@ -118,8 +126,10 @@ public class Route implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 53 * hash + Objects.hashCode(this.from);
-        hash = 53 * hash + Objects.hashCode(this.to);
+        hash = 79 * hash + Objects.hashCode(this.from);
+        hash = 79 * hash + Objects.hashCode(this.to);
+        hash = 79 * hash + (int) (Double.doubleToLongBits(this.cout) ^ (Double.doubleToLongBits(this.cout) >>> 32));
+        hash = 79 * hash + this.temps;
         return hash;
     }
 
@@ -135,11 +145,22 @@ public class Route implements Serializable {
             return false;
         }
         final Route other = (Route) obj;
+        if (Double.doubleToLongBits(this.cout) != Double.doubleToLongBits(other.cout)) {
+            return false;
+        }
+        if (this.temps != other.temps) {
+            return false;
+        }
         if (!Objects.equals(this.from, other.from)) {
             return false;
         }
-        return Objects.equals(this.to, other.to);
+        if (!Objects.equals(this.to, other.to)) {
+            return false;
+        }
+        return true;
     }
+
+
 
     @Override
     public String toString() {

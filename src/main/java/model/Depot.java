@@ -34,6 +34,14 @@ public class Depot extends Emplacement implements Serializable {
     /**
      * Depot constructor.
      *
+     */
+    public Depot() {
+        this(0, 0, 0, 0);
+    }
+    
+    /**
+     * Depot constructor.
+     *
      * @param heureDebut Start time window.
      * @param heureFin End time window.
      * @param x X position.

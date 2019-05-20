@@ -37,11 +37,11 @@ public class RouteTest {
      */
     public void roadEquality() {
 
-        Point p1 = new Point(0, 0);
-        Point p2 = new Point(5, 5);
+        Emplacement e1 = new Emplacement(0, 0, 0, 0);
+        Emplacement e2 = new Emplacement(0, 0, 5, 5);
 
-        Route r1 = new Route(p1, p2, 100, 10);
-        Route r2 = new Route(p1, p2, 10, 1);
+        Route r1 = new Route(e1, e2, 100, 10);
+        Route r2 = new Route(e1, e2, 10, 1);
 
         assertEquals(r1, r2, "Strangely, 2 roads are equals even if costs are differents");
     }
