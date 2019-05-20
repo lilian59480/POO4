@@ -38,15 +38,10 @@ import java.util.logging.Logger;
  */
 public class TSVParser {
 
-    private static final Logger LOGGER = Logger.getLogger(TSVParser.class.getName());
-
     /**
-     * Constructor.
-     *
-     * @todo We may have to discuss if we keep this API or not
+     * Class logger.
      */
-    public TSVParser() {
-    }
+    private static final Logger LOGGER = Logger.getLogger(TSVParser.class.getName());
 
     /**
      * Parses a {@link File} and returns a list of values as {@link String}

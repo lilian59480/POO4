@@ -57,6 +57,9 @@ import org.xml.sax.SAXException;
  */
 public class InstanceFileParser {
 
+    /**
+     * Class logger.
+     */
     private static final Logger LOGGER = Logger.getLogger(InstanceFileParser.class.getName());
 
     /**
@@ -126,18 +129,19 @@ public class InstanceFileParser {
 
         try {
             document = this.db.parse(validInputStream);
-        } catch (SAXException | IOException ex) {
+            if (document == null) {
+                throw new NullPointerException("Document is null");
+            }
+        } catch (SAXException | IOException | NullPointerException ex) {
             throw new ParserException(ex);
         }
 
         Instance inst = new Instance();
 
         int nbCustomers = this.getNbCustomers(document);
-        // inst.setNbClients(nbCustomers);
         LOGGER.log(Level.FINER, "Number of clients : {0}", nbCustomers);
 
         int nbLocations = this.getNbLocations(document);
-        // inst.setNbEmplacements(nbLocations);
         LOGGER.log(Level.FINER, "Number of locations : {0}", nbLocations);
 
         int nbVehicles = this.getNbVehicles(document);
@@ -153,15 +157,9 @@ public class InstanceFileParser {
         LOGGER.log(Level.FINER, "External vehicule cost : {0}", externalVehicleCost);
 
         Map<Integer, Emplacement> locationsMap = this.getLocationsList(document);
-        if (locationsMap == null) {
-            throw new ParserException(new NullPointerException("locationMap is null"));
-        }
         LOGGER.log(Level.FINER, "Locations : {0}", locationsMap);
 
         Map<Integer, Depot> depotsList = this.getDepotsList(document, locationsMap);
-        if (depotsList == null) {
-            throw new ParserException(new NullPointerException("depotsList is null"));
-        }
         LOGGER.log(Level.FINER, "Depots : {0}", depotsList);
 
         // We assume there is only one Depot with id = 0
@@ -176,18 +174,12 @@ public class InstanceFileParser {
         LOGGER.log(Level.FINEST, "Replacing location 0 with the depot");
 
         Map<Integer, Client> customersList = this.getCustomersList(document, locationsMap);
-        if (customersList == null) {
-            throw new ParserException(new NullPointerException("customersList is null"));
-        }
         LOGGER.log(Level.FINER, "Customers : {0}", customersList);
 
         // Drop IDs as they are not stored now
         inst.setClients(new ArrayList<>(customersList.values()));
 
         List<Route> travelCostsTimesList = this.getTravelCostsTimesList(document, locationsMap);
-        if (travelCostsTimesList == null) {
-            throw new ParserException(new NullPointerException("travelCostsTimesList is null"));
-        }
         LOGGER.log(Level.FINER, "Travel cost : {0}", travelCostsTimesList);
 
         inst.setRoutes(travelCostsTimesList);
@@ -213,9 +205,6 @@ public class InstanceFileParser {
      * @throws ParserException
      */
     private int getNbCustomers(Document document) throws ParserException {
-        if (document == null) {
-            throw new ParserException(new NullPointerException("Document is null"));
-        }
         return this.getSingleNodeValueInteger(document, "NB_CUSTOMERS");
     }
 
@@ -227,9 +216,6 @@ public class InstanceFileParser {
      * @throws ParserException
      */
     private int getNbLocations(Document document) throws ParserException {
-        if (document == null) {
-            throw new ParserException(new NullPointerException("Document is null"));
-        }
         return this.getSingleNodeValueInteger(document, "NB_LOCATIONS");
     }
 
@@ -241,9 +227,6 @@ public class InstanceFileParser {
      * @throws ParserException
      */
     private int getNbVehicles(Document document) throws ParserException {
-        if (document == null) {
-            throw new ParserException(new NullPointerException("Document is null"));
-        }
         return this.getSingleNodeValueInteger(document, "NB_VEHICLES");
     }
 
@@ -255,9 +238,6 @@ public class InstanceFileParser {
      * @throws ParserException
      */
     private int getVehicleCapacity(Document document) throws ParserException {
-        if (document == null) {
-            throw new ParserException(new NullPointerException("Document is null"));
-        }
         return this.getSingleNodeValueInteger(document, "VEHICLE_CAPACITY");
     }
 
@@ -269,9 +249,6 @@ public class InstanceFileParser {
      * @throws ParserException
      */
     private int getExternalVehicleCost(Document document) throws ParserException {
-        if (document == null) {
-            throw new ParserException(new NullPointerException("Document is null"));
-        }
         return this.getSingleNodeValueInteger(document, "EXTERNAL_VEHICLE_COST");
     }
 
@@ -283,23 +260,17 @@ public class InstanceFileParser {
      * @throws ParserException
      */
     private Map<Integer, Depot> getDepotsList(Document document, Map<Integer, Emplacement> locations) throws ParserException {
-        if (document == null) {
-            throw new ParserException(new NullPointerException("Document is null"));
-        }
-        if (locations == null) {
-            throw new ParserException(new NullPointerException("locations is null"));
-        }
         List<String[]> depoList = this.getSingleNodeTSV(document, "DEPOT");
 
         Iterator<String[]> depotIter = depoList.iterator();
 
+        Map<Integer, Depot> depotMap = new HashMap<>();
+
         // Skip first entry, as it is an header
         if (!depotIter.hasNext()) {
-            return null;
+            return depotMap;
         }
         depotIter.next();
-
-        Map<Integer, Depot> depotMap = new HashMap<>();
 
         while (depotIter.hasNext()) {
             String[] elt = depotIter.next();
@@ -307,6 +278,9 @@ public class InstanceFileParser {
             int id = Integer.parseInt(elt[0]);
             // Demand should be equals to 0 in all cases
             int demand = Integer.parseInt(elt[1]);
+            if (demand != 0) {
+                LOGGER.log(Level.WARNING, "Demand not null, stange");
+            }
             int nbloc = Integer.parseInt(elt[2]);
 
             int locId = -1;
@@ -332,24 +306,18 @@ public class InstanceFileParser {
      * @throws ParserException
      */
     private Map<Integer, Client> getCustomersList(Document document, Map<Integer, Emplacement> locations) throws ParserException {
-        if (document == null) {
-            throw new ParserException(new NullPointerException("Document is null"));
-        }
-        if (locations == null) {
-            throw new ParserException(new NullPointerException("locations is null"));
-        }
 
         List<String[]> customerList = this.getSingleNodeTSV(document, "CUSTOMERS");
 
         Iterator<String[]> customerIter = customerList.iterator();
 
+        Map<Integer, Client> clientMap = new HashMap<>();
+
         // Skip first entry, as it is an header
         if (!customerIter.hasNext()) {
-            return null;
+            return clientMap;
         }
         customerIter.next();
-
-        Map<Integer, Client> clientMap = new HashMap<>();
 
         while (customerIter.hasNext()) {
             String[] elt = customerIter.next();
@@ -383,21 +351,18 @@ public class InstanceFileParser {
      * @throws ParserException
      */
     private Map<Integer, Emplacement> getLocationsList(Document document) throws ParserException {
-        if (document == null) {
-            throw new ParserException(new NullPointerException("Document is null"));
-        }
 
         List<String[]> locationList = this.getSingleNodeTSV(document, "LOCATIONS");
 
         Iterator<String[]> locationIter = locationList.iterator();
 
+        Map<Integer, Emplacement> locationMap = new HashMap<>();
+
         // Skip first entry, as it is an header
         if (!locationIter.hasNext()) {
-            return null;
+            return locationMap;
         }
         locationIter.next();
-
-        Map<Integer, Emplacement> locationMap = new HashMap<>();
 
         while (locationIter.hasNext()) {
             String[] elt = locationIter.next();
@@ -425,24 +390,17 @@ public class InstanceFileParser {
      * @throws ParserException
      */
     private List<Route> getTravelCostsTimesList(Document document, Map<Integer, Emplacement> locations) throws ParserException {
-        if (document == null) {
-            throw new ParserException(new NullPointerException("Document is null"));
-        }
-        if (locations == null) {
-            throw new ParserException(new NullPointerException("locations is null"));
-        }
-
         List<String[]> rawRouteList = this.getSingleNodeTSV(document, "TRAVEL_COSTS_TIMES");
 
         Iterator<String[]> routeIter = rawRouteList.iterator();
 
+        List<Route> routeList = new ArrayList<>();
+
         // Skip first entry, as it is an header
         if (!routeIter.hasNext()) {
-            return null;
+            return routeList;
         }
         routeIter.next();
-
-        List<Route> routeList = new ArrayList<>();
 
         while (routeIter.hasNext()) {
             String[] elt = routeIter.next();
@@ -474,13 +432,6 @@ public class InstanceFileParser {
      * @throws ParserException
      */
     private int getSingleNodeValueInteger(Document document, String tagName) throws ParserException {
-        if (document == null) {
-            throw new ParserException(new NullPointerException("Document is null"));
-        }
-        if (tagName == null) {
-            throw new ParserException(new NullPointerException("tagName is null"));
-        }
-
         LOGGER.log(Level.FINEST, "Node to parse : {0}", tagName);
 
         NodeList nodeList = document.getElementsByTagName(tagName);
@@ -502,12 +453,6 @@ public class InstanceFileParser {
      * @throws ParserException
      */
     private List<String[]> getSingleNodeTSV(Document document, String tagName) throws ParserException {
-        if (document == null) {
-            throw new ParserException(new NullPointerException("Document is null"));
-        }
-        if (tagName == null) {
-            throw new ParserException(new NullPointerException("tagName is null"));
-        }
 
         LOGGER.log(Level.FINEST, "Node to parse : {0}", tagName);
 

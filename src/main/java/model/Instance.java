@@ -33,6 +33,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
+ * Instance model representation.
  *
  * @author Corentin
  */
@@ -41,26 +42,63 @@ import javax.persistence.Table;
 public class Instance implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Class logger.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private int id;
     private static final Logger LOGGER = Logger.getLogger(Instance.class.getName());
 
+    /**
+     * Vehicule capacity.
+     */
     private int capaciteVehicule;
+
+    /**
+     * Vehicule cost.
+     */
     private int coutVehicule;
+
+    /**
+     * Number of vehicule.
+     */
     private int nbVehicules;
+
+    /**
+     * Depot.
+     */
     @OneToOne
     private Depot depot;
+
+    /**
+     * List of clients.
+     */
     @OneToMany
     private List<Client> clients;
+
+    /**
+     * List of vehicules.
+     */
     @OneToMany(mappedBy = "instance")
     private List<Vehicule> vehicules;
+
+    /**
+     * List of routes.
+     */
     @OneToMany
     private List<Route> routes;
+
+    /**
+     * List of plannings.
+     */
     @OneToMany(mappedBy = "instance")
     private List<Planning> plannings;
 
+    /**
+     * Instance constructor.
+     */
     public Instance() {
         this.clients = new LinkedList<>();
         this.routes = new LinkedList<>();
@@ -69,26 +107,56 @@ public class Instance implements Serializable {
         this.plannings.add(new Planning(this));
     }
 
+    /**
+     * Set vehicule capacity.
+     *
+     * @param capaciteVehicule The CapaciteVehicule.
+     */
     public void setCapaciteVehicule(int capaciteVehicule) {
         this.capaciteVehicule = capaciteVehicule;
     }
 
+    /**
+     * Set vehicule cost.
+     *
+     * @param coutVehicule The CoutVehicule.
+     */
     public void setCoutVehicule(int coutVehicule) {
         this.coutVehicule = coutVehicule;
     }
 
+    /**
+     * Set depot.
+     *
+     * @param depot The Depot.
+     */
     public void setDepot(Depot depot) {
         this.depot = depot;
     }
 
+    /**
+     * Set client list.
+     *
+     * @param clients A list of clients.
+     */
     public void setClients(List<Client> clients) {
         this.clients = clients;
     }
 
+    /**
+     * Set routes list.
+     *
+     * @param routes A list of routes.
+     */
     public void setRoutes(List<Route> routes) {
         this.routes = routes;
     }
 
+    /**
+     * Set vehicule list.
+     *
+     * @param vehicules A list of vehicules.
+     */
     public void setVehicules(List<Vehicule> vehicules) {
         this.vehicules = vehicules;
         for (Vehicule v : this.vehicules) {
@@ -96,14 +164,27 @@ public class Instance implements Serializable {
         }
     }
 
+    /**
+     * Get current planning.
+     *
+     * @return The current planning.
+     */
     public Planning getPlanningCurrent() {
         return plannings.get(plannings.size() - 1);
     }
 
+    /**
+     * Set new planning.
+     *
+     * @param planningCurrent The new planning.
+     */
     public void setPlanningCurrent(Planning planningCurrent) {
         this.plannings.add(planningCurrent);
     }
 
+    /**
+     * Add new planning.
+     */
     public void addNewPlanning() {
         Planning p = new Planning(this);
         for (Vehicule v : this.vehicules) {
@@ -112,6 +193,9 @@ public class Instance implements Serializable {
         this.plannings.add(p);
     }
 
+    /**
+     * Clear this instance.
+     */
     public void clear() {
         for (Client c : this.clients) {
             c.clear();
@@ -122,18 +206,38 @@ public class Instance implements Serializable {
         this.addNewPlanning();
     }
 
+    /**
+     * Get clients.
+     *
+     * @return A list of clients.
+     */
     public List<Client> getClients() {
         return clients;
     }
 
+    /**
+     * Get vehicules.
+     *
+     * @return A list of vehicules.
+     */
     public List<Vehicule> getVehicules() {
         return vehicules;
     }
 
+    /**
+     * Get depot.
+     *
+     * @return The depot.
+     */
     public Depot getDepot() {
         return depot;
     }
 
+    /**
+     * Add a new vehicule.
+     *
+     * @return A new vehicule.
+     */
     public Vehicule addVehicule() {
         Vehicule v = new Vehicule(this.depot, this.capaciteVehicule);
         v.setInstance(this);
@@ -142,14 +246,29 @@ public class Instance implements Serializable {
         return v;
     }
 
+    /**
+     * Get number of vehicules.
+     *
+     * @return Number of vehicules allocated.
+     */
     public int getNbVehicules() {
         return nbVehicules;
     }
 
+    /**
+     * Set number of vehicules.
+     *
+     * @param nbVehicule New number of vehicule.
+     */
     public void setNbVehicules(int nbVehicule) {
         this.nbVehicules = nbVehicule;
     }
 
+    /**
+     * Get Vehicule cost.
+     *
+     * @return The CoutVehicule.
+     */
     public int getCoutVehicule() {
         return coutVehicule;
     }
@@ -164,10 +283,15 @@ public class Instance implements Serializable {
     public boolean check() {
         boolean valid = true;
         for (Client c : this.clients) {
-            if (!c.check()) {
-                valid = false;
-                LOGGER.log(Level.WARNING, "Invalid instance solution");
-            }
+            valid &= c.check();
+        }
+
+        for (Vehicule v : this.vehicules) {
+            valid &= v.check();
+        }
+
+        if (!valid) {
+            LOGGER.log(Level.WARNING, "Invalid instance solution");
         }
         return valid;
     }

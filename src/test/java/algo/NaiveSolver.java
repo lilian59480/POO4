@@ -16,37 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.output;
+package algo;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 /**
- * Exception class used by Parsers classes when parsing can't be done properly.
+ * Tests for {@link NaiveSolver}
  *
  * @author Lilian Petitpas
  */
-public class WriterException extends Exception {
+@DisplayName("NaiveSolver")
+public class NaiveSolver {
 
     /**
-     * Serial UID, for serialisation.
+     * @todo Create test.
      */
-    private static final long serialVersionUID = 20190429110615L;
+    @Test
+    @DisplayName("Is working with a valid Reader")
+    public void isWorkingWithValidReader() {
 
-    /**
-     * Constructs an instance of {@code WriterException} with a detail message.
-     *
-     * @param msg the detail message.
-     */
-    public WriterException(String msg) {
-        super(msg);
-    }
-
-    /**
-     * Constructs an instance of {@code WriterException} with a cause from a
-     * previous {@code Exception}.
-     *
-     * @param cause the cause.
-     */
-    public WriterException(Throwable cause) {
-        super(cause);
     }
 
 }

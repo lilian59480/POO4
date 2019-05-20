@@ -18,9 +18,6 @@
  */
 package algo;
 
-import io.input.InstanceFileParser;
-import io.output.SolutionWriter;
-import java.io.File;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,19 +26,42 @@ import model.Instance;
 import model.Vehicule;
 
 /**
+ * Implementation of a Naive solver.
+ *
+ * This solver iterates over all clients and try to assign them a vehicule.
  *
  * @author Corentin
  */
-public class DumbSolver implements ISolver {
+public class NaiveSolver implements ISolver {
 
+    /**
+     * Current instance.
+     */
     private Instance instance;
-    private static final Logger LOGGER = Logger.getLogger(DumbSolver.class.getName());
 
-    public DumbSolver() {
+    /**
+     * Class logger.
+     */
+    private static final Logger LOGGER = Logger.getLogger(NaiveSolver.class.getName());
+
+    /**
+     * Solver constructor, without an Instance.
+     *
+     * You should set your instance later.
+     *
+     * This constructor is recommended as you can solve multiples instances by
+     * using the instance setter.
+     */
+    public NaiveSolver() {
         this(null);
     }
 
-    public DumbSolver(Instance i) {
+    /**
+     * Solver constructor, with an Instance.
+     *
+     * @param i Instance to solve
+     */
+    public NaiveSolver(Instance i) {
         this.instance = i;
     }
 
@@ -57,9 +77,13 @@ public class DumbSolver implements ISolver {
 
     @Override
     public boolean solve() {
+        if (this.instance == null) {
+            LOGGER.log(Level.WARNING, "No instance to solve");
+            return false;
+        }
         LOGGER.log(Level.FINE, "Solving a new instance");
         try {
-            dumbSolve();
+            naiveSolve();
         } catch (SolverException ex) {
             LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
             return false;
@@ -68,7 +92,17 @@ public class DumbSolver implements ISolver {
         return this.instance.check();
     }
 
-    private void dumbSolve() throws SolverException {
+    /**
+     * Solve the current instance using a naive algorithm.
+     *
+     * It iterates over all clients and try to assign them a vehicule.
+     *
+     * If it is not possible, ask for an external vehicule.
+     *
+     * @throws SolverException If there is an internal exception or inconsistant
+     * values.
+     */
+    private void naiveSolve() throws SolverException {
         this.instance.clear();
         List<Client> clients = this.instance.getClients();
 
@@ -95,26 +129,4 @@ public class DumbSolver implements ISolver {
         }
     }
 
-    public static void main(String[] args) {
-        Instance i = null;
-        for (int j = 0; j < 40; j++) {
-            int id = j;
-            try {
-                InstanceFileParser ifp = new InstanceFileParser();
-                i = ifp.parse(new File("src/main/resources/instances/instance_" + id + "-triangle.txt"));
-            } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
-                return;
-            }
-            DumbSolver ds = new DumbSolver(i);
-            ds.solve();
-            try {
-                SolutionWriter sw = new SolutionWriter();
-                sw.write(i, "target/instance_" + id + "-triangle_sol.txt");
-            } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, "Exception while writing a solution", ex);
-            }
-        }
-
-    }
 }

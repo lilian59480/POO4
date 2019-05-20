@@ -24,6 +24,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
+ * Emplacement model representation.
  *
  * @author Corentin
  */
@@ -31,11 +32,31 @@ import javax.persistence.Table;
 @Table(name = "EMPLACEMENT")
 public class Emplacement extends Point implements Serializable {
     
+
+    /**
+     * Client liked to this adress.
+     */
     @ManyToOne
     private Client client;
+
+    /**
+     * Start time window.
+     */
     private int heureDebut;
+
+    /**
+     * End time window.
+     */
     private int heureFin;
 
+    /**
+     * Emplacement constructor.
+     *
+     * @param heureDebut Start time window.
+     * @param heureFin End time window.
+     * @param x X position.
+     * @param y Y position.
+     */
     public Emplacement(int heureDebut, int heureFin, double x, double y) {
         super(x, y);
         if (heureFin < heureDebut) {
@@ -45,18 +66,38 @@ public class Emplacement extends Point implements Serializable {
         this.heureFin = heureFin;
     }
 
+    /**
+     * Get Start time window.
+     *
+     * @return The HeureDebut.
+     */
     public int getHeureDebut() {
         return heureDebut;
     }
 
+    /**
+     * Get End time window.
+     *
+     * @return The HeureFin.
+     */
     public int getHeureFin() {
         return heureFin;
     }
 
+    /**
+     * Get client.
+     *
+     * @return The client.
+     */
     public Client getClient() {
         return client;
     }
 
+    /**
+     * Set a new client.
+     *
+     * @param client The client.
+     */
     public void setClient(Client client) {
         this.client = client;
     }

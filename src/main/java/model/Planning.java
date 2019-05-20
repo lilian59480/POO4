@@ -32,6 +32,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
+ * Planning model representation.
  *
  * @author Corentin
  */
@@ -40,36 +41,71 @@ import javax.persistence.Table;
 public class Planning implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * List of vehicules.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private int id;
     @OneToMany(mappedBy = "planning")
     private List<Vehicule> vehicules;
+
+    /**
+     * An instance.
+     */
     @ManyToOne
     private Instance instance;
+
+    /**
+     * Final cost of this planning.
+     */
     private double cout;
 
+    /**
+     * Planning constructor, not linked to a planning.
+     */
     public Planning() {
-        this.vehicules = new LinkedList<>();
-        this.cout = 0.0;
+        this(null);
     }
 
+    /**
+     * Planning construcor.
+     *
+     * @param instance A new planning.
+     */
     public Planning(Instance instance) {
-        this();
-        this.instance = instance;
+        this(0.0, instance, new LinkedList<Vehicule>());
     }
 
+    /**
+     * Planning constuctor.
+     *
+     * @param cout Cost of this planning.
+     * @param instance Instance linked to this planning.
+     * @param vehiculeSet List of vehicules.
+     */
     public Planning(double cout, Instance instance, List<Vehicule> vehiculeSet) {
         this.cout = cout;
         this.instance = instance;
         this.vehicules = vehiculeSet;
     }
 
+    /**
+     * Get a list of vehicules.
+     *
+     * @return A list of vehicules.
+     */
     public List<Vehicule> getVehicules() {
         return this.vehicules;
     }
 
+    /**
+     * Add a new vehicule to the planning.
+     *
+     * @param v The vehicule to add.
+     * @return True if the vehicule can be added.
+     */
     public boolean addVehicule(Vehicule v) {
         if (v == null) {
             return false;
@@ -79,6 +115,9 @@ public class Planning implements Serializable {
         return this.vehicules.add(v);
     }
 
+    /**
+     * Recalculate the cost of this planning from the beginning.
+     */
     public void recalculerCoutTotal() {
         double cost = 0;
         for (Vehicule vehicule : vehicules) {
@@ -89,6 +128,18 @@ public class Planning implements Serializable {
         this.cout = cost;
     }
 
+    /**
+     * Get final cost.
+     *
+     * @return The cost.
+     */
+    public double getCout() {
+        return this.cout;
+    }
+
+    /**
+     * Clear this planning.
+     */
     public void clear() {
         this.vehicules.clear();
         this.cout = 0.0;
@@ -123,6 +174,19 @@ public class Planning implements Serializable {
     @Override
     public String toString() {
         return "Planning{" + "vehicules=" + vehicules + ", cout=" + cout + '}';
+    }
+
+    /**
+     * Check if this planning is valid.
+     *
+     * @return True if valid, false otherwise.
+     */
+    public boolean check() {
+        boolean valid = true;
+        for (Vehicule vehicule : this.vehicules) {
+            valid &= vehicule.check();
+        }
+        return valid;
     }
 
 }

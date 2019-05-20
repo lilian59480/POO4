@@ -32,17 +32,36 @@ import model.Planning;
 import model.Vehicule;
 
 /**
+ * Solution writing.
  *
- * @author Lilian Petitpas <lilian.petitpas@outlook.com>
+ * @author Lilian Petitpas
  */
 public class SolutionWriter {
 
+    /**
+     * Class logger.
+     */
     private static final Logger LOGGER = Logger.getLogger(SolutionWriter.class.getName());
 
+    /**
+     * Write an instance
+     *
+     * @param i A solved instance.
+     * @return True if we've written the solution.
+     * @throws WriterException After an internal exception.
+     */
     public boolean write(Instance i) throws WriterException {
         return this.write(i, "instance_latest_sol.txt");
     }
 
+    /**
+     * Write an instance
+     *
+     * @param i A solved instance.
+     * @param filename Filename of the solution file.
+     * @return True if we've written the solution.
+     * @throws WriterException After an internal exception.
+     */
     public boolean write(Instance i, String filename) throws WriterException {
         File f = new File(filename);
 
@@ -66,8 +85,14 @@ public class SolutionWriter {
         return true;
     }
 
-    private void printTSV(PrintWriter w, List objList) {
-        Iterator<Object> objIter = objList.iterator();
+    /**
+     * Print a line of data without EOL.
+     *
+     * @param w PrintWriter linked to the file.
+     * @param objList List of objects to write
+     */
+    private void printTSV(PrintWriter w, List<? extends Object> objList) {
+        Iterator<? extends Object> objIter = objList.iterator();
 
         while (objIter.hasNext()) {
             Object elt = objIter.next();
@@ -82,7 +107,13 @@ public class SolutionWriter {
 
     }
 
-    private void printTSVln(PrintWriter w, List objList) {
+    /**
+     * Print a line of data with EOL.
+     *
+     * @param w PrintWriter linked to the file.
+     * @param objList List of objects to write
+     */
+    private void printTSVln(PrintWriter w, List<? extends Object> objList) {
         this.printTSV(w, objList);
         w.println();
     }

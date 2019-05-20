@@ -33,6 +33,9 @@ import org.junit.jupiter.api.function.Executable;
 @DisplayName("Depot")
 public class DepotTest {
 
+    /**
+     * Check if creating from an Emplacement is working.
+     */
     @Test
     @DisplayName("Creating from Emplacement should work")
     public void instanciateFromEmplacement() {
@@ -47,6 +50,9 @@ public class DepotTest {
 
     }
 
+    /**
+     * Check if creating from a null Emplacement is not working.
+     */
     @Test
     @DisplayName("Creating from null should not work")
     public void instanciateFromNullEmplacement() {

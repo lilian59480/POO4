@@ -18,8 +18,8 @@
  */
 package main;
 
-import algo.DumbSolver;
 import algo.ISolver;
+import algo.NaiveSolver;
 import io.input.FilenameIterator;
 import io.input.InstanceFileParser;
 import io.input.JarInstanceResourceReader;
@@ -29,7 +29,6 @@ import io.output.WriterException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -39,24 +38,49 @@ import model.Instance;
 /**
  * CLI function, used as an entry point for this project
  *
- * @author Lilian Petitpas <lilian.petitpas@outlook.com>
+ * @author Lilian Petitpas
  */
 public class Cli {
 
+    /**
+     * Class logger.
+     */
     private static final Logger LOGGER = Logger.getLogger(Cli.class.getName());
 
-    private static final List<Class<? extends ISolver>> SOLVERS = Arrays.asList(
-            DumbSolver.class
+    /**
+     * List of solvers available.
+     *
+     * @todo Use a factory?
+     */
+    private static final List<ISolver> SOLVERS = Arrays.asList(
+            new NaiveSolver()
     );
 
-    private final PrintStream ps = System.out;
+    /**
+     * PrintStream used to print progress to the user.
+     */
+    private static final PrintStream PS = System.out;
 
-    private final JarInstanceResourceReader instanceLoader = new JarInstanceResourceReader();
+    /**
+     * Instance Reader.
+     */
+    private static final JarInstanceResourceReader JAR_INSTANCE_RR = new JarInstanceResourceReader();
 
+    /**
+     * Instance file parser.
+     */
     private final InstanceFileParser ifp;
 
-    private final SolutionWriter sw = new SolutionWriter();
+    /**
+     * Solution writer.
+     */
+    private static final SolutionWriter SW = new SolutionWriter();
 
+    /**
+     * Cli Entry point.
+     *
+     * @param args Arguments, 1st can be "help" or "usage"
+     */
     public static void main(String[] args) {
         LOGGER.log(Level.INFO, "Solving a new instance");
         LOGGER.log(Level.FINE, "Arguments : {0}", Arrays.toString(args));
@@ -80,94 +104,108 @@ public class Cli {
 
             // Unknown argument
             self.printHelp();
+            return;
 
-        } else {
-            self.runAllInstancesOnAllSolvers();
         }
+
+        self.runAllInstancesOnAllSolvers();
     }
 
+    /**
+     * Cli constructor.
+     *
+     * @throws ParserException If we can't instantiate the parser.
+     */
     public Cli() throws ParserException {
         this.ifp = new InstanceFileParser();
     }
 
+    /**
+     * Print intro text.
+     */
     private void printIntro() {
-        this.ps.println("+------------+");
-        this.ps.println("|POO4 Project|");
-        this.ps.println("+------------+");
+        Cli.PS.println("+------------+");
+        Cli.PS.println("|POO4 Project|");
+        Cli.PS.println("+------------+");
 
-        this.ps.println("Made by");
-        this.ps.println("+ Lilian Petitpas");
-        this.ps.println("+ Thomas Ternisien");
-        this.ps.println("+ Thibaut Fenain");
-        this.ps.println("+ Corentin Apolinario");
+        Cli.PS.println("Made by");
+        Cli.PS.println("+ Lilian Petitpas");
+        Cli.PS.println("+ Thomas Ternisien");
+        Cli.PS.println("+ Thibaut Fenain");
+        Cli.PS.println("+ Corentin Apolinario");
     }
 
+    /**
+     * Print licence text.
+     */
     private void printLicence() {
-        this.ps.println("******************");
+        Cli.PS.println("******************");
 
-        this.ps.println("POO4-Project Copyright (C) 2019 "
+        Cli.PS.println("POO4-Project Copyright (C) 2019 "
                 + "Lilian Petitpas, "
                 + "Thomas Ternisien, "
                 + "Thibaut Fenain, "
                 + "Corentin Apolinario");
-        this.ps.println("");
-        this.ps.println("This program comes with ABSOLUTELY NO WARRANTY");
-        this.ps.println("This is free software, and you are welcome to "
+        Cli.PS.println("");
+        Cli.PS.println("This program comes with ABSOLUTELY NO WARRANTY");
+        Cli.PS.println("This is free software, and you are welcome to "
                 + "redistribute under certain conditions");
 
-        this.ps.println("******************");
+        Cli.PS.println("******************");
     }
 
+    /**
+     * Print help text.
+     */
     private void printHelp() {
-        this.ps.println("Usage : cli.jar [option]");
+        Cli.PS.println("Usage : cli.jar [option]");
 
-        this.ps.println("Options :");
-        this.ps.println("\thelp\tPrint help");
-        this.ps.println("\tusage\tPrint help");
+        Cli.PS.println("Options :");
+        Cli.PS.println("\thelp\tPrint help");
+        Cli.PS.println("\tusage\tPrint help");
 
     }
 
+    /**
+     * Run all instances on all defined solvers.
+     */
     private void runAllInstancesOnAllSolvers() {
 
-        this.ps.println("Run All solvers on all files instances stored in Jar");
+        Cli.PS.println("Run All solvers on all files instances stored in Jar");
         LOGGER.log(Level.INFO, "Solvers available {0}", SOLVERS);
 
-        for (Class<? extends ISolver> solver : SOLVERS) {
-
-            try {
-                Constructor<? extends ISolver> cons = solver.getConstructor();
-                ISolver solverInst = cons.newInstance();
-                this.runAllInstancesOnOneSolver(solverInst);
-            } catch (SecurityException | ReflectiveOperationException | IllegalArgumentException ex) {
-                LOGGER.log(Level.SEVERE, "Reflexion exception", ex);
-                return;
-            }
-
-            this.ps.println("\t********************");
+        for (ISolver solverInst : SOLVERS) {
+            this.runAllInstancesOnOneSolver(solverInst);
+            Cli.PS.println("\t********************");
         }
     }
 
+    /**
+     * Run all instances on a specific solver.
+     *
+     * @param solver The solver to use.
+     */
     private void runAllInstancesOnOneSolver(ISolver solver) {
         try {
 
-            this.ps.println("\tRun " + solver + " on all files instances stored in Jar");
+            Cli.PS.println("\tRun " + solver + " on all files instances stored in Jar");
 
-            for (FilenameIterator<InputStream> iterator = instanceLoader.iterator(); iterator.hasNext();) {
-                this.ps.println("\t\t********************");
+            for (FilenameIterator<InputStream> iterator = Cli.JAR_INSTANCE_RR.iterator(); iterator.hasNext();) {
+                Cli.PS.println("\t\t********************");
 
                 try (InputStream is = iterator.next()) {
                     LOGGER.log(Level.INFO, "Loaded {0}", iterator.getFilename());
-                    this.ps.println("\t\tResource " + iterator.getFilename() + " loaded from Jar");
+                    Cli.PS.println("\t\tResource " + iterator.getFilename() + " loaded from Jar");
 
                     Instance instance = ifp.parse(is);
 
                     LOGGER.log(Level.FINE, "Instance parsed : {0}", is);
 
-                    this.runOneInstancesOnOneSolver(solver, instance, iterator.getFilename());
+                    this.runOneInstancesOnOneSolver(solver, instance, Cli.defineSolutionFilename(iterator.getFilename()));
 
                 }
 
-                this.ps.println("\t\tInstance OK");
+                Cli.PS.println("\t\tInstance OK");
             }
 
         } catch (ParserException | IOException ex) {
@@ -176,25 +214,39 @@ public class Cli {
 
     }
 
+    /**
+     * Solve an instance.
+     *
+     * @param solver The solver to use.
+     * @param i The instance to solve.
+     * @param filename Filename to use when writing the solution.
+     */
     private void runOneInstancesOnOneSolver(ISolver solver, Instance i, String filename) {
         solver.setInstance(i);
-        this.ps.println("\t\t\tSolving ...");
+        Cli.PS.println("\t\t\tSolving ...");
         boolean status = solver.solve();
         if (!status) {
             LOGGER.log(Level.SEVERE, "Instance unsolvable!");
             return;
         }
 
-        // @TODO : Make something better, with proper check
-        // Maybe regex ?
-        String baseFilename = filename.substring(11, filename.length() - 4);
-
         try {
-            this.sw.write(i, baseFilename + "_sol.txt");
+            Cli.SW.write(i, filename + "_sol.txt");
         } catch (WriterException ex) {
             LOGGER.log(Level.SEVERE, "Impossible to write solution file", ex);
         }
 
+    }
+
+    /**
+     * Get the solution filename to be compatible witj specification.
+     *
+     * @todo Use a better and fool proof algorithm.
+     * @param instanceFilename Path of the instance
+     * @return Filename of the solution.
+     */
+    private static String defineSolutionFilename(String instanceFilename) {
+        return instanceFilename.substring(11, instanceFilename.length() - 4) + "_sol.txt";
     }
 
 }

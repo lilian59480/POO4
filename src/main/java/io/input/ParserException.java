@@ -25,8 +25,14 @@ package io.input;
  */
 public class ParserException extends Exception {
 
+    /**
+     * Serial UID, for serialisation.
+     */
     private static final long serialVersionUID = 20190422110615L;
 
+    /**
+     * Comparison template string.
+     */
     private static final String COMPARISON_MSG = "%s\nExpected %s, got %s";
 
     /**

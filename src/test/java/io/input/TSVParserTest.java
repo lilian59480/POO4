@@ -36,10 +36,19 @@ import org.junit.jupiter.api.Test;
 @DisplayName("TSVParser")
 public class TSVParserTest {
 
+    /**
+     * TSVParser.
+     */
     private final TSVParser parser = new TSVParser();
 
+    /**
+     * Test string.
+     */
     private final String testString = "ID\tValue\n0\t1\n1\t5\n";
 
+    /**
+     * Test if TSVParser is working with a valid reader.
+     */
     @Test
     @DisplayName("Is working with a valid Reader")
     public void isWorkingWithValidReader() {

@@ -32,6 +32,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
+ * Vehicule model representation.
  *
  * @author Corentin
  */
@@ -40,58 +41,145 @@ import javax.persistence.Table;
 public class Vehicule implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Depot.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private int id;
     @ManyToOne
     private Depot depot;
+
+    /**
+     * A list of destinations.
+     */
     @OneToMany
     private List<Emplacement> destinations;
+
+    /**
+     * Current planning.
+     */
     @ManyToOne
     private Planning planning;
+
+    /**
+     * Instance.
+     */
     @ManyToOne
     private Instance instance;
+
+    /**
+     * Cost.
+     */
     private double cout;
+
+    /**
+     * Capacity.
+     */
     private int capacite;
+
+    /**
+     * Used capacity.
+     */
     private int capaciteUtilisee;
+
+    /**
+     * Current time.
+     */
     @Column(name = "VEHICLETIME")
     private int time;
 
+    /**
+     * Vehicule constructor with empty capacity.
+     */
     public Vehicule() {
+        this(0);
+    }
+
+    /**
+     * Vehicule constructor with no depot.
+     *
+     * @param capacite Vehicule capacity.
+     */
+    public Vehicule(int capacite) {
+        this(null, 0);
+    }
+
+    /**
+     * Vehicule constructor.
+     *
+     * @param depot Depot.
+     * @param capacite Vehicule capacity.
+     */
+    public Vehicule(Depot depot, int capacite) {
+        this();
+        this.depot = depot;
         this.destinations = new ArrayList<>();
         this.cout = 0;
         this.capaciteUtilisee = 0;
-        this.capacite = 0;
-    }
-
-    public Vehicule(int capacite) {
-        this();
         this.capacite = capacite;
     }
 
-    public Vehicule(Depot depot, int capacite) {
-        this(capacite);
-        this.depot = depot;
+    /**
+     * Check if this Vehicule is consistant.
+     *
+     * @return True if this vehicule is valid.
+     */
+    public boolean check() {
+        boolean valid = true;
+        valid &= (this.getCapaciteRestante() >= 0);
+
+        Emplacement last = this.getDepot();
+        int currentTime = 0;
+        // TODO Check time
+        for (Emplacement destination : this.destinations) {
+            // Check that we can go to next destination
+            valid = false;
+        }
+        return valid;
     }
 
+    /**
+     * Get a list of emplacements.
+     *
+     * @return Emplacement list.
+     */
     public List<Emplacement> getEmplacements() {
         return this.destinations;
     }
 
+    /**
+     * Set a new planning.
+     *
+     * @param planning New planning.
+     */
     public void setPlanning(Planning planning) {
         this.planning = planning;
     }
 
+    /**
+     * Set a new Instance.
+     *
+     * @param instance New instance.
+     */
     public void setInstance(Instance instance) {
         this.instance = instance;
         this.planning = instance.getPlanningCurrent();
     }
 
+    /**
+     * Get cost.
+     *
+     * @return The cout.
+     */
     public double getCout() {
         return cout;
     }
 
+    /**
+     * Clear this vehicule.
+     */
     public void clear() {
         this.cout = 0.0;
         this.capaciteUtilisee = 0;
@@ -99,10 +187,21 @@ public class Vehicule implements Serializable {
         this.destinations.clear();
     }
 
+    /**
+     * Get free capacity.
+     *
+     * @return Capacity - Used capacity.
+     */
     public int getCapaciteRestante() {
         return this.capacite - this.capaciteUtilisee;
     }
 
+    /**
+     * Add new client.
+     *
+     * @param c New client.
+     * @return True if we can add it.
+     */
     public boolean addClient(Client c) {
         if (c == null) {
             return false;
@@ -163,12 +262,13 @@ public class Vehicule implements Serializable {
         return false;
     }
 
+    /**
+     * Get depot.
+     *
+     * @return The depot.
+     */
     public Depot getDepot() {
         return depot;
-    }
-
-    public List<Emplacement> getDestinations() {
-        return destinations;
     }
 
     @Override

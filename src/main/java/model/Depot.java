@@ -23,6 +23,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
+ * Depot model representation.
  *
  * @author Corentin
  */
@@ -30,10 +31,25 @@ import javax.persistence.Table;
 @Table(name = "DEPOT")
 public class Depot extends Emplacement implements Serializable {
 
+    /**
+     * Depot constructor.
+     *
+     * @param heureDebut Start time window.
+     * @param heureFin End time window.
+     * @param x X position.
+     * @param y Y position.
+     */
     public Depot(int heureDebut, int heureFin, double x, double y) {
         super(heureDebut, heureFin, x, y);
     }
 
+    /**
+     * Depot constuctor, from an Emplacement.
+     *
+     * You can use this constructor to create a Depot from an Emplacement.
+     *
+     * @param e Emplacement subclass to make a Depot from it.
+     */
     public Depot(Emplacement e) {
         this(e.getHeureDebut(), e.getHeureFin(), e.getX(), e.getY());
     }

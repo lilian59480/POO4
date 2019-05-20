@@ -16,37 +16,40 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.output;
+package main;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import template.ListeInstance;
 
 /**
- * Exception class used by Parsers classes when parsing can't be done properly.
+ * Gui entry point for this project
  *
  * @author Lilian Petitpas
  */
-public class WriterException extends Exception {
+public class Gui {
 
     /**
-     * Serial UID, for serialisation.
+     * Class logger.
      */
-    private static final long serialVersionUID = 20190429110615L;
+    private static final Logger LOGGER = Logger.getLogger(Gui.class.getName());
 
     /**
-     * Constructs an instance of {@code WriterException} with a detail message.
+     * Cli Entry point.
      *
-     * @param msg the detail message.
+     * @param args Arguments, 1st can be "help" or "usage"
      */
-    public WriterException(String msg) {
-        super(msg);
+    public static void main(String[] args) {
+        Gui self = new Gui();
+        self.show();
     }
 
     /**
-     * Constructs an instance of {@code WriterException} with a cause from a
-     * previous {@code Exception}.
-     *
-     * @param cause the cause.
+     * Display the window.
      */
-    public WriterException(Throwable cause) {
-        super(cause);
+    public void show() {
+        LOGGER.log(Level.INFO, "Starting application");
+        ListeInstance li = new ListeInstance();
+        li.setVisible(true);
     }
-
 }

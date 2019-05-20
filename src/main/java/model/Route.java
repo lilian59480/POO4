@@ -29,6 +29,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
+ * Route model representation.
  *
  * @author Corentin
  */
@@ -37,17 +38,40 @@ import javax.persistence.Table;
 public class Route implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Origin point.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private int id;
     @ManyToOne
     private Point from;
+
+    /**
+     * Destination point.
+     */
     @ManyToOne
     private Point to;
+
+    /**
+     * Cost of the travel.
+     */
     private double cout;
+
+    /**
+     * Duration of the travel.
+     */
     private int temps;
 
+    /**
+     * Route constructor.
+     *
+     * @param from Beginning of the road.
+     * @param to End of the road.
+     * @param cout Cost of travel.
+     * @param temps Duration of travel.
+     */
     public Route(Point from, Point to, double cout, int temps) {
         this.from = from;
         this.to = to;
@@ -55,18 +79,38 @@ public class Route implements Serializable {
         this.temps = temps;
     }
 
+    /**
+     * Get origin Point.
+     *
+     * @return Origin point.
+     */
     public Point getFrom() {
         return from;
     }
 
+    /**
+     * Get destination Point.
+     *
+     * @return Destination point.
+     */
     public Point getTo() {
         return to;
     }
 
+    /**
+     * Get cost.
+     *
+     * @return The cost.
+     */
     public double getCout() {
         return cout;
     }
 
+    /**
+     * Get duration.
+     *
+     * @return The duration.
+     */
     public int getTemps() {
         return temps;
     }

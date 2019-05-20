@@ -20,24 +20,28 @@ package algo;
 import model.Instance;
 
 /**
+ * Interface for all solvers.
  *
  * @author Corentin
  */
 public interface ISolver {
 
     /**
+     * Get the current instance.
      *
      * @return the instance linked to the solver
      */
     public Instance getInstance();
 
     /**
+     * Set the new instance.
      *
      * @param i the instance to link to the solver
      */
     public void setInstance(Instance i);
 
     /**
+     * Solve the current instance.
      *
      * @return true if the solver found a solution
      */
