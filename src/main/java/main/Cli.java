@@ -226,12 +226,11 @@ public class Cli {
         Cli.PS.println("\t\t\tSolving ...");
         boolean status = solver.solve();
         if (!status) {
-            LOGGER.log(Level.SEVERE, "Instance unsolvable!");
-            return;
+            LOGGER.log(Level.SEVERE, "Instance unsolvable! Use the official checker to know why");
         }
 
         try {
-            Cli.SW.write(i, filename + "_sol.txt");
+            Cli.SW.write(i, filename);
         } catch (WriterException ex) {
             LOGGER.log(Level.SEVERE, "Impossible to write solution file", ex);
         }

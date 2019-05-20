@@ -272,13 +272,10 @@ public class Instance {
      * @return True if the instance is valid, false otherwise
      */
     public boolean check() {
-        boolean valid = true;
+        boolean valid = this.getPlanningCurrent().check();
+
         for (Client c : this.clients) {
             valid &= c.check();
-        }
-
-        for (Vehicule v : this.vehicules) {
-            valid &= v.check();
         }
 
         if (!valid) {

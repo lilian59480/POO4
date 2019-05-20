@@ -88,7 +88,7 @@ public class Vehicule {
     /**
      * Vehicule constructor.
      *
-     * @param depot    Depot.
+     * @param depot Depot.
      * @param capacite Vehicule capacity.
      */
     public Vehicule(Depot depot, int capacite) {
@@ -109,11 +109,23 @@ public class Vehicule {
         valid &= (this.getCapaciteRestante() >= 0);
 
         Emplacement last = this.getDepot();
-        int currentTime = 0;
+        this.time = 0;
         // TODO Check time
         for (Emplacement destination : this.destinations) {
+            int timeToDestination = last.getTempsTo(destination);
+            int timeAtDestination = this.time + timeToDestination;
+
+            if ((this.time + timeToDestination) < destination.getHeureDebut()) {
+                timeAtDestination = destination.getHeureDebut();
+            }
+
             // Check that we can go to next destination
-            valid = false;
+            valid &= this.hasEnoughRemainingTime(last, destination);
+
+            this.time = timeAtDestination;
+
+            // Set the new last destination
+            last = destination;
         }
         return valid;
     }
@@ -197,11 +209,13 @@ public class Vehicule {
         for (Emplacement e : c.getEmplacements()) {
             // Test if enough remaining time
             int timeToDestination = lastEmplacement.getTempsTo(e);
-            int timeAtDestination = time + timeToDestination;
-            timeAtDestination = timeAtDestination < e.getHeureDebut() ? e.getHeureDebut()
-                    : this.time + timeToDestination;
-            int timeAtDepot = timeAtDestination + e.getTempsTo(depot);
-            if (timeAtDestination > e.getHeureFin() || timeAtDepot > depot.getHeureFin()) {
+            int timeAtDestination = this.time + timeToDestination;
+
+            if ((this.time + timeToDestination) < e.getHeureDebut()) {
+                timeAtDestination = e.getHeureDebut();
+            }
+
+            if (!this.hasEnoughRemainingTime(lastEmplacement, e)) {
                 continue;
             }
 
@@ -262,10 +276,13 @@ public class Vehicule {
 
         // Test if enough remaining time
         int timeToDestination = lastEmplacement.getTempsTo(e);
-        int timeAtDestination = time + timeToDestination;
-        timeAtDestination = timeAtDestination < e.getHeureDebut() ? e.getHeureDebut() : this.time + timeToDestination;
-        int timeAtDepot = timeAtDestination + e.getTempsTo(depot);
-        if (timeAtDestination > e.getHeureFin() || timeAtDepot > depot.getHeureFin()) {
+        int timeAtDestination = this.time + timeToDestination;
+
+        if ((this.time + timeToDestination) < e.getHeureDebut()) {
+            timeAtDestination = e.getHeureDebut();
+        }
+
+        if (!this.hasEnoughRemainingTime(lastEmplacement, e)) {
             return false;
         }
 
@@ -342,6 +359,19 @@ public class Vehicule {
     public String toString() {
         return "Vehicule{" + "depot=" + depot + ", destinations=" + destinations + ", cout=" + cout + ", capacite="
                 + capacite + ", capaciteUtilisee=" + capaciteUtilisee + '}';
+    }
+
+    public boolean hasEnoughRemainingTime(Emplacement last, Emplacement next) {
+        // Test if enough remaining time
+        int timeToDestination = last.getTempsTo(next);
+        int timeAtDestination = this.time + timeToDestination;
+
+        if ((this.time + timeToDestination) < next.getHeureDebut()) {
+            timeAtDestination = next.getHeureDebut();
+        }
+
+        int timeAtDepot = timeAtDestination + next.getTempsTo(this.depot);
+        return !(timeAtDestination > next.getHeureFin() || timeAtDepot > this.depot.getHeureFin());
     }
 
 }

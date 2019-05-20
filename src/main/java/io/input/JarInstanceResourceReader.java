@@ -82,7 +82,7 @@ public class JarInstanceResourceReader implements Iterable<InputStream> {
 
             @Override
             public String getFilename() {
-                return "/instances/instance_" + currentIndex + "-triangle.txt";
+                return "/instances/instance_" + (currentIndex - 1) + "-triangle.txt";
             }
 
         };
