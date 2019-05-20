@@ -19,6 +19,7 @@
 package model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -41,9 +42,11 @@ public class RouteTest {
         Emplacement e2 = new Emplacement(0, 0, 5, 5);
 
         Route r1 = new Route(e1, e2, 100, 10);
+        Route r1b = new Route(e1, e2, 100, 10);
         Route r2 = new Route(e1, e2, 10, 1);
 
-        assertEquals(r1, r2, "Strangely, 2 roads are equals even if costs are differents");
+        assertEquals(r1, r1b, "the 2 similar roads are equals");
+        assertNotEquals(r1, r2, "the 2 roads should not be equals");
     }
 
 }
