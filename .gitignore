@@ -35,4 +35,8 @@ build.xml
 nbbuild.xml
 manifest.mf
 
+### VS Code ###
+.settings/
+.vscode/
+
 /target/

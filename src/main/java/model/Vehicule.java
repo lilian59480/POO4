@@ -88,7 +88,7 @@ public class Vehicule {
     /**
      * Vehicule constructor.
      *
-     * @param depot Depot.
+     * @param depot    Depot.
      * @param capacite Vehicule capacity.
      */
     public Vehicule(Depot depot, int capacite) {
@@ -185,16 +185,14 @@ public class Vehicule {
             return false;
         }
 
-        //Test if enough remaining capacity
+        // Test if enough remaining capacity
         if (this.getCapaciteRestante() < c.getDemande()) {
             return false;
         }
 
         int position = this.destinations.size();
 
-        Emplacement lastEmplacement
-                = position != 0 ? this.destinations.get(position - 1)
-                        : depot;
+        Emplacement lastEmplacement = position != 0 ? this.destinations.get(position - 1) : depot;
 
         for (Emplacement e : c.getEmplacements()) {
             // Test if enough remaining time
@@ -253,22 +251,19 @@ public class Vehicule {
 
         Client c = e.getClient();
 
-        //Test if enough remaining capacity
+        // Test if enough remaining capacity
         if (this.getCapaciteRestante() < c.getDemande()) {
             return false;
         }
 
         int position = this.destinations.size();
 
-        Emplacement lastEmplacement
-                = position != 0 ? this.destinations.get(position - 1)
-                        : depot;
+        Emplacement lastEmplacement = position != 0 ? this.destinations.get(position - 1) : depot;
 
         // Test if enough remaining time
         int timeToDestination = lastEmplacement.getTempsTo(e);
         int timeAtDestination = time + timeToDestination;
-        timeAtDestination = timeAtDestination < e.getHeureDebut() ? e.getHeureDebut()
-                : this.time + timeToDestination;
+        timeAtDestination = timeAtDestination < e.getHeureDebut() ? e.getHeureDebut() : this.time + timeToDestination;
         int timeAtDepot = timeAtDestination + e.getTempsTo(depot);
         if (timeAtDestination > e.getHeureFin() || timeAtDepot > depot.getHeureFin()) {
             return false;
@@ -345,7 +340,8 @@ public class Vehicule {
 
     @Override
     public String toString() {
-        return "Vehicule{" + "depot=" + depot + ", destinations=" + destinations + ", cout=" + cout + ", capacite=" + capacite + ", capaciteUtilisee=" + capaciteUtilisee + '}';
+        return "Vehicule{" + "depot=" + depot + ", destinations=" + destinations + ", cout=" + cout + ", capacite="
+                + capacite + ", capaciteUtilisee=" + capaciteUtilisee + '}';
     }
 
 }

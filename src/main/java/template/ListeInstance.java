@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.JFrame;
 import model.Instance;
 
 /**
@@ -35,7 +36,7 @@ import model.Instance;
  * @todo Follow wireframes.
  * @author thibaut
  */
-public class ListeInstance extends javax.swing.JFrame {
+public class ListeInstance extends JFrame { // NOSONAR
 
     /**
      * Class logger.
@@ -160,16 +161,6 @@ public class ListeInstance extends javax.swing.JFrame {
     private void jButtonSolveInstanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSolveInstanceActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonSolveInstanceActionPerformed
-
-    /**
-     * Main
-     *
-     * @todo Remove this.
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        ListeInstance listeInstance = new ListeInstance();
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonDisplayInstance;
