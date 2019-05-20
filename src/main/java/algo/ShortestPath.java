@@ -43,7 +43,8 @@ public class ShortestPath implements ISolver {
 
     private Instance instance;
     private static final Logger LOGGER = Logger.getLogger(NaiveSolver.class.getName());
-    private List<Emplacement> chromosome; //Chromosome[0] is depot
+    private List<Emplacement> chromosome;
+    private Depot depot;
 
     public ShortestPath() {
         this(null);
@@ -74,8 +75,8 @@ public class ShortestPath implements ISolver {
             int numV = 0;
             int nbV = this.instance.getNbVehicules();
             Vehicule v = vehicules.get(numV);
-            for (int i = 1; i < this.chromosome.size(); i++) {
-                if (tournee.get(i).compareTo(tournee.get(i - 1)) != 0) {
+            for (int i = 0; i < this.chromosome.size(); i++) {
+                if (i != 0 && tournee.get(i).compareTo(tournee.get(i - 1)) != 0) {
                     numV++;
                     if (numV < nbV) {
                         v = vehicules.get(numV);
@@ -85,8 +86,10 @@ public class ShortestPath implements ISolver {
                     }
                 }
                 if (!v.addEmplacement(this.chromosome.get(i))) {
-                    LOGGER.log(Level.WARNING, "Error while adding emplacement to vehicule during ShortestPath calculation");
-                    throw new SolverException("Error while adding emplacement to vehicule during ShortestPath calculation");
+                    LOGGER.log(Level.WARNING,
+                            "Error while adding emplacement to vehicule during ShortestPath calculation");
+                    throw new SolverException(
+                            "Error while adding emplacement to vehicule during ShortestPath calculation");
                 }
             }
         } catch (SolverException ex) {
@@ -99,35 +102,32 @@ public class ShortestPath implements ISolver {
     }
 
     private List<Integer> findShortestPath() throws SolverException {
-        Depot depot = (Depot) this.chromosome.get(0);
         int capaV = this.instance.getCapaciteVehicule();
         int closeTime = this.instance.getDepot().getHeureFin();
-        List<Double> V = new LinkedList<>(); //list des couts les + faible pour chaque emplacement
-        List<Integer> P = new LinkedList<>(); //list des points precedant, P[i] => point avant i
-        V.add(0.0);
-        P.add(0);
-        for (int i = 1; i < this.chromosome.size(); i++) {
+        List<Double> V = new LinkedList<>(); // list des couts les + faible pour chaque emplacement
+        List<Integer> P = new LinkedList<>(); // list des points precedant, P[i] => point avant i
+        for (int i = 0; i < this.chromosome.size(); i++) {
             V.add(Double.MAX_VALUE);
             P.add(0);
         }
-        for (int i = 1; i < this.chromosome.size(); i++) {
+        for (int i = 0; i < this.chromosome.size(); i++) {
             int time = 0, load = 0;
             double cost = 0.0;
             for (int j = i; j < this.chromosome.size(); j++) {
                 Emplacement e = this.chromosome.get(j);
                 load += e.getClient().getDemande();
                 if (i == j) {
-                    Route r = e.getRouteTo(depot);
+                    Route r = e.getRouteTo(this.depot);
                     cost = r.getCout() * 2;
                     time = Math.max(r.getTemps(), e.getHeureDebut()) + r.getTemps();
                 } else {
                     Emplacement eb = this.chromosome.get(j - 1);
-                    Route r0 = eb.getRouteTo(depot);
+                    Route r0 = eb.getRouteTo(this.depot);
                     Route r1 = e.getRouteTo(eb);
-                    Route r2 = e.getRouteTo(depot);
+                    Route r2 = e.getRouteTo(this.depot);
                     cost = cost - r0.getCout() + r1.getCout() + r2.getCout();
                     time = Math.max(time - r0.getTemps() + r1.getTemps(), e.getHeureDebut());
-                    //Check if the vehicule will arrive before the client's closing time
+                    // Check if the vehicule will arrive before the client's closing time
                     if (time > e.getHeureFin()) {
                         break;
                     }
@@ -136,16 +136,23 @@ public class ShortestPath implements ISolver {
                 if (load > capaV || time > closeTime) {
                     break;
                 }
-                if (V.get(i - 1) + cost < V.get(j)) {
-                    V.set(j, V.get(i - 1) + cost);
-                    P.set(j, this.chromosome.get(i - 1).getId());
+                if (i == 0) {
+                    if (cost < V.get(j)) {
+                        V.set(j, cost);
+                        P.set(j, this.depot.getId());
+                    }
+                } else {
+                    if (V.get(i - 1) + cost < V.get(j)) {
+                        V.set(j, V.get(i - 1) + cost);
+                        P.set(j, this.chromosome.get(i - 1).getId());
+                    }
                 }
             }
         }
         System.out.println(V);
         System.out.println(P);
         Set<Integer> uniqueP = new HashSet<>(P);
-        //TODO: find a way to include the count of vehicules to use extra vehicule cost
+        // TODO: find a way to include the count of vehicules to use extra vehicule cost
         int nbExtraVRequired = Math.max(uniqueP.size() - this.instance.getNbVehicules(), 0);
         double realCost = V.get(V.size() - 1) + nbExtraVRequired * this.instance.getCoutVehicule();
         System.out.println("Cost: " + realCost + " (" + nbExtraVRequired + " extra vehicules required)");
@@ -157,15 +164,15 @@ public class ShortestPath implements ISolver {
         if (this.instance.getPlanningCurrent().getVehicules().size() > 0) {
             this.chromosome = new LinkedList<>();
             Planning p = this.instance.getPlanningCurrent();
-            this.chromosome.add(this.instance.getDepot());
+            this.depot = this.instance.getDepot();
             List<Vehicule> vehicules = p.getVehicules();
             for (Vehicule vehicule : vehicules) {
                 List<Emplacement> ems = vehicule.getEmplacements();
                 this.chromosome.addAll(ems);
             }
-        } else { //No planning to optimise
+        } else { // No planning to optimise
             this.chromosome = new LinkedList<>();
-            this.chromosome.add(this.instance.getDepot());
+            this.depot = this.instance.getDepot();
             for (Client cli : this.instance.getClients()) {
                 this.chromosome.add(cli.getEmplacements().get(0));
             }

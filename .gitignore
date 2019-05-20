@@ -38,5 +38,7 @@ manifest.mf
 ### VS Code ###
 .settings/
 .vscode/
+.classpath
+.project
 
 /target/
