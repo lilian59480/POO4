@@ -41,4 +41,7 @@ manifest.mf
 .classpath
 .project
 
+### IntelliJ ###
+.idea/
+
 /target/

@@ -39,18 +39,18 @@ import model.Vehicule;
  *
  * @author Thomas
  */
-public class ShortestPath implements ISolver {
+public class ShortestPathEmplacements implements ISolver {
 
     private Instance instance;
     private static final Logger LOGGER = Logger.getLogger(NaiveSolver.class.getName());
     private List<Emplacement> chromosome;
     private Depot depot;
 
-    public ShortestPath() {
+    public ShortestPathEmplacements() {
         this(null);
     }
 
-    public ShortestPath(Instance i) {
+    public ShortestPathEmplacements(Instance i) {
         this.instance = i;
         this.instanceToChromosome();
     }
@@ -87,9 +87,9 @@ public class ShortestPath implements ISolver {
                 }
                 if (!v.addEmplacement(this.chromosome.get(i))) {
                     LOGGER.log(Level.WARNING,
-                            "Error while adding emplacement to vehicule during ShortestPath calculation");
+                            "Error while adding emplacement to vehicule during ShortestPathEmplacements calculation");
                     throw new SolverException(
-                            "Error while adding emplacement to vehicule during ShortestPath calculation");
+                            "Error while adding emplacement to vehicule during ShortestPathEmplacements calculation");
                 }
             }
         } catch (SolverException ex) {
@@ -194,7 +194,7 @@ public class ShortestPath implements ISolver {
             NaiveSolver ds = new NaiveSolver(i);
             ds.solve();
             System.out.println("---Cout ns: " + i.getPlanningCurrent().getCout());
-            ShortestPath sp = new ShortestPath(i);
+            ShortestPathEmplacements sp = new ShortestPathEmplacements(i);
             sp.solve();
             System.out.println("---Cout sp: " + i.getPlanningCurrent().getCout());
             try {
@@ -208,6 +208,6 @@ public class ShortestPath implements ISolver {
 
     @Override
     public String toString() {
-        return "ShortestPath{" + "chromosome=" + chromosome + '}';
+        return "ShortestPathEmplacements{" + "chromosome=" + chromosome + '}';
     }
 }
