@@ -286,7 +286,7 @@ public class Instance {
 
     @Override
     public String toString() {
-        return "Instance{" + "capaciteVehicule=" + capaciteVehicule + ", coutVehicule=" + coutVehicule + ", depot=" + depot + ", clients=" + clients + ", vehicules=" + vehicules + ", routes=" + routes + ", plannings=" + plannings + '}';
+        return "capV=" + capaciteVehicule + ", coutV=" + coutVehicule + ", nbC=" + clients.size() + ", nbV" + vehicules.size();
     }
 
 }

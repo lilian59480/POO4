@@ -100,6 +100,8 @@ public class ListeInstance extends JFrame { // NOSONAR
         jButtonSolveInstance = new javax.swing.JButton();
         jButtonDisplayInstance = new javax.swing.JButton();
         jTitle = new javax.swing.JLabel();
+        jSelectectLabel = new javax.swing.JLabel();
+        jSelectedInstance = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 51));
@@ -107,6 +109,11 @@ public class ListeInstance extends JFrame { // NOSONAR
         setForeground(new java.awt.Color(204, 204, 255));
 
         jListInstance.setModel(dlm);
+        jListInstance.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                jListInstanceValueChanged(evt);
+            }
+        });
         jScrollPane1.setViewportView(jListInstance);
 
         jButtonSolveInstance.setText("Touver une solution");
@@ -117,18 +124,21 @@ public class ListeInstance extends JFrame { // NOSONAR
         });
 
         jButtonDisplayInstance.setText("Afficher une solution");
+        jButtonDisplayInstance.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonDisplayInstanceActionPerformed(evt);
+            }
+        });
 
         jTitle.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         jTitle.setText("Deliver2I");
+
+        jSelectectLabel.setText("File selected :");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(118, 118, 118)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(153, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -140,6 +150,15 @@ public class ListeInstance extends JFrame { // NOSONAR
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(228, 228, 228))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(118, 118, 118)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jSelectectLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jSelectedInstance, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(153, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -148,7 +167,11 @@ public class ListeInstance extends JFrame { // NOSONAR
                 .addComponent(jTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 368, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 109, Short.MAX_VALUE)
+                .addGap(44, 44, 44)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jSelectectLabel)
+                    .addComponent(jSelectedInstance))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonSolveInstance)
                     .addComponent(jButtonDisplayInstance))
@@ -162,11 +185,28 @@ public class ListeInstance extends JFrame { // NOSONAR
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonSolveInstanceActionPerformed
 
+    private void jListInstanceValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListInstanceValueChanged
+        // TODO add your handling code here:
+        String selected = this.jListInstance.getSelectedValue().toString();
+        jSelectedInstance.setText(selected);
+
+        
+    }//GEN-LAST:event_jListInstanceValueChanged
+
+    private void jButtonDisplayInstanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDisplayInstanceActionPerformed
+        // TODO add your handling code here:
+        Instance i = this.jListInstance.getSelectedValue();
+        
+        Itineraire itineraire = new Itineraire(i);
+    }//GEN-LAST:event_jButtonDisplayInstanceActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonDisplayInstance;
     private javax.swing.JButton jButtonSolveInstance;
     private javax.swing.JList<Instance> jListInstance;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel jSelectectLabel;
+    private javax.swing.JLabel jSelectedInstance;
     private javax.swing.JLabel jTitle;
     // End of variables declaration//GEN-END:variables
 }

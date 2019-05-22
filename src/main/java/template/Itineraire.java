@@ -48,6 +48,7 @@ public class Itineraire extends JFrame { // NOSONAR
      * Class logger.
      */
     private static final Logger LOGGER = Logger.getLogger(Itineraire.class.getName());
+    private Instance instance;
 
     /**
      * Serial UID, for serialisation.
@@ -60,6 +61,13 @@ public class Itineraire extends JFrame { // NOSONAR
     public Itineraire() {
         this.initComponents();
         this.initialisationFenetre();
+    }
+
+    public Itineraire(Instance i) {
+        this.initComponents();
+        this.initialisationFenetre();
+        this.instance = i;
+        LOGGER.log(Level.INFO, instance.toString());
     }
 
     @Override
@@ -77,7 +85,7 @@ public class Itineraire extends JFrame { // NOSONAR
             return;
         }
 
-        this.drawInstance(g, i);
+        this.drawInstance(g, this.instance);
         g.setColor(c);
 
     }
