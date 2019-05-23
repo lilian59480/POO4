@@ -32,11 +32,6 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
-              <EmptySpace min="-2" pref="118" max="-2" attributes="0"/>
-              <Component id="jScrollPane1" min="-2" pref="424" max="-2" attributes="0"/>
-              <EmptySpace pref="153" max="32767" attributes="0"/>
-          </Group>
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
@@ -52,6 +47,18 @@
                   </Group>
               </Group>
           </Group>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="118" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Component id="jSelectectLabel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="jSelectedInstance" min="-2" pref="288" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="jScrollPane1" min="-2" pref="424" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace pref="153" max="32767" attributes="0"/>
+          </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -61,7 +68,12 @@
               <Component id="jTitle" min="-2" pref="54" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
               <Component id="jScrollPane1" min="-2" pref="368" max="-2" attributes="0"/>
-              <EmptySpace pref="109" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jSelectectLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jSelectedInstance" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace pref="48" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jButtonSolveInstance" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButtonDisplayInstance" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -85,6 +97,9 @@
               <Connection code="dlm" type="code"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="valueChanged" listener="javax.swing.event.ListSelectionListener" parameters="javax.swing.event.ListSelectionEvent" handler="jListInstanceValueChanged"/>
+          </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;Instance&gt;"/>
           </AuxValues>
@@ -103,6 +118,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Afficher une solution"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonDisplayInstanceActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jTitle">
       <Properties>
@@ -111,6 +129,13 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Deliver2I"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jSelectectLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="File selected :"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jSelectedInstance">
     </Component>
   </SubComponents>
 </Form>

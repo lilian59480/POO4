@@ -68,7 +68,7 @@ public class Route {
      * @return Origin point.
      */
     public Point getFrom() {
-        return from;
+        return this.from;
     }
 
     /**
@@ -77,7 +77,7 @@ public class Route {
      * @return Destination point.
      */
     public Point getTo() {
-        return to;
+        return this.to;
     }
 
     /**
@@ -86,7 +86,7 @@ public class Route {
      * @return The cost.
      */
     public double getCout() {
-        return cout;
+        return this.cout;
     }
 
     /**
@@ -95,7 +95,7 @@ public class Route {
      * @return The duration.
      */
     public int getTemps() {
-        return temps;
+        return this.temps;
     }
 
     @Override

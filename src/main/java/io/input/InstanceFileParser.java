@@ -76,12 +76,12 @@ public class InstanceFileParser {
     /**
      * TSV Parser, used for some data inside XML Nodes.
      */
-    private TSVParser tsvParser;
+    private TsvParser tsvParser;
 
     /**
      * Constructor.
      *
-     * @throws ParserException
+     * @throws ParserException When parsing can't be done properly
      * @todo We may have to discuss if we keep this API or not
      */
     public InstanceFileParser() throws ParserException {
@@ -94,7 +94,7 @@ public class InstanceFileParser {
             documentBuilderFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             this.dbf = documentBuilderFactory;
             this.db = this.dbf.newDocumentBuilder();
-            this.tsvParser = new TSVParser();
+            this.tsvParser = new TsvParser();
 
         } catch (ParserConfigurationException ex) {
             throw new ParserException(ex);
@@ -106,7 +106,7 @@ public class InstanceFileParser {
      *
      * @param f The file to parse
      * @return an Instance
-     * @throws ParserException
+     * @throws ParserException When parsing can't be done properly
      */
     public Instance parse(File f) throws ParserException {
         try (FileInputStream fis = new FileInputStream(f)) {
@@ -121,10 +121,10 @@ public class InstanceFileParser {
      *
      * @param is The {@link InputStream} to parse
      * @return an Instance
-     * @throws ParserException
+     * @throws ParserException When parsing can't be done properly
      */
     public Instance parse(InputStream is) throws ParserException {
-        InputStream validInputStream = InstanceFileParser.createSuitableXMLRoot(is);
+        InputStream validInputStream = InstanceFileParser.createSuitableXmlRoot(is);
         Document document;
 
         try {
@@ -202,7 +202,7 @@ public class InstanceFileParser {
      *
      * @param document The document parsed
      * @return The value as an int
-     * @throws ParserException
+     * @throws ParserException When parsing can't be done properly
      */
     private int getNbCustomers(Document document) throws ParserException {
         return this.getSingleNodeValueInteger(document, "NB_CUSTOMERS");
@@ -213,7 +213,7 @@ public class InstanceFileParser {
      *
      * @param document The document parsed
      * @return The value as an int
-     * @throws ParserException
+     * @throws ParserException When parsing can't be done properly
      */
     private int getNbLocations(Document document) throws ParserException {
         return this.getSingleNodeValueInteger(document, "NB_LOCATIONS");
@@ -224,7 +224,7 @@ public class InstanceFileParser {
      *
      * @param document The document parsed
      * @return The value as an int
-     * @throws ParserException
+     * @throws ParserException When parsing can't be done properly
      */
     private int getNbVehicles(Document document) throws ParserException {
         return this.getSingleNodeValueInteger(document, "NB_VEHICLES");
@@ -235,7 +235,7 @@ public class InstanceFileParser {
      *
      * @param document The document parsed
      * @return The value as an int
-     * @throws ParserException
+     * @throws ParserException When parsing can't be done properly
      */
     private int getVehicleCapacity(Document document) throws ParserException {
         return this.getSingleNodeValueInteger(document, "VEHICLE_CAPACITY");
@@ -246,7 +246,7 @@ public class InstanceFileParser {
      *
      * @param document The document parsed
      * @return The value as an int
-     * @throws ParserException
+     * @throws ParserException When parsing can't be done properly
      */
     private int getExternalVehicleCost(Document document) throws ParserException {
         return this.getSingleNodeValueInteger(document, "EXTERNAL_VEHICLE_COST");
@@ -256,11 +256,12 @@ public class InstanceFileParser {
      * Returns the value inside the node {@code DEPOT}.
      *
      * @param document The document parsed
+     * @param locations Map of locations
      * @return The value as a list
-     * @throws ParserException
+     * @throws ParserException When parsing can't be done properly
      */
     private Map<Integer, Depot> getDepotsList(Document document, Map<Integer, Emplacement> locations) throws ParserException {
-        List<String[]> depoList = this.getSingleNodeTSV(document, "DEPOT");
+        List<String[]> depoList = this.getSingleNodeTsv(document, "DEPOT");
 
         Iterator<String[]> depotIter = depoList.iterator();
 
@@ -302,12 +303,13 @@ public class InstanceFileParser {
      * Returns the value inside the node {@code CUSTOMERS}.
      *
      * @param document The document parsed
+     * @param locations Map of locations
      * @return The value as a list
-     * @throws ParserException
+     * @throws ParserException When parsing can't be done properly
      */
     private Map<Integer, Client> getCustomersList(Document document, Map<Integer, Emplacement> locations) throws ParserException {
 
-        List<String[]> customerList = this.getSingleNodeTSV(document, "CUSTOMERS");
+        List<String[]> customerList = this.getSingleNodeTsv(document, "CUSTOMERS");
 
         Iterator<String[]> customerIter = customerList.iterator();
 
@@ -348,11 +350,11 @@ public class InstanceFileParser {
      *
      * @param document The document parsed
      * @return The value as a list
-     * @throws ParserException
+     * @throws ParserException When parsing can't be done properly
      */
     private Map<Integer, Emplacement> getLocationsList(Document document) throws ParserException {
 
-        List<String[]> locationList = this.getSingleNodeTSV(document, "LOCATIONS");
+        List<String[]> locationList = this.getSingleNodeTsv(document, "LOCATIONS");
 
         Iterator<String[]> locationIter = locationList.iterator();
 
@@ -386,11 +388,12 @@ public class InstanceFileParser {
      * Returns the value inside the node {@code TRAVEL_COSTS_TIMES}.
      *
      * @param document The document parsed
+     * @param locations Map of locations
      * @return The value as a list
-     * @throws ParserException
+     * @throws ParserException When parsing can't be done properly
      */
     private List<Route> getTravelCostsTimesList(Document document, Map<Integer, Emplacement> locations) throws ParserException {
-        List<String[]> rawRouteList = this.getSingleNodeTSV(document, "TRAVEL_COSTS_TIMES");
+        List<String[]> rawRouteList = this.getSingleNodeTsv(document, "TRAVEL_COSTS_TIMES");
 
         Iterator<String[]> routeIter = rawRouteList.iterator();
 
@@ -429,7 +432,7 @@ public class InstanceFileParser {
      * @param document The document parsed
      * @param tagName The tag name we need to read
      * @return The value as an int
-     * @throws ParserException
+     * @throws ParserException When parsing can't be done properly
      */
     private int getSingleNodeValueInteger(Document document, String tagName) throws ParserException {
         LOGGER.log(Level.FINEST, "Node to parse : {0}", tagName);
@@ -450,9 +453,9 @@ public class InstanceFileParser {
      * @param document The document parsed
      * @param tagName The tag name we need to read
      * @return The value as a list
-     * @throws ParserException
+     * @throws ParserException When parsing can't be done properly
      */
-    private List<String[]> getSingleNodeTSV(Document document, String tagName) throws ParserException {
+    private List<String[]> getSingleNodeTsv(Document document, String tagName) throws ParserException {
 
         LOGGER.log(Level.FINEST, "Node to parse : {0}", tagName);
 
@@ -478,10 +481,10 @@ public class InstanceFileParser {
      * https://stackoverflow.com/questions/6640756/parsing-an-xml-stream-with-no-root-element
      * for the code to sandwich an {@link InputStream}
      *
-     * @param inputStream
-     * @return
+     * @param inputStream Stream to sandwich
+     * @return A valid and well formed document
      */
-    private static InputStream createSuitableXMLRoot(InputStream inputStream) {
+    private static InputStream createSuitableXmlRoot(InputStream inputStream) {
         List<InputStream> streams = new ArrayList<>();
         streams.add(new ByteArrayInputStream("<root>".getBytes()));
         if (inputStream != null) {

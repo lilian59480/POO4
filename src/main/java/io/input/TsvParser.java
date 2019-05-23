@@ -36,19 +36,19 @@ import java.util.logging.Logger;
  *
  * @author Lilian Petitpas
  */
-public class TSVParser {
+public class TsvParser {
 
     /**
      * Class logger.
      */
-    private static final Logger LOGGER = Logger.getLogger(TSVParser.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TsvParser.class.getName());
 
     /**
      * Parses a {@link File} and returns a list of values as {@link String}
      *
      * @param f The file to parse
      * @return an Instance
-     * @throws ParserException
+     * @throws ParserException When parsing can't be done properly
      */
     public List<String[]> parse(File f) throws ParserException {
         try (FileInputStream fis = new FileInputStream(f)) {
@@ -64,7 +64,7 @@ public class TSVParser {
      *
      * @param is The {@link InputStream} to parse
      * @return an Instance
-     * @throws ParserException
+     * @throws ParserException When parsing can't be done properly
      */
     public List<String[]> parse(InputStream is) throws ParserException {
         try (InputStreamReader isr = new InputStreamReader(is)) {
@@ -80,7 +80,7 @@ public class TSVParser {
      *
      * @param rd The Reader
      * @return an Instance
-     * @throws ParserException
+     * @throws ParserException When parsing can't be done properly
      */
     public List<String[]> parse(Reader rd) throws ParserException {
 

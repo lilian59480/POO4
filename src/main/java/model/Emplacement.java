@@ -63,7 +63,7 @@ public class Emplacement extends Point {
      * @return The HeureDebut.
      */
     public int getHeureDebut() {
-        return heureDebut;
+        return this.heureDebut;
     }
 
     /**
@@ -72,7 +72,7 @@ public class Emplacement extends Point {
      * @return The HeureFin.
      */
     public int getHeureFin() {
-        return heureFin;
+        return this.heureFin;
     }
 
     /**
@@ -81,7 +81,7 @@ public class Emplacement extends Point {
      * @return The client.
      */
     public Client getClient() {
-        return client;
+        return this.client;
     }
 
     /**
