@@ -36,12 +36,12 @@ import java.util.logging.Logger;
  *
  * @author Lilian Petitpas
  */
-public class TSVParser {
+public class TsvParser {
 
     /**
      * Class logger.
      */
-    private static final Logger LOGGER = Logger.getLogger(TSVParser.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TsvParser.class.getName());
 
     /**
      * Parses a {@link File} and returns a list of values as {@link String}

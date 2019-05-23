@@ -76,7 +76,7 @@ public class InstanceFileParser {
     /**
      * TSV Parser, used for some data inside XML Nodes.
      */
-    private TSVParser tsvParser;
+    private TsvParser tsvParser;
 
     /**
      * Constructor.
@@ -94,7 +94,7 @@ public class InstanceFileParser {
             documentBuilderFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             this.dbf = documentBuilderFactory;
             this.db = this.dbf.newDocumentBuilder();
-            this.tsvParser = new TSVParser();
+            this.tsvParser = new TsvParser();
 
         } catch (ParserConfigurationException ex) {
             throw new ParserException(ex);
@@ -124,7 +124,7 @@ public class InstanceFileParser {
      * @throws ParserException When parsing can't be done properly
      */
     public Instance parse(InputStream is) throws ParserException {
-        InputStream validInputStream = InstanceFileParser.createSuitableXMLRoot(is);
+        InputStream validInputStream = InstanceFileParser.createSuitableXmlRoot(is);
         Document document;
 
         try {
@@ -261,7 +261,7 @@ public class InstanceFileParser {
      * @throws ParserException When parsing can't be done properly
      */
     private Map<Integer, Depot> getDepotsList(Document document, Map<Integer, Emplacement> locations) throws ParserException {
-        List<String[]> depoList = this.getSingleNodeTSV(document, "DEPOT");
+        List<String[]> depoList = this.getSingleNodeTsv(document, "DEPOT");
 
         Iterator<String[]> depotIter = depoList.iterator();
 
@@ -309,7 +309,7 @@ public class InstanceFileParser {
      */
     private Map<Integer, Client> getCustomersList(Document document, Map<Integer, Emplacement> locations) throws ParserException {
 
-        List<String[]> customerList = this.getSingleNodeTSV(document, "CUSTOMERS");
+        List<String[]> customerList = this.getSingleNodeTsv(document, "CUSTOMERS");
 
         Iterator<String[]> customerIter = customerList.iterator();
 
@@ -354,7 +354,7 @@ public class InstanceFileParser {
      */
     private Map<Integer, Emplacement> getLocationsList(Document document) throws ParserException {
 
-        List<String[]> locationList = this.getSingleNodeTSV(document, "LOCATIONS");
+        List<String[]> locationList = this.getSingleNodeTsv(document, "LOCATIONS");
 
         Iterator<String[]> locationIter = locationList.iterator();
 
@@ -393,7 +393,7 @@ public class InstanceFileParser {
      * @throws ParserException When parsing can't be done properly
      */
     private List<Route> getTravelCostsTimesList(Document document, Map<Integer, Emplacement> locations) throws ParserException {
-        List<String[]> rawRouteList = this.getSingleNodeTSV(document, "TRAVEL_COSTS_TIMES");
+        List<String[]> rawRouteList = this.getSingleNodeTsv(document, "TRAVEL_COSTS_TIMES");
 
         Iterator<String[]> routeIter = rawRouteList.iterator();
 
@@ -455,7 +455,7 @@ public class InstanceFileParser {
      * @return The value as a list
      * @throws ParserException When parsing can't be done properly
      */
-    private List<String[]> getSingleNodeTSV(Document document, String tagName) throws ParserException {
+    private List<String[]> getSingleNodeTsv(Document document, String tagName) throws ParserException {
 
         LOGGER.log(Level.FINEST, "Node to parse : {0}", tagName);
 
@@ -484,7 +484,7 @@ public class InstanceFileParser {
      * @param inputStream Stream to sandwich
      * @return A valid and well formed document
      */
-    private static InputStream createSuitableXMLRoot(InputStream inputStream) {
+    private static InputStream createSuitableXmlRoot(InputStream inputStream) {
         List<InputStream> streams = new ArrayList<>();
         streams.add(new ByteArrayInputStream("<root>".getBytes()));
         if (inputStream != null) {

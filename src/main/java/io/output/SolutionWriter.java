@@ -76,7 +76,7 @@ public class SolutionWriter {
                 for (Emplacement emplacement : el) {
                     al.add(emplacement.getId());
                 }
-                this.printTSVln(writer, al);
+                this.printTsvLn(writer, al);
             }
         } catch (IOException ex) {
             throw new WriterException(ex);
@@ -91,7 +91,7 @@ public class SolutionWriter {
      * @param w PrintWriter linked to the file.
      * @param objList List of objects to write
      */
-    private void printTSV(PrintWriter w, List<? extends Object> objList) {
+    private void printTsv(PrintWriter w, List<? extends Object> objList) {
         Iterator<? extends Object> objIter = objList.iterator();
 
         while (objIter.hasNext()) {
@@ -113,8 +113,8 @@ public class SolutionWriter {
      * @param w PrintWriter linked to the file.
      * @param objList List of objects to write
      */
-    private void printTSVln(PrintWriter w, List<? extends Object> objList) {
-        this.printTSV(w, objList);
+    private void printTsvLn(PrintWriter w, List<? extends Object> objList) {
+        this.printTsv(w, objList);
         w.println();
     }
 
