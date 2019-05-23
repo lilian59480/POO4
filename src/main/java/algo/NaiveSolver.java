@@ -67,7 +67,7 @@ public class NaiveSolver implements ISolver {
 
     @Override
     public Instance getInstance() {
-        return instance;
+        return this.instance;
     }
 
     @Override
@@ -83,7 +83,7 @@ public class NaiveSolver implements ISolver {
         }
         LOGGER.log(Level.FINE, "Solving a new instance");
         try {
-            naiveSolve();
+            this.naiveSolve();
         } catch (SolverException ex) {
             LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
             return false;

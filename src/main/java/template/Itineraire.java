@@ -71,7 +71,7 @@ public class Itineraire extends JFrame { // NOSONAR
         this.initComponents();
         this.initialisationFenetre();
         this.instance = i;
-        LOGGER.log(Level.INFO, "Instance :", instance.toString());
+        LOGGER.log(Level.INFO, "Instance :", this.instance.toString());
     }
 
     @Override
@@ -141,13 +141,13 @@ public class Itineraire extends JFrame { // NOSONAR
                 g2.setStroke(new BasicStroke(3));
                 g2.drawLine((int) source.getX() * 4 + 400, (int) source.getY() * 4 + 400, (int) destination.getX() * 4 + 400, (int) destination.getY() * 4 + 400);
                 source = destination;
-                drawEmplacement(g, destination);
+                this.drawEmplacement(g, destination);
 
             }
             g.drawLine((int) source.getX() * 4 + 400, (int) source.getY() * 4 + 400, (int) d.getX() * 4 + 400, (int) d.getY() * 4 + 400);
             code += 20;
         }
-        drawEmplacement(g, d);
+        this.drawEmplacement(g, d);
 
     }
 

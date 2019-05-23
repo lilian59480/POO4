@@ -70,8 +70,8 @@ public class ListeInstance extends JFrame { // NOSONAR
             }
         }
 
-        initComponents();
-        initialisationFenetre();
+        this.initComponents();
+        this.initialisationFenetre();
     }
 
     /**
@@ -196,7 +196,7 @@ public class ListeInstance extends JFrame { // NOSONAR
     private void jListInstanceValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListInstanceValueChanged
         // TODO add your handling code here:
         String selected = this.jListInstance.getSelectedValue().toString();
-        jSelectedInstance.setText(selected);
+        this.jSelectedInstance.setText(selected);
 
     }//GEN-LAST:event_jListInstanceValueChanged
 

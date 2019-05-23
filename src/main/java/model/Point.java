@@ -73,7 +73,7 @@ public class Point {
      * @return The id.
      */
     public int getId() {
-        return id;
+        return this.id;
     }
 
     /**
@@ -110,7 +110,7 @@ public class Point {
      * @return X coordinate.
      */
     public double getX() {
-        return x;
+        return this.x;
     }
 
     /**
@@ -119,7 +119,7 @@ public class Point {
      * @return Y coordinate.
      */
     public double getY() {
-        return y;
+        return this.y;
     }
 
     /**

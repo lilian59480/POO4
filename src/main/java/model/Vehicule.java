@@ -164,7 +164,7 @@ public class Vehicule {
      * @return The cout.
      */
     public double getCout() {
-        return cout;
+        return this.cout;
     }
 
     /**
@@ -221,7 +221,7 @@ public class Vehicule {
 
             c.setPosition(position + 1);
 
-            if (!destinations.add(e)) {
+            if (!this.destinations.add(e)) {
                 return false;
             }
 
@@ -229,12 +229,12 @@ public class Vehicule {
             // Ne pas oublier d'enlever la distance pour le dernier client
             if (position == 0) {
                 double depotToClient = this.depot.getDistanceTo(e);
-                double clientToDepot = e.getDistanceTo(depot);
+                double clientToDepot = e.getDistanceTo(this.depot);
                 this.cout = depotToClient + clientToDepot;
             } else {
-                double diffCout = -lastEmplacement.getDistanceTo(depot);
+                double diffCout = -lastEmplacement.getDistanceTo(this.depot);
                 diffCout += lastEmplacement.getDistanceTo(e);
-                diffCout += e.getDistanceTo(depot);
+                diffCout += e.getDistanceTo(this.depot);
 
                 this.cout += diffCout;
             }
@@ -244,7 +244,7 @@ public class Vehicule {
 
             c.setVehicule(this);
 
-            planning.recalculerCoutTotal();
+            this.planning.recalculerCoutTotal();
 
             return true;
         }
@@ -288,7 +288,7 @@ public class Vehicule {
 
         c.setPosition(position + 1);
 
-        if (!destinations.add(e)) {
+        if (!this.destinations.add(e)) {
             return false;
         }
 
@@ -296,12 +296,12 @@ public class Vehicule {
         // Ne pas oublier d'enlever la distance pour le dernier client
         if (position == 0) {
             double depotToClient = this.depot.getDistanceTo(e);
-            double clientToDepot = e.getDistanceTo(depot);
+            double clientToDepot = e.getDistanceTo(this.depot);
             this.cout = depotToClient + clientToDepot;
         } else {
-            double diffCout = -lastEmplacement.getDistanceTo(depot);
+            double diffCout = -lastEmplacement.getDistanceTo(this.depot);
             diffCout += lastEmplacement.getDistanceTo(e);
-            diffCout += e.getDistanceTo(depot);
+            diffCout += e.getDistanceTo(this.depot);
 
             this.cout += diffCout;
         }
@@ -311,7 +311,7 @@ public class Vehicule {
 
         c.setVehicule(this);
 
-        planning.recalculerCoutTotal();
+        this.planning.recalculerCoutTotal();
 
         return true;
 
@@ -323,7 +323,7 @@ public class Vehicule {
      * @return The depot.
      */
     public Depot getDepot() {
-        return depot;
+        return this.depot;
     }
 
     @Override

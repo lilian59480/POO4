@@ -237,7 +237,7 @@ public class Cli {
                     LOGGER.log(Level.INFO, "Loaded {0}", iterator.getFilename());
                     Cli.PS.println("\t\tResource " + iterator.getFilename() + " loaded from Jar");
 
-                    Instance instance = ifp.parse(is);
+                    Instance instance = this.ifp.parse(is);
 
                     LOGGER.log(Level.FINE, "Instance parsed : {0}", is);
 

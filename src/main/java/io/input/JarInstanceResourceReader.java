@@ -62,11 +62,13 @@ public class JarInstanceResourceReader implements Iterable<InputStream> {
     public FilenameIterator<InputStream> iterator() {
         return new FilenameIterator<InputStream>() {
 
+            private final Class<JarInstanceResourceReader> loader = JarInstanceResourceReader.this.loader;
+
             private int currentIndex = 0;
 
             @Override
             public boolean hasNext() {
-                return currentIndex < MAX_INDEX;
+                return this.currentIndex < MAX_INDEX;
             }
 
             @Override
@@ -74,15 +76,15 @@ public class JarInstanceResourceReader implements Iterable<InputStream> {
                 if (!this.hasNext()) {
                     throw new NoSuchElementException("Iterator does not have next element");
                 }
-                int i = currentIndex;
-                currentIndex++;
+                int i = this.currentIndex;
+                this.currentIndex++;
                 LOGGER.log(Level.FINEST, "File jar:///instances/instance_{0}-triangle.txt retrieved", i);
-                return loader.getResourceAsStream("/instances/instance_" + i + "-triangle.txt");
+                return this.loader.getResourceAsStream("/instances/instance_" + i + "-triangle.txt");
             }
 
             @Override
             public String getFilename() {
-                return "/instances/instance_" + (currentIndex - 1) + "-triangle.txt";
+                return "/instances/instance_" + (this.currentIndex - 1) + "-triangle.txt";
             }
 
         };

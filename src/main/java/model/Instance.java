@@ -158,7 +158,7 @@ public class Instance {
      * @return The current planning.
      */
     public Planning getPlanningCurrent() {
-        return plannings.get(plannings.size() - 1);
+        return this.plannings.get(this.plannings.size() - 1);
     }
 
     /**
@@ -203,7 +203,7 @@ public class Instance {
      * @return A list of clients.
      */
     public List<Client> getClients() {
-        return clients;
+        return this.clients;
     }
 
     /**
@@ -212,7 +212,7 @@ public class Instance {
      * @return A list of vehicules.
      */
     public List<Vehicule> getVehicules() {
-        return vehicules;
+        return this.vehicules;
     }
 
     /**
@@ -221,7 +221,7 @@ public class Instance {
      * @return The depot.
      */
     public Depot getDepot() {
-        return depot;
+        return this.depot;
     }
 
     /**
@@ -243,7 +243,7 @@ public class Instance {
      * @return Number of vehicules allocated.
      */
     public int getNbVehicules() {
-        return nbVehicules;
+        return this.nbVehicules;
     }
 
     /**
@@ -261,7 +261,7 @@ public class Instance {
      * @return The CoutVehicule.
      */
     public int getCoutVehicule() {
-        return coutVehicule;
+        return this.coutVehicule;
     }
 
     /**
@@ -286,7 +286,7 @@ public class Instance {
 
     @Override
     public String toString() {
-        return "capV=" + capaciteVehicule + ", coutV=" + coutVehicule + ", nbC=" + clients.size() + ", nbV" + vehicules.size();
+        return "capV=" + this.capaciteVehicule + ", coutV=" + this.coutVehicule + ", nbC=" + this.clients.size() + ", nbV" + this.vehicules.size();
     }
 
 }
