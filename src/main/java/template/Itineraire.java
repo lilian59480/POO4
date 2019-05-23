@@ -56,18 +56,22 @@ public class Itineraire extends JFrame { // NOSONAR
     private static final long serialVersionUID = 20190510150842L;
 
     /**
-     * Creates new form itineraire.
+     * Creates new form itineraire with a null Instance.
      */
     public Itineraire() {
-        this.initComponents();
-        this.initialisationFenetre();
+        this(null);
     }
 
+    /**
+     * Creates new form itineraire.
+     *
+     * @param i Instance to display
+     */
     public Itineraire(Instance i) {
         this.initComponents();
         this.initialisationFenetre();
         this.instance = i;
-        LOGGER.log(Level.INFO, instance.toString());
+        LOGGER.log(Level.INFO, "Instance :", instance.toString());
     }
 
     @Override

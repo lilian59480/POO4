@@ -48,7 +48,7 @@ public class TSVParser {
      *
      * @param f The file to parse
      * @return an Instance
-     * @throws ParserException
+     * @throws ParserException When parsing can't be done properly
      */
     public List<String[]> parse(File f) throws ParserException {
         try (FileInputStream fis = new FileInputStream(f)) {
@@ -64,7 +64,7 @@ public class TSVParser {
      *
      * @param is The {@link InputStream} to parse
      * @return an Instance
-     * @throws ParserException
+     * @throws ParserException When parsing can't be done properly
      */
     public List<String[]> parse(InputStream is) throws ParserException {
         try (InputStreamReader isr = new InputStreamReader(is)) {
@@ -80,7 +80,7 @@ public class TSVParser {
      *
      * @param rd The Reader
      * @return an Instance
-     * @throws ParserException
+     * @throws ParserException When parsing can't be done properly
      */
     public List<String[]> parse(Reader rd) throws ParserException {
 

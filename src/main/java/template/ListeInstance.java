@@ -181,22 +181,33 @@ public class ListeInstance extends JFrame { // NOSONAR
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * @todo Write Code and Javadoc
+     * @param evt Event
+     */
     private void jButtonSolveInstanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSolveInstanceActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonSolveInstanceActionPerformed
 
+    /**
+     * @todo Write Code and Javadoc
+     * @param evt Event
+     */
     private void jListInstanceValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListInstanceValueChanged
         // TODO add your handling code here:
         String selected = this.jListInstance.getSelectedValue().toString();
         jSelectedInstance.setText(selected);
 
-        
     }//GEN-LAST:event_jListInstanceValueChanged
 
+    /**
+     * @todo Write Code and Javadoc
+     * @param evt Event
+     */
     private void jButtonDisplayInstanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDisplayInstanceActionPerformed
         // TODO add your handling code here:
         Instance i = this.jListInstance.getSelectedValue();
-        
+
         Itineraire itineraire = new Itineraire(i);
     }//GEN-LAST:event_jButtonDisplayInstanceActionPerformed
 

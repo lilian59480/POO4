@@ -361,6 +361,15 @@ public class Vehicule {
                 + capacite + ", capaciteUtilisee=" + capaciteUtilisee + '}';
     }
 
+    /**
+     * Check if there is enough time to move from an Emplacement to another.
+     *
+     * Check also if you can go to the depot within time limits.
+     *
+     * @param last Emplacement from where you start
+     * @param next Destination emplacement
+     * @return True if there is time to do the route.
+     */
     public boolean hasEnoughRemainingTime(Emplacement last, Emplacement next) {
         // Test if enough remaining time
         int timeToDestination = last.getTempsTo(next);

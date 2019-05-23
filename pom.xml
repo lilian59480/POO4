@@ -12,13 +12,11 @@
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>eclipselink</artifactId>
             <version>2.7.4</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>javax.persistence</artifactId>
             <version>2.2.1</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.derby</groupId>
@@ -29,13 +27,11 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.4.2</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.4.2</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
     <properties>
@@ -147,6 +143,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <configLocation>src/test/resources/checkstyle.xml</configLocation>
+                </configuration>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -154,6 +153,16 @@
                         </reports>
                     </reportSet>
                 </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <bottom><![CDATA[Copyright (C) 2019 Lilian Petitpas, Thomas Ternisien, Thibaut Fenain, Corentin Apolinario.<br>Licenced under the GNU General Public License version 3 or later.]]></bottom>
+                    <detectLinks>true</detectLinks>
+                    <show>private</show>
+                </configuration>
             </plugin>
         </plugins>
     </reporting>

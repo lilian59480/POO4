@@ -170,6 +170,10 @@ public class Cli {
 
     /**
      * Print cost summary, in a beautiful table.
+     *
+     * @param solver Solver used
+     * @param instanceList List of instances solved with the solver in
+     * parameter.
      */
     private void printCostSummary(ISolver solver, List<Instance> instanceList) {
         Cli.PS.println("Summary for :");
