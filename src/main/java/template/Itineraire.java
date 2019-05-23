@@ -45,15 +45,15 @@ import model.Vehicule;
 public class Itineraire extends JFrame { // NOSONAR
 
     /**
+     * Serial UID, for serialisation.
+     */
+    private static final long serialVersionUID = 20190510150842L;
+
+    /**
      * Class logger.
      */
     private static final Logger LOGGER = Logger.getLogger(Itineraire.class.getName());
     private Instance instance;
-
-    /**
-     * Serial UID, for serialisation.
-     */
-    private static final long serialVersionUID = 20190510150842L;
 
     /**
      * Creates new form itineraire with a null Instance.

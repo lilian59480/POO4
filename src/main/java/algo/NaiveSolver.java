@@ -35,14 +35,14 @@ import model.Vehicule;
 public class NaiveSolver implements ISolver {
 
     /**
-     * Current instance.
-     */
-    private Instance instance;
-
-    /**
      * Class logger.
      */
     private static final Logger LOGGER = Logger.getLogger(NaiveSolver.class.getName());
+
+    /**
+     * Current instance.
+     */
+    private Instance instance;
 
     /**
      * Solver constructor, without an Instance.

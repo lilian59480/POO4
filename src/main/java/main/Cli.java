@@ -69,49 +69,14 @@ public class Cli {
     private static final JarInstanceResourceReader JAR_INSTANCE_RR = new JarInstanceResourceReader();
 
     /**
-     * Instance file parser.
-     */
-    private final InstanceFileParser ifp;
-
-    /**
      * Solution writer.
      */
     private static final SolutionWriter SW = new SolutionWriter();
 
     /**
-     * Cli Entry point.
-     *
-     * @param args Arguments, 1st can be "help" or "usage"
+     * Instance file parser.
      */
-    public static void main(String[] args) {
-        LOGGER.log(Level.INFO, "Solving a new instance");
-        LOGGER.log(Level.FINE, "Arguments : {0}", Arrays.toString(args));
-
-        Cli self;
-        try {
-            self = new Cli();
-        } catch (ParserException ex) {
-            LOGGER.log(Level.SEVERE, "Impossible to initialise Cli", ex);
-            System.exit(-1);
-            return;
-        }
-        self.printIntro();
-        self.printLicence();
-
-        if (args.length >= 1) {
-            if ("help".equals(args[0]) || "usage".equals(args[0])) {
-                self.printHelp();
-                return;
-            }
-
-            // Unknown argument
-            self.printHelp();
-            return;
-
-        }
-
-        self.runAllInstancesOnAllSolvers();
-    }
+    private final InstanceFileParser ifp;
 
     /**
      * Cli constructor.
@@ -277,6 +242,41 @@ public class Cli {
             LOGGER.log(Level.SEVERE, "Impossible to write solution file", ex);
         }
 
+    }
+
+    /**
+     * Cli Entry point.
+     *
+     * @param args Arguments, 1st can be "help" or "usage"
+     */
+    public static void main(String[] args) {
+        LOGGER.log(Level.INFO, "Solving a new instance");
+        LOGGER.log(Level.FINE, "Arguments : {0}", Arrays.toString(args));
+
+        Cli self;
+        try {
+            self = new Cli();
+        } catch (ParserException ex) {
+            LOGGER.log(Level.SEVERE, "Impossible to initialise Cli", ex);
+            System.exit(-1);
+            return;
+        }
+        self.printIntro();
+        self.printLicence();
+
+        if (args.length >= 1) {
+            if ("help".equals(args[0]) || "usage".equals(args[0])) {
+                self.printHelp();
+                return;
+            }
+
+            // Unknown argument
+            self.printHelp();
+            return;
+
+        }
+
+        self.runAllInstancesOnAllSolvers();
     }
 
     /**
