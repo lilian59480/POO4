@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/DECORATION/1.6.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.6.0 http://maven.apache.org/xsd/decoration-1.6.0.xsd"
+         name="POO4 Project">
+
+    <bannerRight>
+        <name>Formation IG2I - Centrale Lille</name>
+        <src>images/IG2I.jpg</src>
+        <href>http://ig2i.centralelille.fr/</href>
+    </bannerRight>
+
+    <publishDate position="none"/>
+    <version position="right"/>
+
+    <poweredBy>
+        <logo name="Maven"
+              href="https://maven.apache.org/"
+              img="https://maven.apache.org/images/logos/maven-feather.png"/>
+        <logo name="Licence GPL-3"
+              href="https://www.gnu.org/licenses/gpl-3.0.html"
+              img="https://www.gnu.org/graphics/gplv3-88x31.png"/>
+    </poweredBy>
+
+    <body>
+        <menu name="Overview">
+            <item name="Introduction" href="index.html"/>
+            <item name="Subject" href="subject.html"/>
+            <item name="Download" href="download.html"/>
+        </menu>
+
+        <menu ref="modules"/>
+        <menu ref="reports" />
+
+        <footer><![CDATA[Copyright (C) 2019 Lilian Petitpas, Thomas Ternisien, Thibaut Fenain, Corentin Apolinario.<br>Licenced under the GNU General Public License version 3 or later.]]></footer>
+
+    </body>
+
+    <skin>
+        <groupId>org.apache.maven.skins</groupId>
+        <artifactId>maven-fluido-skin</artifactId>
+        <version>1.7</version>
+    </skin>
+
+    <custom>
+        <fluidoSkin>
+            <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
+            <skipGenerationDate>true</skipGenerationDate>
+        </fluidoSkin>
+    </custom>
+</project>
