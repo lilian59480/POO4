@@ -18,6 +18,8 @@
  */
 package dao;
 
+import dao.jpa.JPADaoFactory;
+
 /**
  *
  * @author Corentin

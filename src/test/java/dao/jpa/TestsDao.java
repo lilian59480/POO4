@@ -16,8 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dao;
+package dao.jpa;
 
+import dao.ClientDao;
+import dao.DepotDao;
+import dao.PlanningDao;
+import dao.RouteDao;
+import dao.VehiculeDao;
 import model.Client;
 import model.Depot;
 import model.Emplacement;

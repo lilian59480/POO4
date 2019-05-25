@@ -16,27 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dao;
+package dao.jpa;
 
-import model.Depot;
+import dao.PlanningDao;
+import model.Planning;
 
 /**
  *
  * @author Corentin
  */
-public class JPADepotDao extends JPADao<Depot> implements DepotDao {
+public class JPAPlanningDao extends JPADao<Planning> implements PlanningDao {
 
-    private static JPADepotDao instance;
+    private static JPAPlanningDao instance;
 
-    protected static JPADepotDao getInstance() {
-        if (JPADepotDao.instance == null) {
-            JPADepotDao.instance = new JPADepotDao();
+    protected static JPAPlanningDao getInstance() {
+        if (JPAPlanningDao.instance == null) {
+            JPAPlanningDao.instance = new JPAPlanningDao();
         }
-        return JPADepotDao.instance;
+        return JPAPlanningDao.instance;
     }
 
-    private JPADepotDao() {
-        super(Depot.class);
+    private JPAPlanningDao() {
+        super(Planning.class);
     }
 
 }

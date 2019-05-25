@@ -16,48 +16,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dao;
+package dao.jpa;
+
+import dao.InstanceDao;
+import javax.persistence.Query;
+import model.Instance;
 
 /**
  *
  * @author Corentin
  */
-public class JPADaoFactory extends DaoFactory {
+public class JPAInstanceDao extends JPADao<Instance> implements InstanceDao {
 
-    @Override
-    public JPAClientDao getClientDao() {
-        return JPAClientDao.getInstance();
+    private static JPAInstanceDao instance;
+
+    protected static JPAInstanceDao getInstance() {
+        if (JPAInstanceDao.instance == null) {
+            JPAInstanceDao.instance = new JPAInstanceDao();
+        }
+        return JPAInstanceDao.instance;
+    }
+
+    private JPAInstanceDao() {
+        super(Instance.class);
     }
 
     @Override
-    public JPADepotDao getDepotDao() {
-        return JPADepotDao.getInstance();
-    }
-
-    @Override
-    public JPAEmplacementDao getEmplacementDao()
-    {
-        return JPAEmplacementDao.getInstance();
-    }
-    
-    @Override
-    public JPAPlanningDao getPlanningDao() {
-        return JPAPlanningDao.getInstance();
-    }
-
-    @Override
-    public JPARouteDao getRouteDao() {
-        return JPARouteDao.getInstance();
-    }
-
-    @Override
-    public JPAVehiculeDao getVehiculeDao() {
-        return JPAVehiculeDao.getInstance();
-    }
-
-    @Override
-    public JPAInstanceDao getInstanceDao() {
-        return JPAInstanceDao.getInstance();
+    public Instance findByName(String name) {
+        Query query = JPADao.em.createNamedQuery("Instance.findByNom");
+        query.setParameter("nom", name);
+        return (Instance) query.getSingleResult();
     }
 
 }

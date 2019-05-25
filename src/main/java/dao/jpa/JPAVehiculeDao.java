@@ -16,27 +16,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dao;
+package dao.jpa;
 
-import model.Emplacement;
+import dao.VehiculeDao;
+import java.util.Collection;
+import javax.persistence.Query;
+import model.Vehicule;
 
 /**
  *
  * @author Corentin
  */
-public class JPAEmplacementDao extends JPADao<Emplacement> implements EmplacementDao {
+public class JPAVehiculeDao extends JPADao<Vehicule> implements VehiculeDao {
 
-    private static JPAEmplacementDao instance;
+    private static JPAVehiculeDao instance;
 
-    protected static JPAEmplacementDao getInstance() {
-        if (JPAEmplacementDao.instance == null) {
-            JPAEmplacementDao.instance = new JPAEmplacementDao();
+    protected static JPAVehiculeDao getInstance() {
+        if (JPAVehiculeDao.instance == null) {
+            JPAVehiculeDao.instance = new JPAVehiculeDao();
         }
-        return JPAEmplacementDao.instance;
+        return JPAVehiculeDao.instance;
     }
 
-    private JPAEmplacementDao() {
-        super(Emplacement.class);
+    private JPAVehiculeDao() {
+        super(Vehicule.class);
+    }
+
+    @Override
+    public Collection<Vehicule> findAllNotUsed() {
+        Query query = JPADao.em.createNamedQuery("Vehicule.findAllNotUsed");
+        return query.getResultList();
     }
 
 }
