@@ -45,21 +45,33 @@ import model.Vehicule;
 public class Itineraire extends JFrame { // NOSONAR
 
     /**
-     * Class logger.
-     */
-    private static final Logger LOGGER = Logger.getLogger(Itineraire.class.getName());
-
-    /**
      * Serial UID, for serialisation.
      */
     private static final long serialVersionUID = 20190510150842L;
 
     /**
-     * Creates new form itineraire.
+     * Class logger.
+     */
+    private static final Logger LOGGER = Logger.getLogger(Itineraire.class.getName());
+    private Instance instance;
+
+    /**
+     * Creates new form itineraire with a null Instance.
      */
     public Itineraire() {
+        this(null);
+    }
+
+    /**
+     * Creates new form itineraire.
+     *
+     * @param i Instance to display
+     */
+    public Itineraire(Instance i) {
         this.initComponents();
         this.initialisationFenetre();
+        this.instance = i;
+        LOGGER.log(Level.INFO, "Instance :", this.instance.toString());
     }
 
     @Override
@@ -77,7 +89,7 @@ public class Itineraire extends JFrame { // NOSONAR
             return;
         }
 
-        this.drawInstance(g, i);
+        this.drawInstance(g, this.instance);
         g.setColor(c);
 
     }
@@ -129,13 +141,13 @@ public class Itineraire extends JFrame { // NOSONAR
                 g2.setStroke(new BasicStroke(3));
                 g2.drawLine((int) source.getX() * 4 + 400, (int) source.getY() * 4 + 400, (int) destination.getX() * 4 + 400, (int) destination.getY() * 4 + 400);
                 source = destination;
-                drawEmplacement(g, destination);
+                this.drawEmplacement(g, destination);
 
             }
             g.drawLine((int) source.getX() * 4 + 400, (int) source.getY() * 4 + 400, (int) d.getX() * 4 + 400, (int) d.getY() * 4 + 400);
             code += 20;
         }
-        drawEmplacement(g, d);
+        this.drawEmplacement(g, d);
 
     }
 

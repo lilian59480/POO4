@@ -107,7 +107,7 @@ public abstract class Point implements Serializable {
      * @return The id.
      */
     public int getId() {
-        return id;
+        return this.id;
     }
 
     /**
@@ -144,7 +144,7 @@ public abstract class Point implements Serializable {
      * @return X coordinate.
      */
     public double getX() {
-        return x;
+        return this.x;
     }
 
     /**
@@ -153,7 +153,7 @@ public abstract class Point implements Serializable {
      * @return Y coordinate.
      */
     public double getY() {
-        return y;
+        return this.y;
     }
 
     /**
@@ -200,7 +200,7 @@ public abstract class Point implements Serializable {
 
     @Override
     public String toString() {
-        return "Point{" + "x=" + x + ", y=" + y + '}';
+        return "Point{" + "id=" + id + ", x=" + x + ", y=" + y + '}';
     }
 
 }

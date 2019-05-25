@@ -105,7 +105,7 @@ public class Client implements Serializable {
      * @return The demand.
      */
     public int getDemande() {
-        return demande;
+        return this.demande;
     }
 
     /**
@@ -114,7 +114,7 @@ public class Client implements Serializable {
      * @return The position.
      */
     public int getPosition() {
-        return position;
+        return this.position;
     }
 
     /**
@@ -132,7 +132,7 @@ public class Client implements Serializable {
      * @return The list of emplacements.
      */
     public List<Emplacement> getEmplacements() {
-        return emplacements;
+        return this.emplacements;
     }
 
     /**

@@ -80,7 +80,7 @@ public class Emplacement extends Point implements Serializable {
      * @return The HeureDebut.
      */
     public int getHeureDebut() {
-        return heureDebut;
+        return this.heureDebut;
     }
 
     /**
@@ -89,7 +89,7 @@ public class Emplacement extends Point implements Serializable {
      * @return The HeureFin.
      */
     public int getHeureFin() {
-        return heureFin;
+        return this.heureFin;
     }
 
     /**
@@ -98,7 +98,7 @@ public class Emplacement extends Point implements Serializable {
      * @return The client.
      */
     public Client getClient() {
-        return client;
+        return this.client;
     }
 
     /**

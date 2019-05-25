@@ -93,7 +93,7 @@ public class Route implements Serializable {
      * @return Origin point.
      */
     public Point getFrom() {
-        return from;
+        return this.from;
     }
 
     /**
@@ -102,7 +102,7 @@ public class Route implements Serializable {
      * @return Destination point.
      */
     public Point getTo() {
-        return to;
+        return this.to;
     }
 
     /**
@@ -111,7 +111,7 @@ public class Route implements Serializable {
      * @return The cost.
      */
     public double getCout() {
-        return cout;
+        return this.cout;
     }
 
     /**
@@ -120,7 +120,7 @@ public class Route implements Serializable {
      * @return The duration.
      */
     public int getTemps() {
-        return temps;
+        return this.temps;
     }
 
     @Override

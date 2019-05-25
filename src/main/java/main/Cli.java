@@ -29,11 +29,13 @@ import io.output.WriterException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Instance;
+import model.Planning;
 
 /**
  * CLI function, used as an entry point for this project
@@ -67,49 +69,14 @@ public class Cli {
     private static final JarInstanceResourceReader JAR_INSTANCE_RR = new JarInstanceResourceReader();
 
     /**
-     * Instance file parser.
-     */
-    private final InstanceFileParser ifp;
-
-    /**
      * Solution writer.
      */
     private static final SolutionWriter SW = new SolutionWriter();
 
     /**
-     * Cli Entry point.
-     *
-     * @param args Arguments, 1st can be "help" or "usage"
+     * Instance file parser.
      */
-    public static void main(String[] args) {
-        LOGGER.log(Level.INFO, "Solving a new instance");
-        LOGGER.log(Level.FINE, "Arguments : {0}", Arrays.toString(args));
-
-        Cli self;
-        try {
-            self = new Cli();
-        } catch (ParserException ex) {
-            LOGGER.log(Level.SEVERE, "Impossible to initialise Cli", ex);
-            System.exit(-1);
-            return;
-        }
-        self.printIntro();
-        self.printLicence();
-
-        if (args.length >= 1) {
-            if ("help".equals(args[0]) || "usage".equals(args[0])) {
-                self.printHelp();
-                return;
-            }
-
-            // Unknown argument
-            self.printHelp();
-            return;
-
-        }
-
-        self.runAllInstancesOnAllSolvers();
-    }
+    private final InstanceFileParser ifp;
 
     /**
      * Cli constructor.
@@ -167,6 +134,43 @@ public class Cli {
     }
 
     /**
+     * Print cost summary, in a beautiful table.
+     *
+     * @param solver Solver used
+     * @param instanceList List of instances solved with the solver in
+     * parameter.
+     */
+    private void printCostSummary(ISolver solver, List<Instance> instanceList) {
+        Cli.PS.println("Summary for :");
+        Cli.PS.println(solver);
+
+        Cli.PS.println("+----+--------------+--------+---------+");
+        Cli.PS.println("| ID |     Cost     | Ext V. | Checker |");
+        Cli.PS.println("+----+--------------+--------+---------+");
+
+        int index = 0;
+        for (Instance instance : instanceList) {
+            Planning p = instance.getPlanningCurrent();
+            int id = index;
+            double cost = p.getCout();
+
+            int externalVehicules = p.getVehicules().size() - instance.getNbVehicules();
+
+            boolean valid = p.check();
+            String unicodeValid = "V";
+            if (!valid) {
+                unicodeValid = "X";
+            }
+
+            Cli.PS.printf("| %2d | %12.2f |   %2d   |    %s    |\n", id, (float) cost, externalVehicules, unicodeValid);
+            index++;
+        }
+
+        Cli.PS.println("+----+--------------+--------+---------+");
+
+    }
+
+    /**
      * Run all instances on all defined solvers.
      */
     private void runAllInstancesOnAllSolvers() {
@@ -186,6 +190,7 @@ public class Cli {
      * @param solver The solver to use.
      */
     private void runAllInstancesOnOneSolver(ISolver solver) {
+        List<Instance> instanceList = new ArrayList<>();
         try {
 
             Cli.PS.println("\tRun " + solver + " on all files instances stored in Jar");
@@ -197,12 +202,12 @@ public class Cli {
                     LOGGER.log(Level.INFO, "Loaded {0}", iterator.getFilename());
                     Cli.PS.println("\t\tResource " + iterator.getFilename() + " loaded from Jar");
 
-                    Instance instance = ifp.parse(is);
+                    Instance instance = this.ifp.parse(is);
 
                     LOGGER.log(Level.FINE, "Instance parsed : {0}", is);
 
                     this.runOneInstancesOnOneSolver(solver, instance, Cli.defineSolutionFilename(iterator.getFilename()));
-
+                    instanceList.add(instance);
                 }
 
                 Cli.PS.println("\t\tInstance OK");
@@ -211,6 +216,8 @@ public class Cli {
         } catch (ParserException | IOException ex) {
             LOGGER.log(Level.SEVERE, "Exception while solving Instances!", ex);
         }
+
+        this.printCostSummary(solver, instanceList);
 
     }
 
@@ -226,16 +233,50 @@ public class Cli {
         Cli.PS.println("\t\t\tSolving ...");
         boolean status = solver.solve();
         if (!status) {
-            LOGGER.log(Level.SEVERE, "Instance unsolvable!");
-            return;
+            LOGGER.log(Level.SEVERE, "Instance unsolvable! Use the official checker to know why");
         }
 
         try {
-            Cli.SW.write(i, filename + "_sol.txt");
+            Cli.SW.write(i, filename);
         } catch (WriterException ex) {
             LOGGER.log(Level.SEVERE, "Impossible to write solution file", ex);
         }
 
+    }
+
+    /**
+     * Cli Entry point.
+     *
+     * @param args Arguments, 1st can be "help" or "usage"
+     */
+    public static void main(String[] args) {
+        LOGGER.log(Level.INFO, "Solving a new instance");
+        LOGGER.log(Level.FINE, "Arguments : {0}", Arrays.toString(args));
+
+        Cli self;
+        try {
+            self = new Cli();
+        } catch (ParserException ex) {
+            LOGGER.log(Level.SEVERE, "Impossible to initialise Cli", ex);
+            System.exit(-1);
+            return;
+        }
+        self.printIntro();
+        self.printLicence();
+
+        if (args.length >= 1) {
+            if ("help".equals(args[0]) || "usage".equals(args[0])) {
+                self.printHelp();
+                return;
+            }
+
+            // Unknown argument
+            self.printHelp();
+            return;
+
+        }
+
+        self.runAllInstancesOnAllSolvers();
     }
 
     /**

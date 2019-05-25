@@ -35,14 +35,14 @@ import model.Vehicule;
 public class NaiveSolver implements ISolver {
 
     /**
-     * Current instance.
-     */
-    private Instance instance;
-
-    /**
      * Class logger.
      */
     private static final Logger LOGGER = Logger.getLogger(NaiveSolver.class.getName());
+
+    /**
+     * Current instance.
+     */
+    private Instance instance;
 
     /**
      * Solver constructor, without an Instance.
@@ -67,7 +67,7 @@ public class NaiveSolver implements ISolver {
 
     @Override
     public Instance getInstance() {
-        return instance;
+        return this.instance;
     }
 
     @Override
@@ -83,7 +83,7 @@ public class NaiveSolver implements ISolver {
         }
         LOGGER.log(Level.FINE, "Solving a new instance");
         try {
-            naiveSolve();
+            this.naiveSolve();
         } catch (SolverException ex) {
             LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
             return false;

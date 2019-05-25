@@ -29,17 +29,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for {@link TSVParser}
+ * Tests for {@link TsvParser}
  *
  * @author Lilian Petitpas
  */
-@DisplayName("TSVParser")
-public class TSVParserTest {
+@DisplayName("TsvParser")
+public class TsvParserTest {
 
     /**
-     * TSVParser.
+     * TsvParser.
      */
-    private final TSVParser parser = new TSVParser();
+    private final TsvParser parser = new TsvParser();
 
     /**
      * Test string.
@@ -47,7 +47,7 @@ public class TSVParserTest {
     private final String testString = "ID\tValue\n0\t1\n1\t5\n";
 
     /**
-     * Test if TSVParser is working with a valid reader.
+     * Test if TsvParser is working with a valid reader.
      */
     @Test
     @DisplayName("Is working with a valid Reader")

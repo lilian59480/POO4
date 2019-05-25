@@ -117,6 +117,15 @@ public class Instance implements Serializable {
     }
 
     /**
+     * Get vehicule capacity.
+     *
+     * @return The vehicule capacity.
+     */
+    public int getCapaciteVehicule() {
+        return this.capaciteVehicule;
+    }
+
+    /**
      * Set vehicule cost.
      *
      * @param coutVehicule The CoutVehicule.
@@ -170,7 +179,7 @@ public class Instance implements Serializable {
      * @return The current planning.
      */
     public Planning getPlanningCurrent() {
-        return plannings.get(plannings.size() - 1);
+        return this.plannings.get(this.plannings.size() - 1);
     }
 
     /**
@@ -203,6 +212,9 @@ public class Instance implements Serializable {
         for (Vehicule v : this.vehicules) {
             v.clear();
         }
+        while (this.nbVehicules < this.vehicules.size()) {
+            this.vehicules.remove(this.vehicules.size() - 1);
+        }
         this.addNewPlanning();
     }
 
@@ -212,7 +224,7 @@ public class Instance implements Serializable {
      * @return A list of clients.
      */
     public List<Client> getClients() {
-        return clients;
+        return this.clients;
     }
 
     /**
@@ -221,7 +233,7 @@ public class Instance implements Serializable {
      * @return A list of vehicules.
      */
     public List<Vehicule> getVehicules() {
-        return vehicules;
+        return this.vehicules;
     }
 
     /**
@@ -230,7 +242,7 @@ public class Instance implements Serializable {
      * @return The depot.
      */
     public Depot getDepot() {
-        return depot;
+        return this.depot;
     }
 
     /**
@@ -252,7 +264,7 @@ public class Instance implements Serializable {
      * @return Number of vehicules allocated.
      */
     public int getNbVehicules() {
-        return nbVehicules;
+        return this.nbVehicules;
     }
 
     /**
@@ -270,7 +282,7 @@ public class Instance implements Serializable {
      * @return The CoutVehicule.
      */
     public int getCoutVehicule() {
-        return coutVehicule;
+        return this.coutVehicule;
     }
 
     /**
@@ -281,13 +293,10 @@ public class Instance implements Serializable {
      * @return True if the instance is valid, false otherwise
      */
     public boolean check() {
-        boolean valid = true;
+        boolean valid = this.getPlanningCurrent().check();
+
         for (Client c : this.clients) {
             valid &= c.check();
-        }
-
-        for (Vehicule v : this.vehicules) {
-            valid &= v.check();
         }
 
         if (!valid) {
@@ -298,7 +307,7 @@ public class Instance implements Serializable {
 
     @Override
     public String toString() {
-        return "Instance{" + "capaciteVehicule=" + capaciteVehicule + ", coutVehicule=" + coutVehicule + ", depot=" + depot + ", clients=" + clients + ", vehicules=" + vehicules + ", routes=" + routes + ", plannings=" + plannings + '}';
+        return "capV=" + this.capaciteVehicule + ", coutV=" + this.coutVehicule + ", nbC=" + this.clients.size() + ", nbV" + this.vehicules.size();
     }
 
 }

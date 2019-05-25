@@ -227,6 +227,7 @@
 
         <!-- Always add this. -->
         <module name="RequireThis">
+            <property name="validateOnlyOverlapping" value="false"/>
             <property name="severity" value="warning"/>
         </module>
 
