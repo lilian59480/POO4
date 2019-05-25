@@ -19,6 +19,7 @@
 package main;
 
 import algo.ISolver;
+import algo.iterative.CVCostCapacitySortedSolver;
 import algo.iterative.NaiveSolver;
 import algo.iterative.RandomSolver;
 import io.input.FilenameIterator;
@@ -57,7 +58,8 @@ public class Cli {
      */
     private static final List<ISolver> SOLVERS = Arrays.asList(
             new NaiveSolver(),
-            new RandomSolver()
+            new RandomSolver(),
+            new CVCostCapacitySortedSolver()
     );
 
     /**
