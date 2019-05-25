@@ -26,8 +26,9 @@ import java.util.Iterator;
  *
  * Can be used as a File iterator with filename available.
  *
- * @param <E> An InputStream class or subclass.
  * @author Lilian Petitpas
+ *
+ * @param <E> An InputStream class or subclass.
  */
 public interface FilenameIterator<E extends InputStream> extends Iterator<E> {
 
