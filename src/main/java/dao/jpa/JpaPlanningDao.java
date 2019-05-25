@@ -18,34 +18,41 @@
  */
 package dao.jpa;
 
-import dao.ClientDao;
-import java.util.Collection;
-import javax.persistence.Query;
-import model.Client;
+import dao.PlanningDao;
+import model.Planning;
 
 /**
  *
  * @author Corentin
  */
-public class JPAClientDao extends JPADao<Client> implements ClientDao {
+public class JpaPlanningDao extends JpaDao<Planning> implements PlanningDao {
 
-    private static JPAClientDao instance;
+    /**
+     * Static Instance of JpaPlanningDao.
+     *
+     * Used for singleton instance.
+     */
+    private static JpaPlanningDao instance;
 
-    protected static JPAClientDao getInstance() {
-        if (JPAClientDao.instance == null) {
-            JPAClientDao.instance = new JPAClientDao();
+    /**
+     * Get an instance of JpaPlanningDao.
+     *
+     * Reuse existing instance or create a new one.
+     *
+     * @return A new instance
+     */
+    protected static JpaPlanningDao getInstance() {
+        if (JpaPlanningDao.instance == null) {
+            JpaPlanningDao.instance = new JpaPlanningDao();
         }
-        return JPAClientDao.instance;
+        return JpaPlanningDao.instance;
     }
 
-    private JPAClientDao() {
-        super(Client.class);
-    }
-
-    @Override
-    public Collection<Client> findNotServed() {
-        Query query = JPADao.em.createNamedQuery("Client.findNotServed");
-        return query.getResultList();
+    /**
+     * Constructor.
+     */
+    private JpaPlanningDao() {
+        super(Planning.class);
     }
 
 }

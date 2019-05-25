@@ -16,22 +16,43 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dao;
+package dao.jpa;
 
-import java.util.Collection;
-import model.Vehicule;
+import dao.DepotDao;
+import model.Depot;
 
 /**
  *
  * @author Corentin
  */
-public interface VehiculeDao extends Dao<Vehicule> {
+public class JpaDepotDao extends JpaDao<Depot> implements DepotDao {
 
     /**
-     * Find all vehicules not used.
+     * Static Instance of JpaDepotDao.
      *
-     * @return A list of vehicules not used.
+     * Used for singleton instance.
      */
-    public Collection<Vehicule> findAllNotUsed();
+    private static JpaDepotDao instance;
+
+    /**
+     * Get an instance of JpaDepotDao.
+     *
+     * Reuse existing instance or create a new one.
+     *
+     * @return A new instance
+     */
+    protected static JpaDepotDao getInstance() {
+        if (JpaDepotDao.instance == null) {
+            JpaDepotDao.instance = new JpaDepotDao();
+        }
+        return JpaDepotDao.instance;
+    }
+
+    /**
+     * Constructor.
+     */
+    private JpaDepotDao() {
+        super(Depot.class);
+    }
 
 }

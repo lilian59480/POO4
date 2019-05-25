@@ -18,26 +18,41 @@
  */
 package dao.jpa;
 
-import dao.PlanningDao;
-import model.Planning;
+import dao.EmplacementDao;
+import model.Emplacement;
 
 /**
  *
  * @author Corentin
  */
-public class JPAPlanningDao extends JPADao<Planning> implements PlanningDao {
+public class JpaEmplacementDao extends JpaDao<Emplacement> implements EmplacementDao {
 
-    private static JPAPlanningDao instance;
+    /**
+     * Static Instance of JpaEmplacementDao.
+     *
+     * Used for singleton instance.
+     */
+    private static JpaEmplacementDao instance;
 
-    protected static JPAPlanningDao getInstance() {
-        if (JPAPlanningDao.instance == null) {
-            JPAPlanningDao.instance = new JPAPlanningDao();
+    /**
+     * Get an instance of JpaEmplacementDao.
+     *
+     * Reuse existing instance or create a new one.
+     *
+     * @return A new instance
+     */
+    protected static JpaEmplacementDao getInstance() {
+        if (JpaEmplacementDao.instance == null) {
+            JpaEmplacementDao.instance = new JpaEmplacementDao();
         }
-        return JPAPlanningDao.instance;
+        return JpaEmplacementDao.instance;
     }
 
-    private JPAPlanningDao() {
-        super(Planning.class);
+    /**
+     * Constructor.
+     */
+    private JpaEmplacementDao() {
+        super(Emplacement.class);
     }
 
 }

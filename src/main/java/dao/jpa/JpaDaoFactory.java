@@ -24,42 +24,42 @@ import dao.DaoFactory;
  *
  * @author Corentin
  */
-public class JPADaoFactory extends DaoFactory {
+public class JpaDaoFactory extends DaoFactory {
 
     @Override
-    public JPAClientDao getClientDao() {
-        return JPAClientDao.getInstance();
+    public JpaClientDao getClientDao() {
+        return JpaClientDao.getInstance();
     }
 
     @Override
-    public JPADepotDao getDepotDao() {
-        return JPADepotDao.getInstance();
+    public JpaDepotDao getDepotDao() {
+        return JpaDepotDao.getInstance();
     }
 
     @Override
-    public JPAEmplacementDao getEmplacementDao()
+    public JpaEmplacementDao getEmplacementDao()
     {
-        return JPAEmplacementDao.getInstance();
+        return JpaEmplacementDao.getInstance();
     }
     
     @Override
-    public JPAPlanningDao getPlanningDao() {
-        return JPAPlanningDao.getInstance();
+    public JpaPlanningDao getPlanningDao() {
+        return JpaPlanningDao.getInstance();
     }
 
     @Override
-    public JPARouteDao getRouteDao() {
-        return JPARouteDao.getInstance();
+    public JpaRouteDao getRouteDao() {
+        return JpaRouteDao.getInstance();
     }
 
     @Override
-    public JPAVehiculeDao getVehiculeDao() {
-        return JPAVehiculeDao.getInstance();
+    public JpaVehiculeDao getVehiculeDao() {
+        return JpaVehiculeDao.getInstance();
     }
 
     @Override
-    public JPAInstanceDao getInstanceDao() {
-        return JPAInstanceDao.getInstance();
+    public JpaInstanceDao getInstanceDao() {
+        return JpaInstanceDao.getInstance();
     }
 
 }

@@ -27,18 +27,55 @@ import java.util.Collection;
  */
 public interface Dao<T> {
 
+    /**
+     * Add new object to db.
+     *
+     * @param obj Object to add
+     * @return True if successful
+     */
     public boolean create(T obj);
 
-    public T find(Integer id);
+    /**
+     * Find an object by its id.
+     *
+     * @param id Id to retrieve
+     * @return The object with this id or null
+     */
+    public T find(int id);
 
+    /**
+     * Find all objects.
+     *
+     * @return A collection of objects
+     */
     public Collection<T> findAll();
 
+    /**
+     * Update an object by merging it.
+     *
+     * @param obj Object to update
+     * @return True if successful
+     */
     public boolean update(T obj);
 
+    /**
+     * Delete an object.
+     *
+     * @param obj Object to delete
+     * @return True if successful
+     */
     public boolean delete(T obj);
 
+    /**
+     * Delete all objects.
+     *
+     * @return True if successful
+     */
     public boolean deleteAll();
 
+    /**
+     * Close any open connections.
+     */
     public void close();
 
 }

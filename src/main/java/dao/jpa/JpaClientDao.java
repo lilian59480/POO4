@@ -18,34 +18,49 @@
  */
 package dao.jpa;
 
-import dao.InstanceDao;
+import dao.ClientDao;
+import java.util.Collection;
 import javax.persistence.Query;
-import model.Instance;
+import model.Client;
 
 /**
  *
  * @author Corentin
  */
-public class JPAInstanceDao extends JPADao<Instance> implements InstanceDao {
+public class JpaClientDao extends JpaDao<Client> implements ClientDao {
 
-    private static JPAInstanceDao instance;
+    /**
+     * Static Instance of JpaClientDao.
+     *
+     * Used for singleton instance.
+     */
+    private static JpaClientDao instance;
 
-    protected static JPAInstanceDao getInstance() {
-        if (JPAInstanceDao.instance == null) {
-            JPAInstanceDao.instance = new JPAInstanceDao();
+    /**
+     * Get an instance of JpaClientDao.
+     *
+     * Reuse existing instance or create a new one.
+     *
+     * @return A new instance
+     */
+    protected static JpaClientDao getInstance() {
+        if (JpaClientDao.instance == null) {
+            JpaClientDao.instance = new JpaClientDao();
         }
-        return JPAInstanceDao.instance;
+        return JpaClientDao.instance;
     }
 
-    private JPAInstanceDao() {
-        super(Instance.class);
+    /**
+     * Constructor.
+     */
+    private JpaClientDao() {
+        super(Client.class);
     }
 
     @Override
-    public Instance findByName(String name) {
-        Query query = JPADao.em.createNamedQuery("Instance.findByNom");
-        query.setParameter("nom", name);
-        return (Instance) query.getSingleResult();
+    public Collection<Client> findNotServed() {
+        Query query = JpaDao.em.createNamedQuery("Client.findNotServed");
+        return query.getResultList();
     }
 
 }

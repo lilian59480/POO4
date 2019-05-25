@@ -16,28 +16,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dao.jpa;
-
-import dao.DepotDao;
-import model.Depot;
+package dao;
 
 /**
+ * Exception class used by DAO classes.
  *
- * @author Corentin
+ * @author Lilian Petitpas
  */
-public class JPADepotDao extends JPADao<Depot> implements DepotDao {
+public class DaoException extends Exception {
 
-    private static JPADepotDao instance;
+    /**
+     * Serial UID, for serialisation.
+     */
+    private static final long serialVersionUID = 20190429170615L;
 
-    protected static JPADepotDao getInstance() {
-        if (JPADepotDao.instance == null) {
-            JPADepotDao.instance = new JPADepotDao();
-        }
-        return JPADepotDao.instance;
+    /**
+     * Constructs an instance of {@code DaoException} with a detail message.
+     *
+     * @param msg the detail message.
+     */
+    public DaoException(String msg) {
+        super(msg);
     }
 
-    private JPADepotDao() {
-        super(Depot.class);
+    /**
+     * Constructs an instance of {@code DaoException} with a cause from a
+     * previous {@code Exception}.
+     *
+     * @param cause the cause.
+     */
+    public DaoException(Throwable cause) {
+        super(cause);
     }
-
 }

@@ -16,28 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dao.jpa;
-
-import dao.EmplacementDao;
-import model.Emplacement;
-
 /**
+ * Contains all classes related to the DAO using JPA.
  *
- * @author Corentin
+ * @author Lilian Petitpas
+ * @author Thomas Ternisien
+ * @author Thibaut Fenain
+ * @author Corentin Apolinario
  */
-public class JPAEmplacementDao extends JPADao<Emplacement> implements EmplacementDao {
-
-    private static JPAEmplacementDao instance;
-
-    protected static JPAEmplacementDao getInstance() {
-        if (JPAEmplacementDao.instance == null) {
-            JPAEmplacementDao.instance = new JPAEmplacementDao();
-        }
-        return JPAEmplacementDao.instance;
-    }
-
-    private JPAEmplacementDao() {
-        super(Emplacement.class);
-    }
-
-}
+package dao.jpa;

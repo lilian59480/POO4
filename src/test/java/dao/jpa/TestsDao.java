@@ -46,23 +46,23 @@ public class TestsDao {
     @Test
     @DisplayName("Is Dao Working")
     public void isDaoWorking() {
-        RouteDao routeManager = new JPADaoFactory().getRouteDao();
+        RouteDao routeManager = new JpaDaoFactory().getRouteDao();
         routeManager.deleteAll();
         System.out.println("Delete routes OK");
 
-        ClientDao clientManager = new JPADaoFactory().getClientDao();
+        ClientDao clientManager = new JpaDaoFactory().getClientDao();
         clientManager.deleteAll();
         System.out.println("Delete clients OK");
 
-        VehiculeDao vehiculeManager = new JPADaoFactory().getVehiculeDao();
+        VehiculeDao vehiculeManager = new JpaDaoFactory().getVehiculeDao();
         vehiculeManager.deleteAll();
         System.out.println("Delete vehicules OK");
 
-        DepotDao depotManager = new JPADaoFactory().getDepotDao();
+        DepotDao depotManager = new JpaDaoFactory().getDepotDao();
         depotManager.deleteAll();
         System.out.println("Delete depots OK");
 
-        PlanningDao planningManager = new JPADaoFactory().getPlanningDao();
+        PlanningDao planningManager = new JpaDaoFactory().getPlanningDao();
         planningManager.deleteAll();
         System.out.println("Delete plannings OK");
 

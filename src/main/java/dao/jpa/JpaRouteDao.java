@@ -18,34 +18,41 @@
  */
 package dao.jpa;
 
-import dao.VehiculeDao;
-import java.util.Collection;
-import javax.persistence.Query;
-import model.Vehicule;
+import dao.RouteDao;
+import model.Route;
 
 /**
  *
  * @author Corentin
  */
-public class JPAVehiculeDao extends JPADao<Vehicule> implements VehiculeDao {
+public class JpaRouteDao extends JpaDao<Route> implements RouteDao {
 
-    private static JPAVehiculeDao instance;
+    /**
+     * Static Instance of JpaRouteDao.
+     *
+     * Used for singleton instance.
+     */
+    private static JpaRouteDao instance;
 
-    protected static JPAVehiculeDao getInstance() {
-        if (JPAVehiculeDao.instance == null) {
-            JPAVehiculeDao.instance = new JPAVehiculeDao();
+    /**
+     * Get an instance of JpaRoutegDao.
+     *
+     * Reuse existing instance or create a new one.
+     *
+     * @return A new instance
+     */
+    protected static JpaRouteDao getInstance() {
+        if (JpaRouteDao.instance == null) {
+            JpaRouteDao.instance = new JpaRouteDao();
         }
-        return JPAVehiculeDao.instance;
+        return JpaRouteDao.instance;
     }
 
-    private JPAVehiculeDao() {
-        super(Vehicule.class);
-    }
-
-    @Override
-    public Collection<Vehicule> findAllNotUsed() {
-        Query query = JPADao.em.createNamedQuery("Vehicule.findAllNotUsed");
-        return query.getResultList();
+    /**
+     * Constructor.
+     */
+    private JpaRouteDao() {
+        super(Route.class);
     }
 
 }

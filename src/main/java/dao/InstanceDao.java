@@ -26,6 +26,12 @@ import model.Instance;
  */
 public interface InstanceDao extends Dao<Instance> {
 
+    /**
+     * Find an instance by its name.
+     *
+     * @param name The name to find.
+     * @return An instance or null.
+     */
     public Instance findByName(String name);
 
 }

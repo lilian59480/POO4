@@ -18,7 +18,7 @@
  */
 package dao;
 
-import dao.jpa.JPADaoFactory;
+import dao.jpa.JpaDaoFactory;
 
 /**
  *
@@ -26,31 +26,79 @@ import dao.jpa.JPADaoFactory;
  */
 public abstract class DaoFactory {
 
+    /**
+     * Type of persistance to use.
+     */
     public enum PersistenceType {
+        /**
+         * JPA.
+         */
         JPA;
     };
 
+    /**
+     * Create a new factory.
+     *
+     * @param type Type of persistance to use.
+     * @return A new factory of the persistance type chosen.
+     * @throws Exception When using an invalid type.
+     */
     public static DaoFactory getDaoFactory(PersistenceType type) throws Exception {
         switch (type) {
             case JPA:
-                return new JPADaoFactory();
+                return new JpaDaoFactory();
             default:
                 throw new Exception("Invalid type");
         }
     }
 
+    /**
+     * Get a ClientDao.
+     *
+     * @return A new or existing ClientDao
+     */
     public abstract ClientDao getClientDao();
 
+    /**
+     * Get a DepotDao.
+     *
+     * @return A new or existing DepotDao
+     */
     public abstract DepotDao getDepotDao();
 
+    /**
+     * Get a EmplacementDao.
+     *
+     * @return A new or existing EmplacementDao
+     */
     public abstract EmplacementDao getEmplacementDao();
-    
+
+    /**
+     * Get a PlanningDao.
+     *
+     * @return A new or existing PlanningDao
+     */
     public abstract PlanningDao getPlanningDao();
 
+    /**
+     * Get a RouteDao.
+     *
+     * @return A new or existing RouteDao
+     */
     public abstract RouteDao getRouteDao();
 
+    /**
+     * Get a VehiculeDao.
+     *
+     * @return A new or existing VehiculeDao
+     */
     public abstract VehiculeDao getVehiculeDao();
 
+    /**
+     * Get a InstanceDao.
+     *
+     * @return A new or existing InstanceDao
+     */
     public abstract InstanceDao getInstanceDao();
 
 }

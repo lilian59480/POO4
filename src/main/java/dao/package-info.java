@@ -16,28 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dao.jpa;
-
-import dao.RouteDao;
-import model.Route;
-
 /**
+ * Contains all classes related to the DAO.
  *
- * @author Corentin
+ * @author Lilian Petitpas
+ * @author Thomas Ternisien
+ * @author Thibaut Fenain
+ * @author Corentin Apolinario
  */
-public class JPARouteDao extends JPADao<Route> implements RouteDao {
-
-    private static JPARouteDao instance;
-
-    protected static JPARouteDao getInstance() {
-        if (JPARouteDao.instance == null) {
-            JPARouteDao.instance = new JPARouteDao();
-        }
-        return JPARouteDao.instance;
-    }
-
-    private JPARouteDao() {
-        super(Route.class);
-    }
-
-}
+package dao;

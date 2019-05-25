@@ -27,6 +27,11 @@ import model.Client;
  */
 public interface ClientDao extends Dao<Client> {
 
+    /**
+     * Find all clients not served.
+     *
+     * @return An list of clients not served.
+     */
     public Collection<Client> findNotServed();
 
 }
