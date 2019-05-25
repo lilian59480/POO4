@@ -19,7 +19,8 @@
 package main;
 
 import algo.ISolver;
-import algo.NaiveSolver;
+import algo.iterative.NaiveSolver;
+import algo.iterative.RandomSolver;
 import io.input.FilenameIterator;
 import io.input.InstanceFileParser;
 import io.input.JarInstanceResourceReader;
@@ -55,7 +56,8 @@ public class Cli {
      * @todo Use a factory?
      */
     private static final List<ISolver> SOLVERS = Arrays.asList(
-            new NaiveSolver()
+            new NaiveSolver(),
+            new RandomSolver()
     );
 
     /**
