@@ -28,12 +28,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for {@link NaiveSolver}
+ * Tests for {@link Dao}
  *
  * @author Corentin
  */
 @DisplayName("Dao")
-public class Dao {
+public class TestsDao {
 
     /**
      * @todo Create test.
