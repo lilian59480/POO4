@@ -47,12 +47,12 @@ public abstract class JpaDao<T> implements Dao<T> {
     /**
      * Entity manager factory.
      */
-    protected static EntityManagerFactory emf;
+    protected static final EntityManagerFactory EMF = Persistence.createEntityManagerFactory(PERSISTANCE_UNIT);
 
     /**
      * Entity manager.
      */
-    protected static EntityManager em;
+    protected static final EntityManager EM = EMF.createEntityManager();
 
     /**
      * Class logger.
@@ -73,13 +73,6 @@ public abstract class JpaDao<T> implements Dao<T> {
         if (entityClass == null) {
             throw new NullPointerException("Entity class should not be null");
         }
-        if (JpaDao.emf == null) {
-            JpaDao.emf = Persistence.createEntityManagerFactory(PERSISTANCE_UNIT);
-        }
-
-        if (JpaDao.em == null) {
-            JpaDao.em = emf.createEntityManager();
-        }
 
         this.entityClass = entityClass;
     }
@@ -89,10 +82,10 @@ public abstract class JpaDao<T> implements Dao<T> {
         if (obj == null) {
             return false;
         }
-        final EntityTransaction et = JpaDao.em.getTransaction();
+        final EntityTransaction et = JpaDao.EM.getTransaction();
         try {
             et.begin();
-            JpaDao.em.persist(obj);
+            JpaDao.EM.persist(obj);
             et.commit();
         } catch (PersistenceException ex) {
             LOGGER.log(Level.SEVERE, "Exception while creating an object", ex);
@@ -104,7 +97,7 @@ public abstract class JpaDao<T> implements Dao<T> {
 
     @Override
     public T find(int id) {
-        T storedObject = JpaDao.em.find(this.entityClass, id);
+        T storedObject = JpaDao.EM.find(this.entityClass, id);
         return storedObject;
     }
 
@@ -112,12 +105,12 @@ public abstract class JpaDao<T> implements Dao<T> {
     public Collection<T> findAll() {
         Collection<T> storedObjects;
 
-        final CriteriaBuilder cb = JpaDao.em.getCriteriaBuilder();
+        final CriteriaBuilder cb = JpaDao.EM.getCriteriaBuilder();
         final CriteriaQuery<T> cq = cb.createQuery(this.entityClass);
         Root<T> request = cq.from(this.entityClass);
         cq.select(request);
 
-        storedObjects = JpaDao.em.createQuery(cq).getResultList();
+        storedObjects = JpaDao.EM.createQuery(cq).getResultList();
 
         return storedObjects;
     }
@@ -127,10 +120,10 @@ public abstract class JpaDao<T> implements Dao<T> {
         if (obj == null) {
             return false;
         }
-        final EntityTransaction et = JpaDao.em.getTransaction();
+        final EntityTransaction et = JpaDao.EM.getTransaction();
         try {
             et.begin();
-            JpaDao.em.merge(obj);
+            JpaDao.EM.merge(obj);
             et.commit();
         } catch (PersistenceException ex) {
             LOGGER.log(Level.SEVERE, "Exception while updating an object", ex);
@@ -145,10 +138,10 @@ public abstract class JpaDao<T> implements Dao<T> {
         if (obj == null) {
             return false;
         }
-        final EntityTransaction et = JpaDao.em.getTransaction();
+        final EntityTransaction et = JpaDao.EM.getTransaction();
         try {
             et.begin();
-            JpaDao.em.remove(obj);
+            JpaDao.EM.remove(obj);
             et.commit();
         } catch (PersistenceException ex) {
             LOGGER.log(Level.SEVERE, "Exception while deleting an object", ex);
@@ -160,12 +153,12 @@ public abstract class JpaDao<T> implements Dao<T> {
 
     @Override
     public boolean deleteAll() {
-        final EntityTransaction et = JpaDao.em.getTransaction();
+        final EntityTransaction et = JpaDao.EM.getTransaction();
         try {
             et.begin();
-            final CriteriaBuilder cb = JpaDao.em.getCriteriaBuilder();
+            final CriteriaBuilder cb = JpaDao.EM.getCriteriaBuilder();
             final CriteriaDelete<T> cq = cb.createCriteriaDelete(this.entityClass);
-            int nbDelete = JpaDao.em.createQuery(cq).executeUpdate();
+            int nbDelete = JpaDao.EM.createQuery(cq).executeUpdate();
             et.commit();
         } catch (PersistenceException ex) {
             LOGGER.log(Level.SEVERE, "Exception while deleting all object", ex);
@@ -177,11 +170,11 @@ public abstract class JpaDao<T> implements Dao<T> {
 
     @Override
     public void close() {
-        if (JpaDao.em != null && JpaDao.em.isOpen()) {
-            JpaDao.em.close();
+        if (JpaDao.EM != null && JpaDao.EM.isOpen()) {
+            JpaDao.EM.close();
         }
-        if (JpaDao.emf != null && JpaDao.emf.isOpen()) {
-            JpaDao.emf.close();
+        if (JpaDao.EMF != null && JpaDao.EMF.isOpen()) {
+            JpaDao.EMF.close();
         }
     }
 

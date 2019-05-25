@@ -59,7 +59,7 @@ public class JpaVehiculeDao extends JpaDao<Vehicule> implements VehiculeDao {
 
     @Override
     public Collection<Vehicule> findAllNotUsed() {
-        Query query = JpaDao.em.createNamedQuery("Vehicule.findAllNotUsed");
+        Query query = JpaDao.EM.createNamedQuery("Vehicule.findAllNotUsed");
         return query.getResultList();
     }
 

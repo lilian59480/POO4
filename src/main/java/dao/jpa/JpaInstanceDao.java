@@ -58,7 +58,7 @@ public class JpaInstanceDao extends JpaDao<Instance> implements InstanceDao {
 
     @Override
     public Instance findByName(String name) {
-        Query query = JpaDao.em.createNamedQuery("Instance.findByNom");
+        Query query = JpaDao.EM.createNamedQuery("Instance.findByNom");
         query.setParameter("nom", name);
         return (Instance) query.getSingleResult();
     }

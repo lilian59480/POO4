@@ -59,7 +59,7 @@ public class JpaClientDao extends JpaDao<Client> implements ClientDao {
 
     @Override
     public Collection<Client> findNotServed() {
-        Query query = JpaDao.em.createNamedQuery("Client.findNotServed");
+        Query query = JpaDao.EM.createNamedQuery("Client.findNotServed");
         return query.getResultList();
     }
 
