@@ -20,10 +20,13 @@ package dao.jpa;
 
 import dao.Dao;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.PersistenceException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
@@ -50,6 +53,11 @@ public abstract class JpaDao<T> implements Dao<T> {
      * Entity manager.
      */
     protected static EntityManager em;
+
+    /**
+     * Class logger.
+     */
+    private static final Logger LOGGER = Logger.getLogger(JpaDao.class.getName());
 
     /**
      * Entity class to manipulate using Dao.
@@ -86,8 +94,8 @@ public abstract class JpaDao<T> implements Dao<T> {
             et.begin();
             JpaDao.em.persist(obj);
             et.commit();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (PersistenceException ex) {
+            LOGGER.log(Level.SEVERE, "Exception while creating an object", ex);
             et.rollback();
             return false;
         }
@@ -105,8 +113,8 @@ public abstract class JpaDao<T> implements Dao<T> {
         Collection<T> storedObjects;
 
         final CriteriaBuilder cb = JpaDao.em.getCriteriaBuilder();
-        final CriteriaQuery<T> cq = cb.createQuery(entityClass);
-        Root<T> request = cq.from(entityClass);
+        final CriteriaQuery<T> cq = cb.createQuery(this.entityClass);
+        Root<T> request = cq.from(this.entityClass);
         cq.select(request);
 
         storedObjects = JpaDao.em.createQuery(cq).getResultList();
@@ -124,8 +132,8 @@ public abstract class JpaDao<T> implements Dao<T> {
             et.begin();
             JpaDao.em.merge(obj);
             et.commit();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (PersistenceException ex) {
+            LOGGER.log(Level.SEVERE, "Exception while updating an object", ex);
             et.rollback();
             return false;
         }
@@ -142,8 +150,8 @@ public abstract class JpaDao<T> implements Dao<T> {
             et.begin();
             JpaDao.em.remove(obj);
             et.commit();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (PersistenceException ex) {
+            LOGGER.log(Level.SEVERE, "Exception while deleting an object", ex);
             et.rollback();
             return false;
         }
@@ -156,11 +164,11 @@ public abstract class JpaDao<T> implements Dao<T> {
         try {
             et.begin();
             final CriteriaBuilder cb = JpaDao.em.getCriteriaBuilder();
-            final CriteriaDelete<T> cq = cb.createCriteriaDelete(entityClass);
+            final CriteriaDelete<T> cq = cb.createCriteriaDelete(this.entityClass);
             int nbDelete = JpaDao.em.createQuery(cq).executeUpdate();
             et.commit();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (PersistenceException ex) {
+            LOGGER.log(Level.SEVERE, "Exception while deleting all object", ex);
             et.rollback();
             return false;
         }

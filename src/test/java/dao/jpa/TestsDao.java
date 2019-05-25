@@ -19,6 +19,8 @@
 package dao.jpa;
 
 import dao.ClientDao;
+import dao.DaoException;
+import dao.DaoFactory;
 import dao.DepotDao;
 import dao.PlanningDao;
 import dao.RouteDao;
@@ -29,6 +31,9 @@ import model.Emplacement;
 import model.Planning;
 import model.Route;
 import model.Vehicule;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -46,25 +51,29 @@ public class TestsDao {
     @Test
     @DisplayName("Is Dao Working")
     public void isDaoWorking() {
-        RouteDao routeManager = new JpaDaoFactory().getRouteDao();
-        routeManager.deleteAll();
-        System.out.println("Delete routes OK");
+        DaoFactory daoFactory;
 
-        ClientDao clientManager = new JpaDaoFactory().getClientDao();
-        clientManager.deleteAll();
-        System.out.println("Delete clients OK");
+        try {
+            daoFactory = DaoFactory.getDaoFactory(DaoFactory.PersistenceType.JPA);
+        } catch (DaoException ex) {
+            fail(ex);
+            return;
+        }
 
-        VehiculeDao vehiculeManager = new JpaDaoFactory().getVehiculeDao();
-        vehiculeManager.deleteAll();
-        System.out.println("Delete vehicules OK");
+        RouteDao routeManager = daoFactory.getRouteDao();
+        assertTrue(routeManager.deleteAll(), "Delete all should work for routes");
 
-        DepotDao depotManager = new JpaDaoFactory().getDepotDao();
-        depotManager.deleteAll();
-        System.out.println("Delete depots OK");
+        ClientDao clientManager = daoFactory.getClientDao();
+        assertTrue(clientManager.deleteAll(), "Delete all should work for clients");
 
-        PlanningDao planningManager = new JpaDaoFactory().getPlanningDao();
-        planningManager.deleteAll();
-        System.out.println("Delete plannings OK");
+        VehiculeDao vehiculeManager = daoFactory.getVehiculeDao();
+        assertTrue(vehiculeManager.deleteAll(), "Delete all should work for vehicules");
+
+        DepotDao depotManager = daoFactory.getDepotDao();
+        assertTrue(depotManager.deleteAll(), "Delete all should work for depots");
+
+        PlanningDao planningManager = daoFactory.getPlanningDao();
+        assertTrue(planningManager.deleteAll(), "Delete all should work for plannings");
 
         Depot d = new Depot(0, 700, 0, 0);
         depotManager.create(d);
@@ -136,14 +145,13 @@ public class TestsDao {
         }
 
         // p.updatePositionClients();
-
         clientManager.update(c1);
         clientManager.update(c2);
         clientManager.update(c3);
 
         planningManager.update(p);
 
-        System.out.println(p.toString());
+        assertNotNull(p, "Planning must exist");
     }
 
 }

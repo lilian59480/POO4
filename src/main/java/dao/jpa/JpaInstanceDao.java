@@ -36,6 +36,13 @@ public class JpaInstanceDao extends JpaDao<Instance> implements InstanceDao {
     private static JpaInstanceDao instance;
 
     /**
+     * Constructor.
+     */
+    private JpaInstanceDao() {
+        super(Instance.class);
+    }
+
+    /**
      * Get an instance of JpaInstanceDao.
      *
      * Reuse existing instance or create a new one.
@@ -47,13 +54,6 @@ public class JpaInstanceDao extends JpaDao<Instance> implements InstanceDao {
             JpaInstanceDao.instance = new JpaInstanceDao();
         }
         return JpaInstanceDao.instance;
-    }
-
-    /**
-     * Constructor.
-     */
-    private JpaInstanceDao() {
-        super(Instance.class);
     }
 
     @Override

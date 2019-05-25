@@ -29,26 +29,26 @@ public abstract class DaoFactory {
     /**
      * Type of persistance to use.
      */
-    public enum PersistenceType {
+    public static enum PersistenceType { //NOSONAR
         /**
          * JPA.
          */
         JPA;
-    };
+    }
 
     /**
      * Create a new factory.
      *
      * @param type Type of persistance to use.
      * @return A new factory of the persistance type chosen.
-     * @throws Exception When using an invalid type.
+     * @throws DaoException When using an invalid type.
      */
-    public static DaoFactory getDaoFactory(PersistenceType type) throws Exception {
+    public static DaoFactory getDaoFactory(PersistenceType type) throws DaoException {
         switch (type) {
             case JPA:
                 return new JpaDaoFactory();
             default:
-                throw new Exception("Invalid type");
+                throw new DaoException("Invalid type");
         }
     }
 

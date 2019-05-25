@@ -35,6 +35,13 @@ public class JpaRouteDao extends JpaDao<Route> implements RouteDao {
     private static JpaRouteDao instance;
 
     /**
+     * Constructor.
+     */
+    private JpaRouteDao() {
+        super(Route.class);
+    }
+
+    /**
      * Get an instance of JpaRoutegDao.
      *
      * Reuse existing instance or create a new one.
@@ -46,13 +53,6 @@ public class JpaRouteDao extends JpaDao<Route> implements RouteDao {
             JpaRouteDao.instance = new JpaRouteDao();
         }
         return JpaRouteDao.instance;
-    }
-
-    /**
-     * Constructor.
-     */
-    private JpaRouteDao() {
-        super(Route.class);
     }
 
 }

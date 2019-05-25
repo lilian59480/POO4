@@ -35,6 +35,13 @@ public class JpaEmplacementDao extends JpaDao<Emplacement> implements Emplacemen
     private static JpaEmplacementDao instance;
 
     /**
+     * Constructor.
+     */
+    private JpaEmplacementDao() {
+        super(Emplacement.class);
+    }
+
+    /**
      * Get an instance of JpaEmplacementDao.
      *
      * Reuse existing instance or create a new one.
@@ -46,13 +53,6 @@ public class JpaEmplacementDao extends JpaDao<Emplacement> implements Emplacemen
             JpaEmplacementDao.instance = new JpaEmplacementDao();
         }
         return JpaEmplacementDao.instance;
-    }
-
-    /**
-     * Constructor.
-     */
-    private JpaEmplacementDao() {
-        super(Emplacement.class);
     }
 
 }

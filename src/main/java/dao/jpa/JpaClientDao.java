@@ -37,6 +37,13 @@ public class JpaClientDao extends JpaDao<Client> implements ClientDao {
     private static JpaClientDao instance;
 
     /**
+     * Constructor.
+     */
+    private JpaClientDao() {
+        super(Client.class);
+    }
+
+    /**
      * Get an instance of JpaClientDao.
      *
      * Reuse existing instance or create a new one.
@@ -48,13 +55,6 @@ public class JpaClientDao extends JpaDao<Client> implements ClientDao {
             JpaClientDao.instance = new JpaClientDao();
         }
         return JpaClientDao.instance;
-    }
-
-    /**
-     * Constructor.
-     */
-    private JpaClientDao() {
-        super(Client.class);
     }
 
     @Override

@@ -35,6 +35,13 @@ public class JpaDepotDao extends JpaDao<Depot> implements DepotDao {
     private static JpaDepotDao instance;
 
     /**
+     * Constructor.
+     */
+    private JpaDepotDao() {
+        super(Depot.class);
+    }
+
+    /**
      * Get an instance of JpaDepotDao.
      *
      * Reuse existing instance or create a new one.
@@ -46,13 +53,6 @@ public class JpaDepotDao extends JpaDao<Depot> implements DepotDao {
             JpaDepotDao.instance = new JpaDepotDao();
         }
         return JpaDepotDao.instance;
-    }
-
-    /**
-     * Constructor.
-     */
-    private JpaDepotDao() {
-        super(Depot.class);
     }
 
 }

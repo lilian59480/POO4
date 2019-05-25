@@ -37,6 +37,13 @@ public class JpaVehiculeDao extends JpaDao<Vehicule> implements VehiculeDao {
     private static JpaVehiculeDao instance;
 
     /**
+     * Constructor.
+     */
+    private JpaVehiculeDao() {
+        super(Vehicule.class);
+    }
+
+    /**
      * Get an instance of JpaVehiculeDao.
      *
      * Reuse existing instance or create a new one.
@@ -48,13 +55,6 @@ public class JpaVehiculeDao extends JpaDao<Vehicule> implements VehiculeDao {
             JpaVehiculeDao.instance = new JpaVehiculeDao();
         }
         return JpaVehiculeDao.instance;
-    }
-
-    /**
-     * Constructor.
-     */
-    private JpaVehiculeDao() {
-        super(Vehicule.class);
     }
 
     @Override

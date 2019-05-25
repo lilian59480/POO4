@@ -35,6 +35,13 @@ public class JpaPlanningDao extends JpaDao<Planning> implements PlanningDao {
     private static JpaPlanningDao instance;
 
     /**
+     * Constructor.
+     */
+    private JpaPlanningDao() {
+        super(Planning.class);
+    }
+
+    /**
      * Get an instance of JpaPlanningDao.
      *
      * Reuse existing instance or create a new one.
@@ -46,13 +53,6 @@ public class JpaPlanningDao extends JpaDao<Planning> implements PlanningDao {
             JpaPlanningDao.instance = new JpaPlanningDao();
         }
         return JpaPlanningDao.instance;
-    }
-
-    /**
-     * Constructor.
-     */
-    private JpaPlanningDao() {
-        super(Planning.class);
     }
 
 }

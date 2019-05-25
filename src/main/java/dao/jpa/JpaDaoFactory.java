@@ -37,11 +37,10 @@ public class JpaDaoFactory extends DaoFactory {
     }
 
     @Override
-    public JpaEmplacementDao getEmplacementDao()
-    {
+    public JpaEmplacementDao getEmplacementDao() {
         return JpaEmplacementDao.getInstance();
     }
-    
+
     @Override
     public JpaPlanningDao getPlanningDao() {
         return JpaPlanningDao.getInstance();
