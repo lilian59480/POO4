@@ -21,6 +21,7 @@ package model;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -78,7 +79,7 @@ public abstract class Point implements Serializable {
     /**
      * Map of route to a specific Point.
      */
-    @OneToMany(mappedBy = "from")
+    @OneToMany(mappedBy = "from", cascade = CascadeType.ALL)
     @MapKey(name = "to" )
     private Map<Point, Route> routeTo;
 
