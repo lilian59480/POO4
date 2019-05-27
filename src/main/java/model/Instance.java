@@ -95,7 +95,10 @@ public class Instance implements Serializable {
      */
     @OneToMany(mappedBy = "instance")
     private List<Planning> plannings;
+    
+    private String instanceName;
 
+    
     /**
      * Instance constructor.
      */
@@ -285,6 +288,15 @@ public class Instance implements Serializable {
         return this.coutVehicule;
     }
 
+       
+    public String getInstanceName() {
+        return instanceName;
+    }
+
+    public void setInstanceName(String instanceName) {
+        this.instanceName = instanceName;
+    }
+
     /**
      * Check the validity of this instance.
      *
@@ -307,7 +319,7 @@ public class Instance implements Serializable {
 
     @Override
     public String toString() {
-        return "capV=" + this.capaciteVehicule + ", coutV=" + this.coutVehicule + ", nbC=" + this.clients.size() + ", nbV" + this.vehicules.size();
+        return this.instanceName ;
     }
 
 }

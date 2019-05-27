@@ -66,6 +66,7 @@ public class ListeInstance extends JFrame { // NOSONAR
                 InputStream next = iterator.next();
                 InstanceFileParser ifp = new InstanceFileParser();
                 Instance instance = ifp.parse(next);
+                instance.setInstanceName(iterator.getFilename());
                 this.dlm.addElement(instance);
             } catch (ParserException ex) {
                 LOGGER.log(Level.SEVERE, "Exception while reading Instances!", ex);
@@ -224,7 +225,9 @@ public class ListeInstance extends JFrame { // NOSONAR
      */
     private void jButtonDisplayInstanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDisplayInstanceActionPerformed
         // TODO add your handling code here:
+    //    if (this.jListInstance.getSelectedValue() instanceOf Instance){
         Instance i = this.jListInstance.getSelectedValue();
+    //    }
 
         Itineraire itineraire = new Itineraire(i);
     }//GEN-LAST:event_jButtonDisplayInstanceActionPerformed
@@ -238,7 +241,7 @@ public class ListeInstance extends JFrame { // NOSONAR
         int returnVal = chooser.showOpenDialog(this.getParent());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
 
-            this.jSelectedInstance.setText(chooser.getSelectedFile().getName());
+            this.jSelectedInstance.setText(chooser.getSelectedFile().getAbsolutePath());
         }
     }//GEN-LAST:event_uploadButtonActionPerformed
 

@@ -80,6 +80,8 @@ public class Itineraire extends JFrame { // NOSONAR
         Color c = g.getColor();
         // DESSIN D'une Instance
         NaiveSolver ds = this.createInstance();
+        ds.setInstance(this.instance);
+        ds.solve();
         if (ds == null) {
             return;
         }
@@ -89,7 +91,7 @@ public class Itineraire extends JFrame { // NOSONAR
             return;
         }
 
-        this.drawInstance(g, this.instance);
+        this.drawInstance(g, i);
         g.setColor(c);
 
     }
