@@ -22,6 +22,7 @@ import algo.NaiveSolver;
 import io.input.InstanceFileParser;
 import io.input.ParserException;
 import java.awt.BasicStroke;
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -30,6 +31,8 @@ import java.io.File;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import model.Depot;
 import model.Emplacement;
@@ -58,98 +61,16 @@ public class Itineraire extends JFrame { // NOSONAR
     /**
      * Creates new form itineraire with a null Instance.
      */
-    public Itineraire() {
-        this(null);
-    }
-
     /**
      * Creates new form itineraire.
      *
      * @param i Instance to display
      */
     public Itineraire(Instance i) {
+        this.instance = i;
         this.initComponents();
         this.initialisationFenetre();
-        this.instance = i;
         LOGGER.log(Level.INFO, "Instance :", this.instance.toString());
-    }
-
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        Color c = g.getColor();
-        // DESSIN D'une Instance
-        NaiveSolver ds = new NaiveSolver(this.instance);
-        ds.solve();
-        if (ds == null) {
-            return;
-        }
-
-        Instance i = ds.getInstance();
-        if (i == null) {
-            return;
-        }
-
-        this.drawInstance(g, i);
-        g.setColor(c);
-
-    }
-
-    /**
-     * Draw an Emplacement
-     *
-     * @param g Graphics zone.
-     * @param e Emplacement to draw.
-     */
-    private void drawEmplacement(Graphics g, Emplacement e) {
-        if (e == null) {
-            return;
-        }
-
-        if (e instanceof Depot) {
-            g.setColor(Color.RED);
-        } else {
-            g.setColor(Color.BLUE);
-        }
-        g.fillRect((int) e.getX() * 4 + 400 - 3, (int) e.getY() * 4 + 400 - 3, 6, 6);
-
-    }
-
-    /**
-     * Draw an instance.
-     *
-     * @param g Graphics zone.
-     * @param i Instance to draw.
-     */
-    private void drawInstance(Graphics g, Instance i) {
-        if (i == null) {
-            return;
-        }
-        //Dessin du depot
-        Depot d = i.getDepot();
-
-        List<Vehicule> vehicules = i.getVehicules();
-        int code = 0;
-
-        for (Vehicule v : vehicules) {
-            Emplacement source = d;
-            for (Emplacement destination : v.getEmplacements()) {
-                /*
-                 * Between 360 -> getHSBColor(X, 1, 0.8)
-                 */
-                g.setColor(Color.getHSBColor(code / 360.0f, 1, 0.8f));
-                Graphics2D g2 = (Graphics2D) g;
-                g2.setStroke(new BasicStroke(3));
-                g2.drawLine((int) source.getX() * 4 + 400, (int) source.getY() * 4 + 400, (int) destination.getX() * 4 + 400, (int) destination.getY() * 4 + 400);
-                source = destination;
-                this.drawEmplacement(g, destination);
-
-            }
-            g.drawLine((int) source.getX() * 4 + 400, (int) source.getY() * 4 + 400, (int) d.getX() * 4 + 400, (int) d.getY() * 4 + 400);
-            code += 20;
-        }
-        this.drawEmplacement(g, d);
-
     }
 
     /**
@@ -174,22 +95,105 @@ public class Itineraire extends JFrame { // NOSONAR
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        canvas2 = new MyCanvas(this.instance);
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        canvas2.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
+                canvas2MouseWheelMoved(evt);
+            }
+        });
+
+        jLabel1.setText("Zoom : ");
+
+        jLabel2.setText("100%");
+
+        jButton1.setText("Zoom in");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("Zoom out");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 539, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel2)
+                        .addGap(31, 31, 31)
+                        .addComponent(jButton1)
+                        .addGap(43, 43, 43)
+                        .addComponent(jButton2))
+                    .addComponent(canvas2, javax.swing.GroupLayout.PREFERRED_SIZE, 649, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                .addComponent(canvas2, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    /**
+     * Action Perfomed.
+     *
+     * @param evt Action evt
+     */
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
+    /**
+     * Mo
+     *
+     * @param evt Mouse event
+     */
+    private void canvas2MouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_canvas2MouseWheelMoved
+        // TODO add your handling code here:
+
+        if (evt.getWheelRotation() > 0) {
+            //zoom in (amount)
+            System.out.println("Zoom In/ Scrolled UP");
+            canvas2.zoomIn();
+            canvas2.repaint();
+
+        } else {
+            //zoom out (amount)
+            System.out.println("Zoom out/ Scrolled Down");
+            canvas2.zoomOut();
+            canvas2.repaint();
+
+        }
+
+    }//GEN-LAST:event_canvas2MouseWheelMoved
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    /*
+    private java.awt.Canvas canvas2;
+    */
+    private MyCanvas canvas2;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
 }

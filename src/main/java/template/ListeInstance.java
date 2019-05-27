@@ -242,7 +242,10 @@ public class ListeInstance extends JFrame { // NOSONAR
 
 
     }//GEN-LAST:event_jButtonDisplayInstanceActionPerformed
-
+    /**
+     * Upload Instance.
+     * @param evt 
+     */
     private void uploadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadButtonActionPerformed
         // TODO add your handling code here:
         JFileChooser chooser = new JFileChooser();
@@ -257,9 +260,10 @@ public class ListeInstance extends JFrame { // NOSONAR
     }//GEN-LAST:event_uploadButtonActionPerformed
 
     /**
-     * ???.
+     * Create Instance.
      *
      * @todo What! Please refactor.
+     * @param fileName file Name.
      * @return A solver.
      */
     private NaiveSolver createInstance(String fileName) {

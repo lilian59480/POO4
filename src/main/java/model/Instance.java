@@ -288,11 +288,17 @@ public class Instance implements Serializable {
         return this.coutVehicule;
     }
 
-       
+    /**
+     * Get Instance name.
+     * @return The instance Name.
+     */
     public String getInstanceName() {
         return instanceName;
     }
-
+    /**
+     * Set instance Name.
+     * @param instanceName  setted instanceName.
+     */
     public void setInstanceName(String instanceName) {
         this.instanceName = instanceName;
     }
