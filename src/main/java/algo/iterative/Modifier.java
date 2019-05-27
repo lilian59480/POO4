@@ -16,27 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.input;
+package algo.iterative;
 
-import java.io.InputStream;
-import java.util.Iterator;
+import java.util.List;
 
 /**
- * Filename Iterator interface.
- *
- * Can be used as a File iterator with filename available.
+ * List modifier for iterative solvers.
  *
  * @author Lilian Petitpas
- *
- * @param <E> An InputStream class or subclass.
+ * @param <T> Class list to modifiy
  */
-public interface FilenameIterator<E extends InputStream> extends Iterator<E> {
+public interface Modifier<T> {
 
     /**
-     * Get current filename.
+     * Modify object list before processing.
      *
-     * @return Path and filename as a String.
+     * @param list The list of objects to modify.
      */
-    public String getFilename();
+    public void modifyList(List<T> list);
 
 }

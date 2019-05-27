@@ -16,27 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.input;
-
-import java.io.InputStream;
-import java.util.Iterator;
-
 /**
- * Filename Iterator interface.
- *
- * Can be used as a File iterator with filename available.
+ * Contains all classes related to linear iteratives algorithms.
  *
  * @author Lilian Petitpas
- *
- * @param <E> An InputStream class or subclass.
+ * @author Thomas Ternisien
+ * @author Thibaut Fenain
+ * @author Corentin Apolinario
  */
-public interface FilenameIterator<E extends InputStream> extends Iterator<E> {
-
-    /**
-     * Get current filename.
-     *
-     * @return Path and filename as a String.
-     */
-    public String getFilename();
-
-}
+package algo.iterative;
