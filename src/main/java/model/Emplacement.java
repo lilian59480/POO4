@@ -18,16 +18,27 @@
  */
 package model;
 
+import java.io.Serializable;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 /**
  * Emplacement model representation.
  *
  * @author Corentin
  */
-public class Emplacement extends Point {
+@Entity
+@Table(name = "EMPLACEMENT")
+@DiscriminatorValue("1")
+public class Emplacement extends Point implements Serializable {
+    
 
     /**
      * Client liked to this adress.
      */
+    @ManyToOne
     private Client client;
 
     /**
@@ -40,6 +51,14 @@ public class Emplacement extends Point {
      */
     private int heureFin;
 
+    /**
+     * Emplacement constructor.
+     *
+     */
+    public Emplacement() {
+        this(0, 0, 0, 0);
+    }
+    
     /**
      * Emplacement constructor.
      *

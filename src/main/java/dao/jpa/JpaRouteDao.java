@@ -16,34 +16,43 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package model;
+package dao.jpa;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import dao.RouteDao;
+import model.Route;
 
 /**
- * Tests for {@link Point}
  *
- * @author Lilian Petitpas
+ * @author Corentin
  */
-@DisplayName("Point")
-public class PointTest {
+public class JpaRouteDao extends JpaDao<Route> implements RouteDao {
 
-    @Test
-    @DisplayName("Cost should be valid between 2 points")
     /**
-     * @todo Create a proper test.
+     * Static Instance of JpaRouteDao.
+     *
+     * Used for singleton instance.
      */
-    public void costBetween2Points() {
+    private static JpaRouteDao instance;
 
-        Point p1 = new Point(0, 0);
-        Point p2 = new Point(5, 5);
+    /**
+     * Constructor.
+     */
+    private JpaRouteDao() {
+        super(Route.class);
+    }
 
-        Route r = new Route(p1, p2, 100, 10);
-        p1.addRouteTo(r);
-
-        assertEquals(100, p1.getDistanceTo(p2), "Cost between (0,0) and (5,5) is not valid");
+    /**
+     * Get an instance of JpaRoutegDao.
+     *
+     * Reuse existing instance or create a new one.
+     *
+     * @return A new instance
+     */
+    protected static JpaRouteDao getInstance() {
+        if (JpaRouteDao.instance == null) {
+            JpaRouteDao.instance = new JpaRouteDao();
+        }
+        return JpaRouteDao.instance;
     }
 
 }

@@ -18,23 +18,40 @@
  */
 package model;
 
+import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * Route model representation.
  *
  * @author Corentin
  */
-public class Route {
+@Entity
+@Table(name = "ROUTE")
+public class Route implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Origin point.
      */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private int id;
+    @ManyToOne
     private Point from;
 
     /**
      * Destination point.
      */
+    @ManyToOne
     private Point to;
 
     /**
@@ -47,6 +64,14 @@ public class Route {
      */
     private int temps;
 
+    /**
+     * Route constructor.
+     *
+     */
+    public Route() {
+        this(null, null, 0, 0);
+    }
+    
     /**
      * Route constructor.
      *
@@ -101,8 +126,10 @@ public class Route {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 53 * hash + Objects.hashCode(this.from);
-        hash = 53 * hash + Objects.hashCode(this.to);
+        hash = 79 * hash + Objects.hashCode(this.from);
+        hash = 79 * hash + Objects.hashCode(this.to);
+        hash = 79 * hash + (int) (Double.doubleToLongBits(this.cout) ^ (Double.doubleToLongBits(this.cout) >>> 32));
+        hash = 79 * hash + this.temps;
         return hash;
     }
 
@@ -118,11 +145,22 @@ public class Route {
             return false;
         }
         final Route other = (Route) obj;
+        if (Double.doubleToLongBits(this.cout) != Double.doubleToLongBits(other.cout)) {
+            return false;
+        }
+        if (this.temps != other.temps) {
+            return false;
+        }
         if (!Objects.equals(this.from, other.from)) {
             return false;
         }
-        return Objects.equals(this.to, other.to);
+        if (!Objects.equals(this.to, other.to)) {
+            return false;
+        }
+        return true;
     }
+
+
 
     @Override
     public String toString() {

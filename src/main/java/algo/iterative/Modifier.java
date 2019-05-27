@@ -16,37 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package model;
+package algo.iterative;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import java.util.List;
 
 /**
- * Tests for {@link Route}
+ * List modifier for iterative solvers.
  *
  * @author Lilian Petitpas
+ * @param <T> Class list to modifiy
  */
-@DisplayName("Route")
-public class RouteTest {
+public interface Modifier<T> {
 
-    @Test
-    @DisplayName("2 Roads are equals even if costs are different")
     /**
-     * @todo Create a proper test.
+     * Modify object list before processing.
+     *
+     * @param list The list of objects to modify.
      */
-    public void roadEquality() {
-
-        Emplacement e1 = new Emplacement(0, 0, 0, 0);
-        Emplacement e2 = new Emplacement(0, 0, 5, 5);
-
-        Route r1 = new Route(e1, e2, 100, 10);
-        Route r1b = new Route(e1, e2, 100, 10);
-        Route r2 = new Route(e1, e2, 10, 1);
-
-        assertEquals(r1, r1b, "the 2 similar roads are equals");
-        assertNotEquals(r1, r2, "the 2 roads should not be equals");
-    }
+    public void modifyList(List<T> list);
 
 }
