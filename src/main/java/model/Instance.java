@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -75,25 +76,25 @@ public class Instance implements Serializable {
     /**
      * List of clients.
      */
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Client> clients;
 
     /**
      * List of vehicules.
      */
-    @OneToMany(mappedBy = "instance")
+    @OneToMany(mappedBy = "instance", cascade = CascadeType.ALL)
     private List<Vehicule> vehicules;
 
     /**
      * List of routes.
      */
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Route> routes;
 
     /**
      * List of plannings.
      */
-    @OneToMany(mappedBy = "instance")
+    @OneToMany(mappedBy = "instance", cascade = CascadeType.ALL)
     private List<Planning> plannings;
     
     private String instanceName;

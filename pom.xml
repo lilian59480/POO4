@@ -15,8 +15,8 @@
         </dependency>
         <dependency>
             <groupId>org.apache.derby</groupId>
-            <artifactId>derby</artifactId>
-            <version>10.15.1.3</version>
+            <artifactId>derbyclient</artifactId>
+            <version>10.14.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

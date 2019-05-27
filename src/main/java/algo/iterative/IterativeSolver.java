@@ -16,8 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package algo;
+package algo.iterative;
 
+import algo.ISolver;
+import algo.SolverException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,13 +33,14 @@ import model.Vehicule;
  * This solver iterates over all clients and try to assign them a vehicule.
  *
  * @author Corentin
+ * @author Lilian Petitpas
  */
-public class NaiveSolver implements ISolver {
+public class IterativeSolver implements ISolver {
 
     /**
      * Class logger.
      */
-    private static final Logger LOGGER = Logger.getLogger(NaiveSolver.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(IterativeSolver.class.getName());
 
     /**
      * Current instance.
@@ -45,24 +48,45 @@ public class NaiveSolver implements ISolver {
     private Instance instance;
 
     /**
+     * Client modifier class.
+     */
+    private Modifier<Client> clientModifier;
+
+    /**
+     * Vehicule modifier class.
+     */
+    private Modifier<Vehicule> vehiculeModifier;
+
+    /**
      * Solver constructor, without an Instance.
-     *
-     * You should set your instance later.
      *
      * This constructor is recommended as you can solve multiples instances by
      * using the instance setter.
+     *
+     * @param cm Client list modifier
+     * @param vm Vehicule list modifier
      */
-    public NaiveSolver() {
-        this(null);
+    public IterativeSolver(Modifier<Client> cm, Modifier<Vehicule> vm) {
+        this(null, cm, vm);
     }
 
     /**
      * Solver constructor, with an Instance.
      *
      * @param i Instance to solve
+     * @param cm Client list modifier
+     * @param vm Vehicule list modifier
      */
-    public NaiveSolver(Instance i) {
+    public IterativeSolver(Instance i, Modifier<Client> cm, Modifier<Vehicule> vm) {
         this.instance = i;
+        if (cm == null) {
+            throw new NullPointerException("Client modifier can't be null");
+        }
+        this.clientModifier = cm;
+        if (vm == null) {
+            throw new NullPointerException("Vehicule modifier can't be null");
+        }
+        this.vehiculeModifier = vm;
     }
 
     @Override
@@ -83,7 +107,7 @@ public class NaiveSolver implements ISolver {
         }
         LOGGER.log(Level.FINE, "Solving a new instance");
         try {
-            this.naiveSolve();
+            this.iterativeSolver();
         } catch (SolverException ex) {
             LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
             return false;
@@ -102,13 +126,21 @@ public class NaiveSolver implements ISolver {
      * @throws SolverException If there is an internal exception or inconsistant
      * values.
      */
-    private void naiveSolve() throws SolverException {
+    private void iterativeSolver() throws SolverException {
         this.instance.clear();
         List<Client> clients = this.instance.getClients();
 
+        this.clientModifier.modifyList(clients);
+        System.out.println("\n\n\n\n\n\n" + clients + "\n\n\n\n\n\n\n");
+
         for (Client c : clients) {
             boolean affecte = false;
-            for (Vehicule v : this.instance.getVehicules()) {
+
+            List<Vehicule> vehicules = this.instance.getVehicules();
+
+            this.vehiculeModifier.modifyList(vehicules);
+
+            for (Vehicule v : vehicules) {
                 if (v.addClient(c)) {
                     affecte = true;
                     break;
