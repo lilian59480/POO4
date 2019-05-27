@@ -93,7 +93,7 @@ public class Client implements Serializable {
      * @return True if we can add this emplacement.
      */
     public boolean addEmplacement(Emplacement e) {
-        if (e == null) {
+        if (e == null || this.emplacements.contains(e)) {
             return false;
         }
         e.setClient(this);
