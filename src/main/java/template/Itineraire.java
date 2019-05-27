@@ -79,8 +79,7 @@ public class Itineraire extends JFrame { // NOSONAR
         super.paint(g);
         Color c = g.getColor();
         // DESSIN D'une Instance
-        NaiveSolver ds = this.createInstance();
-        ds.setInstance(this.instance);
+        NaiveSolver ds = new NaiveSolver(this.instance);
         ds.solve();
         if (ds == null) {
             return;
@@ -151,26 +150,6 @@ public class Itineraire extends JFrame { // NOSONAR
         }
         this.drawEmplacement(g, d);
 
-    }
-
-    /**
-     * ???.
-     *
-     * @todo What! Please refactor.
-     * @return A solver.
-     */
-    private NaiveSolver createInstance() {
-        Instance i;
-        try {
-            InstanceFileParser ifp = new InstanceFileParser();
-            i = ifp.parse(new File("src/main/resources/instances/instance_0-triangle.txt"));
-        } catch (ParserException ex) {
-            LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
-            return null;
-        }
-        NaiveSolver ds = new NaiveSolver(i);
-        ds.solve();
-        return ds;
     }
 
     /**

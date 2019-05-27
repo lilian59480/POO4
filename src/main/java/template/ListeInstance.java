@@ -18,11 +18,13 @@
  */
 package template;
 
+import algo.NaiveSolver;
 import io.input.FilenameIterator;
 import io.input.InstanceFileParser;
 import io.input.JarInstanceResourceReader;
 import io.input.ParserException;
 import java.awt.Color;
+import java.io.File;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -225,11 +227,20 @@ public class ListeInstance extends JFrame { // NOSONAR
      */
     private void jButtonDisplayInstanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDisplayInstanceActionPerformed
         // TODO add your handling code here:
-    //    if (this.jListInstance.getSelectedValue() instanceOf Instance){
-        Instance i = this.jListInstance.getSelectedValue();
-    //    }
+        if (this.jListInstance.getSelectedValue() instanceof Instance) {
+            Instance i = this.jListInstance.getSelectedValue();
+            Itineraire itineraire = new Itineraire(i);
+        } else if (this.jSelectedInstance != null) {
 
-        Itineraire itineraire = new Itineraire(i);
+            String fileName = this.jSelectedInstance.getText();
+
+            NaiveSolver ds = createInstance(fileName);
+            ds.solve();
+            Itineraire itineraire = new Itineraire(ds.getInstance());
+
+        }
+
+
     }//GEN-LAST:event_jButtonDisplayInstanceActionPerformed
 
     private void uploadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadButtonActionPerformed
@@ -245,6 +256,25 @@ public class ListeInstance extends JFrame { // NOSONAR
         }
     }//GEN-LAST:event_uploadButtonActionPerformed
 
+    /**
+     * ???.
+     *
+     * @todo What! Please refactor.
+     * @return A solver.
+     */
+    private NaiveSolver createInstance(String fileName) {
+        Instance i;
+        try {
+            InstanceFileParser ifp = new InstanceFileParser();
+            i = ifp.parse(new File(fileName));
+        } catch (ParserException ex) {
+            LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
+            return null;
+        }
+        NaiveSolver ds = new NaiveSolver(i);
+        ds.solve();
+        return ds;
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonDisplayInstance;
     private javax.swing.JButton jButtonSolveInstance;
