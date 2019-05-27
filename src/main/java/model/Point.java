@@ -18,20 +18,52 @@
  */
 package model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.MapKey;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  * Point model representation.
  *
  * @author Corentin
  */
-public class Point {
+@Entity
+@Table(
+        name = "POINT",
+        uniqueConstraints = {
+            @UniqueConstraint(
+                    columnNames = {
+                        "X",
+                        "Y"
+                    }
+            )
+        }
+)
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "POINTTYPE", discriminatorType = DiscriminatorType.INTEGER)
+public abstract class Point implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Id.
      */
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    protected int id;
 
     /**
      * X coordiante.
@@ -46,6 +78,8 @@ public class Point {
     /**
      * Map of route to a specific Point.
      */
+    @OneToMany(mappedBy = "from")
+    @MapKey(name = "to" )
     private Map<Point, Route> routeTo;
 
     /**
@@ -157,7 +191,7 @@ public class Point {
      * @return True if the route is valid.
      */
     public boolean addRouteTo(Route r) {
-        if (r.getFrom() == null || r.getTo() == null || r.getFrom() != this) {
+        if (r.getFrom() != this || r.getTo() == null) {
             return false;
         }
         this.routeTo.put(r.getTo(), r);

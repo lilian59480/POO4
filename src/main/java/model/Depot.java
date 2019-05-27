@@ -18,13 +18,27 @@
  */
 package model;
 
+import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  * Depot model representation.
  *
  * @author Corentin
  */
-public class Depot extends Emplacement {
+@Entity
+@Table(name = "DEPOT")
+public class Depot extends Emplacement implements Serializable {
 
+    /**
+     * Depot constructor.
+     *
+     */
+    public Depot() {
+        this(0, 0, 0, 0);
+    }
+    
     /**
      * Depot constructor.
      *
