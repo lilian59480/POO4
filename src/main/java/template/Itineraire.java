@@ -103,6 +103,11 @@ public class Itineraire extends JFrame { // NOSONAR
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
+        canvas2.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                canvas2MouseDragged(evt);
+            }
+        });
         canvas2.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
             public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
                 canvas2MouseWheelMoved(evt);
@@ -179,12 +184,24 @@ public class Itineraire extends JFrame { // NOSONAR
         } else {
             //zoom out (amount)
             System.out.println("Zoom out/ Scrolled Down");
-            canvas2.zoomOut();
-            canvas2.repaint();
+            this.canvas2.zoomOut();
+            this.canvas2.repaint();
 
         }
 
     }//GEN-LAST:event_canvas2MouseWheelMoved
+    /**
+     * mouse dragged
+     *
+     * @param evt Dragg event
+     */
+    private void canvas2MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_canvas2MouseDragged
+        // TODO add your handling code here:
+        System.out.println("test :" + evt.getX() + " " + evt.getY());
+        this.canvas2.draggedCanvas(evt.getX(), evt.getY());
+        this.canvas2.repaint();
+
+    }//GEN-LAST:event_canvas2MouseDragged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /*

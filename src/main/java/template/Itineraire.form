@@ -59,6 +59,7 @@
   <SubComponents>
     <Component class="java.awt.Canvas" name="canvas2">
       <Events>
+        <EventHandler event="mouseDragged" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="canvas2MouseDragged"/>
         <EventHandler event="mouseWheelMoved" listener="java.awt.event.MouseWheelListener" parameters="java.awt.event.MouseWheelEvent" handler="canvas2MouseWheelMoved"/>
       </Events>
       <AuxValues>

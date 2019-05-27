@@ -37,6 +37,8 @@ import model.Vehicule;
 public class MyCanvas extends Canvas {
 
     private Instance instance;
+    private int draggedX = 400;
+    private int draggedY = 400;
     private int zoom = 4;
 
     /**
@@ -89,7 +91,7 @@ public class MyCanvas extends Canvas {
         } else {
             g.setColor(Color.BLUE);
         }
-        g.fillRect((int) ((int) e.getX() * this.zoom + 400 - 3), (int) e.getY() * this.zoom + 400 - 3, 6, 6);
+        g.fillRect((int) ((int) e.getX() * this.zoom + this.draggedX - 3), (int) e.getY() * this.zoom + this.draggedY - 3, 6, 6);
 
     }
 
@@ -118,12 +120,12 @@ public class MyCanvas extends Canvas {
                 g.setColor(Color.getHSBColor(code / 360.0f, 1, 0.8f));
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setStroke(new BasicStroke(3));
-                g2.drawLine((int) source.getX() * this.zoom + 400, (int) source.getY() * this.zoom + 400, (int) destination.getX() * this.zoom + 400, (int) destination.getY() * this.zoom + 400);
+                g2.drawLine((int) source.getX() * this.zoom + this.draggedX, (int) source.getY() * this.zoom + this.draggedY, (int) destination.getX() * this.zoom + this.draggedX, (int) destination.getY() * this.zoom + this.draggedY);
                 source = destination;
                 this.drawEmplacement(g, destination);
 
             }
-            g.drawLine((int) source.getX() * this.zoom + 400, (int) source.getY() * this.zoom + 400, (int) d.getX() * this.zoom + 400, (int) d.getY() * this.zoom + 400);
+            g.drawLine((int) source.getX() * this.zoom + this.draggedX, (int) source.getY() * this.zoom + this.draggedY, (int) d.getX() * this.zoom + this.draggedX, (int) d.getY() * this.zoom + this.draggedY);
             code += 20;
         }
         this.drawEmplacement(g, d);
@@ -145,5 +147,15 @@ public class MyCanvas extends Canvas {
         if (this.zoom != 1) {
             this.zoom--;
         }
+    }
+    
+    /**
+     *  Set dragged X-Y to the canvas
+     *  @param x abscisse
+     *  @param y ordonne
+     */
+    public void draggedCanvas(int x, int y){
+        this.draggedX = x;
+        this.draggedY = y;
     }
 }
