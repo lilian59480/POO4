@@ -18,8 +18,8 @@
  */
 package model;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Client model representation.
@@ -36,7 +36,7 @@ public class Client {
     /**
      * List of Client's Emplacements.
      */
-    private List<Emplacement> emplacements;
+    private Set<Emplacement> emplacements;
 
     /**
      * Current position.
@@ -62,7 +62,7 @@ public class Client {
      */
     public Client(int demande) {
         this.position = -1;
-        this.emplacements = new LinkedList<>();
+        this.emplacements = new HashSet<>();
         this.demande = demande;
         this.vehicule = null;
     }
@@ -113,8 +113,17 @@ public class Client {
      *
      * @return The list of emplacements.
      */
-    public List<Emplacement> getEmplacements() {
+    public Set<Emplacement> getEmplacements() {
         return this.emplacements;
+    }
+
+    /**
+     * Get current vehicule.
+     *
+     * @return The vehicule.
+     */
+    public Vehicule getVehicule() {
+        return this.vehicule;
     }
 
     /**
