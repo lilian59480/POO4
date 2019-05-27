@@ -16,8 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package algo;
+package algo.genetic;
 
+import algo.ISolver;
+import algo.SolverException;
 import algo.iterative.NaiveSolver;
 import io.input.InstanceFileParser;
 import io.output.SolutionWriter;
