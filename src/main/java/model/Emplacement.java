@@ -19,6 +19,7 @@
 package model;
 
 import java.io.Serializable;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -30,6 +31,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "EMPLACEMENT")
+@DiscriminatorValue("1")
 public class Emplacement extends Point implements Serializable {
     
 
