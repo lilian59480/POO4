@@ -18,6 +18,8 @@
  */
 package algo;
 
+import algo.iterative.NaiveSolver;
+import algo.iterative.RandomSolver;
 import io.input.InstanceFileParser;
 import io.output.SolutionWriter;
 import java.io.File;
@@ -42,7 +44,7 @@ import model.Vehicule;
 public class ShortestPathEmplacements implements ISolver {
 
     private Instance instance;
-    private static final Logger LOGGER = Logger.getLogger(NaiveSolver.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ShortestPathEmplacements.class.getName());
     private List<Emplacement> chromosome;
     private Depot depot;
 
@@ -182,8 +184,8 @@ public class ShortestPathEmplacements implements ISolver {
 
     public static void main(String[] args) {
         Instance i = null;
-        for (int j = 0; j < 40; j++) {
-            int id = j;
+        //for (int j = 0; j < 40; j++) {
+            int id = 1;
             try {
                 InstanceFileParser ifp = new InstanceFileParser();
                 i = ifp.parse(new File("src/main/resources/instances/instance_" + id + "-triangle.txt"));
@@ -197,13 +199,19 @@ public class ShortestPathEmplacements implements ISolver {
             ShortestPathEmplacements sp = new ShortestPathEmplacements(i);
             sp.solve();
             System.out.println("---Cout sp: " + i.getPlanningCurrent().getCout());
+            RandomSolver rs = new RandomSolver(i);
+            rs.solve();
+            System.out.println("---Cout rs: " + i.getPlanningCurrent().getCout());
+            sp = new ShortestPathEmplacements(i);
+            sp.solve();
+            System.out.println("---Cout sp2: " + i.getPlanningCurrent().getCout());
             try {
                 SolutionWriter sw = new SolutionWriter();
                 sw.write(i, "target/instance_" + id + "-triangle_sol_sp.txt");
             } catch (Exception ex) {
                 LOGGER.log(Level.SEVERE, "Exception while writing a solution", ex);
             }
-        }
+        //}
     }
 
     @Override

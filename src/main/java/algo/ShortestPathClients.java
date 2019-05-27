@@ -18,6 +18,7 @@
  */
 package algo;
 
+import algo.iterative.NaiveSolver;
 import io.input.InstanceFileParser;
 import io.output.SolutionWriter;
 import model.*;
@@ -34,7 +35,7 @@ import java.util.logging.Logger;
 public class ShortestPathClients implements ISolver {
 
     private Instance instance;
-    private static final Logger LOGGER = Logger.getLogger(NaiveSolver.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ShortestPathClients.class.getName());
     private List<Client> chromosome;
     private Depot depot;
 
