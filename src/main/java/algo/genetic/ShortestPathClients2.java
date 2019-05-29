@@ -121,9 +121,10 @@ public class ShortestPathClients2 implements ISolver {
                         depot
                 ));
 
-                if (i > 1) { //etend les labels precedents
+                if (i > 0) { //etend les labels precedents
                     for (Map.Entry<Emplacement, List<Label>> precedantEm : labelsEC.get(i - 1).getEm2Labels().entrySet()) {
-                        System.out.println(precedantEm);
+                        //System.out.println(i + " " + em.getId()  + " " + precedantEm.getKey().getId());
+                        //System.out.println(precedantEm);
                         Route r0 = precedantEm.getKey().getRouteTo(this.depot);
                         Route r1 = precedantEm.getKey().getRouteTo(em);
                         Route r2 = em.getRouteTo(this.depot);

@@ -35,7 +35,7 @@ public class Label {
         this.load = load;
         this.cost = cost;
         this.time = time;
-        this.precedents = precedents;
+        this.precedents = new ArrayList<>(precedents);
     }
 
     public int getLoad() {
