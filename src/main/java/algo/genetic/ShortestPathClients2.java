@@ -31,7 +31,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author Thomas
  */
 public class ShortestPathClients2 implements ISolver {
@@ -48,6 +47,11 @@ public class ShortestPathClients2 implements ISolver {
     public ShortestPathClients2(Instance i) {
         this.instance = i;
         this.instanceToChromosome();
+    }
+
+    public ShortestPathClients2(Instance i, List<Client> chromosome) {
+        this.instance = i;
+        this.chromosome = new ArrayList<>(chromosome);
     }
 
     @Override
@@ -97,16 +101,22 @@ public class ShortestPathClients2 implements ISolver {
     }
 
     private List<List<Integer>> findShortestPath() throws SolverException {
-        int capaV = this.instance.getCapaciteVehicule();
-        int closeTime = this.instance.getDepot().getHeureFin();
         List<List<Map<String, Object>>> V = new LinkedList<>(); // list des couts & temps les + faible pour chaque emplacement de chaque clients
         List<List<Integer>> P = new LinkedList<>(); // list des points precedant, P[i] => point avant i pour chaque emplacement de chaque clients
+        List<MyClientLabels> labelsEC = this.labelChromosome();
 
-        //List<List<Map<Emplacement, List<Map<String, Object>>>>> labelEC = new LinkedList<>(); // list des couts & temps les + faible pour chaque emplacement de chaque clients
+
+        return P;
+    }
+
+    private List<MyClientLabels> labelChromosome() throws SolverException {
+        int capaV = this.instance.getCapaciteVehicule();
+        int closeTime = this.instance.getDepot().getHeureFin();
+
         List<MyClientLabels> labelsEC = new ArrayList<>();
         System.out.println("");
         System.out.println("");
-        //Init V and P
+
         for (int i = 0; i < this.chromosome.size(); i++) {
             Client client = this.chromosome.get(i);
             labelsEC.add(new MyClientLabels(i));
@@ -114,12 +124,17 @@ public class ShortestPathClients2 implements ISolver {
                 //Add label to for depot
                 Route r2dest = em.getRouteTo(this.depot);
                 Route r2dep = this.depot.getRouteTo(em);
-                labelsEC.get(i).addLabelToEmplacement(em, new Label(
-                        client.getDemande(),
-                        r2dest.getCout() + r2dep.getCout(),
-                        Math.max(r2dest.getTemps(), em.getHeureDebut()) + r2dep.getTemps(),
-                        depot
-                ));
+                if (Math.max(r2dest.getTemps(), em.getHeureDebut()) <= em.getHeureFin()) {
+                    int newTime = Math.max(r2dest.getTemps(), em.getHeureDebut()) + r2dep.getTemps();
+                    if (newTime <= closeTime) {
+                        labelsEC.get(i).addLabelToEmplacement(em, new Label(
+                                client.getDemande(),
+                                r2dest.getCout() + r2dep.getCout(),
+                                newTime,
+                                depot
+                        ));
+                    }
+                }
 
                 if (i > 0) { //etend les labels precedents
                     for (Map.Entry<Emplacement, List<Label>> precedantEm : labelsEC.get(i - 1).getEm2Labels().entrySet()) {
@@ -129,9 +144,9 @@ public class ShortestPathClients2 implements ISolver {
                         Route r1 = precedantEm.getKey().getRouteTo(em);
                         Route r2 = em.getRouteTo(this.depot);
                         for (Label labelPre : precedantEm.getValue()) {
-                            int arrivalTime = Math.max((Integer) labelPre.getLoad() - r0.getTemps() + r1.getTemps(), em.getHeureDebut());
+                            int arrivalTime = Math.max((Integer) labelPre.getTime()  - r0.getTemps() + r1.getTemps(), em.getHeureDebut());
                             if (arrivalTime <= em.getHeureFin()) {
-                                int newLoad = (Integer) labelPre.getTime() + client.getDemande();
+                                int newLoad = (Integer) labelPre.getLoad()+ client.getDemande();
                                 int newTime = arrivalTime + r2.getTemps();
                                 if (newLoad <= capaV && newTime <= closeTime) {
                                     Label newLabel = new Label(
@@ -166,7 +181,7 @@ public class ShortestPathClients2 implements ISolver {
         int nbExtraVRequired = Math.max(uniqueP.size() - this.instance.getNbVehicules(), 0);
         double realCost = V.get(V.size() - 1) + nbExtraVRequired * this.instance.getCoutVehicule();
         System.out.println("Cost: " + realCost + " (" + nbExtraVRequired + " extra vehicules required)");*/
-        return P;
+        return labelsEC;
     }
 
     private void instanceToChromosome() {
