@@ -22,7 +22,6 @@ import algo.ISolver;
 import algo.SolverException;
 import algo.iterative.NaiveSolver;
 import io.input.InstanceFileParser;
-import io.output.SolutionWriter;
 import model.*;
 
 import java.io.File;
@@ -103,23 +102,23 @@ public class ShortestPathClients2 implements ISolver {
     private List<List<Integer>> findShortestPath() throws SolverException {
         List<List<Map<String, Object>>> V = new LinkedList<>(); // list des couts & temps les + faible pour chaque emplacement de chaque clients
         List<List<Integer>> P = new LinkedList<>(); // list des points precedant, P[i] => point avant i pour chaque emplacement de chaque clients
-        List<MyClientLabels> labelsEC = this.labelChromosome();
+        List<ClientLabels> labelsEC = this.labelChromosome();
 
 
         return P;
     }
 
-    private List<MyClientLabels> labelChromosome() throws SolverException {
+    private List<ClientLabels> labelChromosome() throws SolverException {
         int capaV = this.instance.getCapaciteVehicule();
         int closeTime = this.instance.getDepot().getHeureFin();
 
-        List<MyClientLabels> labelsEC = new ArrayList<>();
+        List<ClientLabels> labelsEC = new ArrayList<>();
         System.out.println("");
         System.out.println("");
 
         for (int i = 0; i < this.chromosome.size(); i++) {
             Client client = this.chromosome.get(i);
-            labelsEC.add(new MyClientLabels(i));
+            labelsEC.add(new ClientLabels(i));
             for (Emplacement em : client.getEmplacements()) {
                 //Add label to for depot
                 Route r2dest = em.getRouteTo(this.depot);
