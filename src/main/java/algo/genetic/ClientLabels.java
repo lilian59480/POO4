@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import model.Emplacement;
 
 /**
@@ -70,12 +71,21 @@ public class ClientLabels {
     }
 
     /**
+     * Get clientNb
+     *
+     * @return the clientNb
+     */
+    public int getClientNb() {
+        return clientNb;
+    }
+
+    /**
      * Create an entry for an Emplacement
      *
      * @param e the emplacement
      */
     private void createEmplacementEntry(Emplacement e) {
-        if(!this.em2Labels.containsKey(e)) {
+        if (!this.em2Labels.containsKey(e)) {
             this.em2Labels.put(e, new ArrayList<Label>());
         }
     }
@@ -83,14 +93,14 @@ public class ClientLabels {
     /**
      * Add multiple labels to an Emplacement
      *
-     * @param e the emplacement you want to add a label to
+     * @param e      the emplacement you want to add a label to
      * @param labels the labels to add
      */
     public void addLabelsToEmplacement(Emplacement e, List<Label> labels) {
-        if(!this.em2Labels.containsKey(e)) {
+        if (!this.em2Labels.containsKey(e)) {
             createEmplacementEntry(e);
         }
-        for(Label label: labels) {
+        for (Label label : labels) {
             this.em2Labels.get(e).add(label);
         }
     }
@@ -98,14 +108,25 @@ public class ClientLabels {
     /**
      * Add a label to an Emplacement
      *
-     * @param e the emplacement you want to add a label to
+     * @param e     the emplacement you want to add a label to
      * @param label the label to add
      */
     public void addLabelToEmplacement(Emplacement e, Label label) {
-        if(!this.em2Labels.containsKey(e)) {
+        if (!this.em2Labels.containsKey(e)) {
             createEmplacementEntry(e);
         }
         this.em2Labels.get(e).add(label);
+    }
+
+    /**
+     * Add multiple labels to multiple emplacements
+     *
+     * @param labels the labels to add
+     */
+    public void addLabels(List<Label> labels) {
+        for (Label label : labels) {
+            this.addLabelToEmplacement(label.getEmplacement(), label);
+        }
     }
 
     @Override
@@ -113,6 +134,5 @@ public class ClientLabels {
         return "ClientLabels{" + "client nb=" + clientNb + ", em2Labels=" + em2Labels + '}';
     }
 
-    
-    
+
 }

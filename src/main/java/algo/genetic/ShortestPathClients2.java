@@ -70,8 +70,13 @@ public class ShortestPathClients2 implements ISolver {
 
         try {
             List<ClientLabels> labelsEC = this.labelChromosome();
+            List<ClientLabels> cleanedLabelsEC = cleanLabels(labelsEC);
+            System.out.println("");
+            System.out.println("");
+            System.out.println(labelsEC);
+            System.out.println(cleanedLabelsEC);
 
-            Tournee bestTournee = findShortestPath(this.chromosome.size() - 1, labelsEC, new Tournee());
+            Tournee bestTournee = findShortestPath(this.chromosome.size() - 1, cleanedLabelsEC, new Tournee());
 
             System.out.println("");
             System.out.println("");
@@ -220,6 +225,45 @@ public class ShortestPathClients2 implements ISolver {
         return labelsEC;
     }
 
+    private List<ClientLabels> cleanLabels(List<ClientLabels> labelsEC) {
+        List<ClientLabels> cleanedLabelsEC = new ArrayList<>();
+        for (ClientLabels clientLabels : labelsEC) {
+            List<Label> cleanedLabels = new ArrayList<>();
+            HashMap<Integer, List<Label>> labelsSortedByPrecedantSize = new HashMap<>();
+            for (Map.Entry<Emplacement, List<Label>> em : clientLabels.getEm2Labels().entrySet()) {
+                for (Label label : em.getValue()) {
+                    if (!labelsSortedByPrecedantSize.containsKey(label.getPrecedents().size())) {
+                        List<Label> list = new ArrayList<>();
+                        list.add(label);
+                        labelsSortedByPrecedantSize.put(label.getPrecedents().size(), list);
+                    } else {
+                        labelsSortedByPrecedantSize.get(label.getPrecedents().size()).add(label);
+                    }
+                }
+
+            }
+            //Clean labels with the same number of precedants
+            for (Map.Entry<Integer, List<Label>> labels : labelsSortedByPrecedantSize.entrySet()) {
+                for (int i = 0; i < labels.getValue().size(); i++) {
+                    Label labelI = labels.getValue().get(i);
+                    boolean shouldAdd = true;
+                    for (int j = i + 1; j < labels.getValue().size(); j++) {
+                        Label labelJ = labels.getValue().get(j);
+                        if (labelI.getCost() > labelJ.getCost() && labelI.getTime() > labelJ.getTime()) {
+                            shouldAdd = false;
+                            break;
+                        }
+                    }
+                    if (shouldAdd) cleanedLabels.add(labelI);
+                }
+            }
+            ClientLabels cleanedClientLabels = new ClientLabels(clientLabels.getClientNb());
+            cleanedClientLabels.addLabels(cleanedLabels);
+            cleanedLabelsEC.add(cleanedClientLabels);
+        }
+        return cleanedLabelsEC;
+    }
+
     private void instanceToChromosome() {
         if (this.instance.getPlanningCurrent().getVehicules().size() > 0) {
             this.chromosome = new LinkedList<>();
@@ -244,7 +288,7 @@ public class ShortestPathClients2 implements ISolver {
         Instance i = null;
         for (int j = 0; j < 40; j++) {
             int id = j;
-            System.out.println(j);
+            System.out.println(id);
             try {
                 InstanceFileParser ifp = new InstanceFileParser();
                 i = ifp.parse(new File("src/main/resources/instances/instance_" + id + "-triangle.txt"));
@@ -257,10 +301,16 @@ public class ShortestPathClients2 implements ISolver {
             System.out.println("---Cout ns: " + i.getPlanningCurrent().getCout());
             ShortestPathClients2 sp = new ShortestPathClients2(i);
         /*try {
-            sp.findShortestPath();
+            System.out.println("");
+            System.out.println("");
+            List<ClientLabels> labelsEC = sp.labelChromosome();
+            System.out.println(labelsEC);
+            List<ClientLabels> cleanedLabelsEC = sp.cleanLabels(labelsEC);
+            System.out.println(cleanedLabelsEC);;
         } catch (SolverException e) {
             e.printStackTrace();
         }*/
+
             sp.solve();
             System.out.println("---Cout sp: " + i.getPlanningCurrent().getCout());
             /*try {

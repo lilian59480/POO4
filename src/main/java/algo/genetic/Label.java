@@ -20,6 +20,7 @@ package algo.genetic;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import model.Emplacement;
 
 /**
@@ -61,9 +62,9 @@ public class Label {
     /**
      * Label constructor
      *
-     * @param load the load of the vehicule
-     * @param cost the cost of the travel
-     * @param time the time of the travel
+     * @param load        the load of the vehicule
+     * @param cost        the cost of the travel
+     * @param time        the time of the travel
      * @param emplacement the emplacement associated to this label
      */
     public Label(int load, double cost, int time, Emplacement emplacement) {
@@ -78,10 +79,10 @@ public class Label {
     /**
      * Label constructor with an emplacement
      *
-     * @param load the load of the vehicule
-     * @param cost the cost of the travel
-     * @param time the time of the travel
-     * @param emplacement the emplacement associated to this label
+     * @param load             the load of the vehicule
+     * @param cost             the cost of the travel
+     * @param time             the time of the travel
+     * @param emplacement      the emplacement associated to this label
      * @param firstEmplacement the first emplacement to add
      */
     public Label(int load, double cost, int time, Emplacement emplacement, Emplacement firstEmplacement) {
@@ -91,11 +92,12 @@ public class Label {
 
     /**
      * Label constructor with a list of emplacements
-     * @param load the load of the vehicule
-     * @param cost the cost of the travel
-     * @param time the time of the travel
+     *
+     * @param load        the load of the vehicule
+     * @param cost        the cost of the travel
+     * @param time        the time of the travel
      * @param emplacement the emplacement associated to this label
-     * @param precedents the list of precedent emplacements to add
+     * @param precedents  the list of precedent emplacements to add
      */
     public Label(int load, double cost, int time, Emplacement emplacement, List<Emplacement> precedents) {
         this.load = load;
@@ -108,6 +110,7 @@ public class Label {
 
     /**
      * Get the load
+     *
      * @return the load
      */
     public int getLoad() {
@@ -116,6 +119,7 @@ public class Label {
 
     /**
      * Get the cost of the travel
+     *
      * @return the cost
      */
     public double getCost() {
@@ -124,6 +128,7 @@ public class Label {
 
     /**
      * Get the time of the travel
+     *
      * @return the time
      */
     public int getTime() {
@@ -132,6 +137,7 @@ public class Label {
 
     /**
      * Get the emplacement of the label
+     *
      * @return the emplacement
      */
     public Emplacement getEmplacement() {
@@ -140,6 +146,7 @@ public class Label {
 
     /**
      * Get the precedent emplacements
+     *
      * @return the precedent emplacements
      */
     public List<Emplacement> getPrecedents() {
@@ -148,6 +155,7 @@ public class Label {
 
     /**
      * Add an emplacement to the precedent emplacements
+     *
      * @param precedent the emplacement to add
      */
     public void addPrecedent(Emplacement precedent) {
@@ -156,6 +164,7 @@ public class Label {
 
     /**
      * Add an emplacement to the suivant emplacements
+     *
      * @param suivant the emplacement to add
      */
     public void addSuivant(Emplacement suivant) {
