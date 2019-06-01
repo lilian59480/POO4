@@ -100,10 +100,29 @@ public class ShortestPathClients2 implements ISolver {
     }
 
     private List<List<Integer>> findShortestPath() throws SolverException {
-        List<List<Map<String, Object>>> V = new LinkedList<>(); // list des couts & temps les + faible pour chaque emplacement de chaque clients
+        List<List<Label>> V = new LinkedList<>(); // list des couts & temps les + faible pour chaque emplacement de chaque clients
         List<List<Integer>> P = new LinkedList<>(); // list des points precedant, P[i] => point avant i pour chaque emplacement de chaque clients
         List<ClientLabels> labelsEC = this.labelChromosome();
 
+
+
+        //for(int i=this.chromosome.size()-1; i>= 0; i--) {
+            ClientLabels clientLabels = labelsEC.get(this.chromosome.size()-1);
+            for(Map.Entry<Emplacement, List<Label>> labels :clientLabels.getEm2Labels().entrySet()) {
+                for(Label label: labels.getValue()) {
+                    double cost = label.getCost();
+                    int j = this.chromosome.size()-1 - label.getPrecedents().size();
+                    while(j > 0) {
+                        ClientLabels clientLabelsPre = labelsEC.get(this.chromosome.size()-1);
+                        for(Map.Entry<Emplacement, List<Label>> labelsPre :clientLabels.getEm2Labels().entrySet()) {
+                            for(Label labelPre: labels.getValue()) {
+
+                            }
+                        }
+                    }
+                }
+            }
+        //}
 
         return P;
     }
@@ -111,7 +130,7 @@ public class ShortestPathClients2 implements ISolver {
     private List<ClientLabels> labelChromosome() throws SolverException {
         int capaV = this.instance.getCapaciteVehicule();
         int closeTime = this.instance.getDepot().getHeureFin();
-
+        List<Emplacement> suivantDepot = new ArrayList<>();
         List<ClientLabels> labelsEC = new ArrayList<>();
         System.out.println("");
         System.out.println("");
@@ -130,8 +149,10 @@ public class ShortestPathClients2 implements ISolver {
                                 client.getDemande(),
                                 r2dest.getCout() + r2dep.getCout(),
                                 newTime,
+                                em,
                                 depot
                         ));
+                        suivantDepot.add(em);
                     }
                 }
 
@@ -152,10 +173,12 @@ public class ShortestPathClients2 implements ISolver {
                                             newLoad,
                                             (Double) labelPre.getCost() - r0.getCout() + r1.getCout() + r2.getCout(),
                                             newTime,
+                                            em,
                                             labelPre.getPrecedents()
                                     );
                                     newLabel.addPrecedent(precedantEm.getKey());
                                     labelsEC.get(i).addLabelToEmplacement(em, newLabel);
+                                    labelPre.addSuivant(em);
                                 }
 
                             }

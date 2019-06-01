@@ -44,49 +44,65 @@ public class Label {
     private int time;
 
     /**
-     * Points that will be served before
+     * Emplacement associated to this label
+     */
+    private Emplacement emplacement;
+
+    /**
+     * Emplacements that will be served before
      */
     private List<Emplacement> precedents;
 
     /**
+     * Emplacements that can be served after
+     */
+    private List<Emplacement> suivants;
+
+    /**
      * Label constructor
      *
-     * @param load
-     * @param cost
-     * @param time
+     * @param load the load of the vehicule
+     * @param cost the cost of the travel
+     * @param time the time of the travel
      */
-    public Label(int load, double cost, int time) {
+    public Label(int load, double cost, int time, Emplacement emplacement) {
         this.load = load;
         this.cost = cost;
         this.time = time;
+        this.emplacement = emplacement;
         this.precedents = new ArrayList<>();
+        this.suivants = new ArrayList<>();
     }
 
     /**
      * Label constructor with an emplacement
      *
-     * @param load
-     * @param cost
-     * @param time
-     * @param firstEmplacement
+     * @param load the load of the vehicule
+     * @param cost the cost of the travel
+     * @param time the time of the travel
+     * @param emplacement the emplacement associated to this label
+     * @param firstEmplacement the first emplacement to add
      */
-    public Label(int load, double cost, int time, Emplacement firstEmplacement) {
-        this(load, cost, time);
+    public Label(int load, double cost, int time, Emplacement emplacement, Emplacement firstEmplacement) {
+        this(load, cost, time, emplacement);
         precedents.add(firstEmplacement);
     }
 
     /**
      * Label constructor with a list of emplacements
-     * @param load
-     * @param cost
-     * @param time
-     * @param precedents
+     * @param load the load of the vehicule
+     * @param cost the cost of the travel
+     * @param time the time of the travel
+     * @param emplacement the emplacement associated to this label
+     * @param precedents the list of precedent emplacements to add
      */
-    public Label(int load, double cost, int time, List<Emplacement> precedents) {
+    public Label(int load, double cost, int time, Emplacement emplacement, List<Emplacement> precedents) {
         this.load = load;
         this.cost = cost;
         this.time = time;
+        this.emplacement = emplacement;
         this.precedents = new ArrayList<>(precedents);
+        this.suivants = new ArrayList<>();
     }
 
     /**
@@ -129,9 +145,23 @@ public class Label {
         this.precedents.add(precedent);
     }
 
+    /**
+     * Add an emplacement to the suivant emplacements
+     * @param suivant the emplacement to add
+     */
+    public void addSuivant(Emplacement suivant) {
+        this.suivants.add(suivant);
+    }
+
     @Override
     public String toString() {
-        return "Label{" + "load=" + load + ", cost=" + cost + ", time=" + time + ", precedents=" + precedents + '}';
+        return "Label{" +
+                "load=" + load +
+                ", cost=" + cost +
+                ", time=" + time +
+                ", emplacement=" + emplacement +
+                ", precedents=" + precedents +
+                ", suivants=" + suivants +
+                '}';
     }
-    
 }
