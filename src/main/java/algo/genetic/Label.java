@@ -64,6 +64,7 @@ public class Label {
      * @param load the load of the vehicule
      * @param cost the cost of the travel
      * @param time the time of the travel
+     * @param emplacement the emplacement associated to this label
      */
     public Label(int load, double cost, int time, Emplacement emplacement) {
         this.load = load;
@@ -127,6 +128,14 @@ public class Label {
      */
     public int getTime() {
         return time;
+    }
+
+    /**
+     * Get the emplacement of the label
+     * @return the emplacement
+     */
+    public Emplacement getEmplacement() {
+        return emplacement;
     }
 
     /**

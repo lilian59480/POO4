@@ -22,6 +22,7 @@ import algo.ISolver;
 import algo.SolverException;
 import algo.iterative.NaiveSolver;
 import io.input.InstanceFileParser;
+import io.output.SolutionWriter;
 import model.*;
 
 import java.io.File;
@@ -66,65 +67,88 @@ public class ShortestPathClients2 implements ISolver {
     @Override
     public boolean solve() {
         LOGGER.log(Level.FINE, "Solving a new instance");
-        /*try {
-            List<Integer> tournee = findShortestPath();
+
+        try {
+            List<ClientLabels> labelsEC = this.labelChromosome();
+
+            Tournee bestTournee = findShortestPath(this.chromosome.size() - 1, labelsEC, new Tournee());
+
+            System.out.println("");
+            System.out.println("");
+            System.out.println(bestTournee.toString());
+            System.out.println("");
+            int nbExtraVRequired = Math.max(bestTournee.getTournee().size() - this.instance.getNbVehicules(), 0);
+            double realCost = bestTournee.getCost() + nbExtraVRequired * this.instance.getCoutVehicule();
+            System.out.println("Cost: " + realCost + " (" + nbExtraVRequired + " extra vehicules required)");
+
             this.instance.clear();
             List<Vehicule> vehicules = this.instance.getVehicules();
-            int numV = 0;
             int nbV = this.instance.getNbVehicules();
-            Vehicule v = vehicules.get(numV);
-            for (int i = 0; i < this.chromosome.size(); i++) {
-                if (i != 0 && tournee.get(i).compareTo(tournee.get(i - 1)) != 0) {
-                    numV++;
-                    if (numV < nbV) {
-                        v = vehicules.get(numV);
-                    } else {
-                        LOGGER.log(Level.INFO, "Ajout d'un extra vehicule");
-                        v = this.instance.addVehicule();
+
+            List<Label> tournee = new ArrayList<>(bestTournee.getTournee());
+            Collections.reverse(tournee);
+            Vehicule v;
+            for (int i = 0; i < tournee.size(); i++) {
+                Label label = tournee.get(i);
+                if (i >= nbV) {
+                    LOGGER.log(Level.INFO, "Ajout d'un extra vehicule");
+                    v = this.instance.addVehicule();
+                } else {
+                    v = vehicules.get(i);
+                }
+                if (label.getPrecedents().size() > 1) {
+                    for (int j = 1; j < label.getPrecedents().size(); j++) {
+                        if (!v.addEmplacement(label.getPrecedents().get(j))) {
+                            LOGGER.log(Level.WARNING,
+                                    "Error while adding emplacement to vehicule during ShortestPathEmplacements calculation");
+                            throw new SolverException(
+                                    "Error while adding emplacement to vehicule during ShortestPathEmplacements calculation");
+                        }
                     }
                 }
-                if (!v.addEmplacement(this.chromosome.get(i))) {
+                if (!v.addEmplacement(label.getEmplacement())) {
                     LOGGER.log(Level.WARNING,
                             "Error while adding emplacement to vehicule during ShortestPathEmplacements calculation");
                     throw new SolverException(
                             "Error while adding emplacement to vehicule during ShortestPathEmplacements calculation");
                 }
             }
+
         } catch (SolverException ex) {
             LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
             return false;
-        }*/
+        }
 
         // Check for instance validity
         return this.instance.check();
     }
 
-    private List<List<Integer>> findShortestPath() throws SolverException {
-        List<List<Label>> V = new LinkedList<>(); // list des couts & temps les + faible pour chaque emplacement de chaque clients
-        List<List<Integer>> P = new LinkedList<>(); // list des points precedant, P[i] => point avant i pour chaque emplacement de chaque clients
-        List<ClientLabels> labelsEC = this.labelChromosome();
-
-
-
-        //for(int i=this.chromosome.size()-1; i>= 0; i--) {
-            ClientLabels clientLabels = labelsEC.get(this.chromosome.size()-1);
-            for(Map.Entry<Emplacement, List<Label>> labels :clientLabels.getEm2Labels().entrySet()) {
-                for(Label label: labels.getValue()) {
-                    double cost = label.getCost();
-                    int j = this.chromosome.size()-1 - label.getPrecedents().size();
-                    while(j > 0) {
-                        ClientLabels clientLabelsPre = labelsEC.get(this.chromosome.size()-1);
-                        for(Map.Entry<Emplacement, List<Label>> labelsPre :clientLabels.getEm2Labels().entrySet()) {
-                            for(Label labelPre: labels.getValue()) {
-
-                            }
-                        }
-                    }
+    private Tournee findShortestPath(int posCli, List<ClientLabels> labelsEC, Tournee parentTournee) {
+        ClientLabels clientLabels = labelsEC.get(posCli);
+        List<Tournee> myTournees = new ArrayList<>();
+        for (Map.Entry<Emplacement, List<Label>> labels : clientLabels.getEm2Labels().entrySet()) {
+            for (Label label : labels.getValue()) {
+                Tournee newTournee = new Tournee(label, parentTournee);
+                if (posCli - label.getPrecedents().size() >= 0) {
+                    int newPos = posCli - label.getPrecedents().size();
+                    myTournees.add(findShortestPath(newPos, labelsEC, newTournee));
+                } else {
+                    myTournees.add(newTournee);
                 }
             }
-        //}
+        }
 
-        return P;
+        //Find best tournee of myTournees to be returned
+        Tournee bestTournee = null;
+        for (Tournee tournee : myTournees) {
+            if (bestTournee == null) bestTournee = tournee;
+            if (tournee.getCost() < bestTournee.getCost()) bestTournee = tournee;
+            if (tournee.getCost() == bestTournee.getCost()
+                    && tournee.getTournee().size() < bestTournee.getTournee().size()) {
+                bestTournee = tournee;
+            }
+        }
+        return bestTournee;
     }
 
     private List<ClientLabels> labelChromosome() throws SolverException {
@@ -132,8 +156,6 @@ public class ShortestPathClients2 implements ISolver {
         int closeTime = this.instance.getDepot().getHeureFin();
         List<Emplacement> suivantDepot = new ArrayList<>();
         List<ClientLabels> labelsEC = new ArrayList<>();
-        System.out.println("");
-        System.out.println("");
 
         for (int i = 0; i < this.chromosome.size(); i++) {
             Client client = this.chromosome.get(i);
@@ -164,14 +186,14 @@ public class ShortestPathClients2 implements ISolver {
                         Route r1 = precedantEm.getKey().getRouteTo(em);
                         Route r2 = em.getRouteTo(this.depot);
                         for (Label labelPre : precedantEm.getValue()) {
-                            int arrivalTime = Math.max((Integer) labelPre.getTime()  - r0.getTemps() + r1.getTemps(), em.getHeureDebut());
+                            int arrivalTime = Math.max(labelPre.getTime() - r0.getTemps() + r1.getTemps(), em.getHeureDebut());
                             if (arrivalTime <= em.getHeureFin()) {
-                                int newLoad = (Integer) labelPre.getLoad()+ client.getDemande();
+                                int newLoad = labelPre.getLoad() + client.getDemande();
                                 int newTime = arrivalTime + r2.getTemps();
                                 if (newLoad <= capaV && newTime <= closeTime) {
                                     Label newLabel = new Label(
                                             newLoad,
-                                            (Double) labelPre.getCost() - r0.getCout() + r1.getCout() + r2.getCout(),
+                                            labelPre.getCost() - r0.getCout() + r1.getCout() + r2.getCout(),
                                             newTime,
                                             em,
                                             labelPre.getPrecedents()
@@ -195,14 +217,6 @@ public class ShortestPathClients2 implements ISolver {
         System.out.println("");
         System.out.println(labelsEC);
 
-        /*System.out.println(V);
-        System.out.println(V.get(V.size() - 1));
-        System.out.println(P);
-        Set<Integer> uniqueP = new HashSet<>(P);
-        // TODO: find a way to include the count of vehicules to use extra vehicule cost
-        int nbExtraVRequired = Math.max(uniqueP.size() - this.instance.getNbVehicules(), 0);
-        double realCost = V.get(V.size() - 1) + nbExtraVRequired * this.instance.getCoutVehicule();
-        System.out.println("Cost: " + realCost + " (" + nbExtraVRequired + " extra vehicules required)");*/
         return labelsEC;
     }
 
@@ -228,33 +242,34 @@ public class ShortestPathClients2 implements ISolver {
 
     public static void main(String[] args) {
         Instance i = null;
-        //for (int j = 0; j < 40; j++) {
-        int id = 1;
-        try {
-            InstanceFileParser ifp = new InstanceFileParser();
-            i = ifp.parse(new File("src/main/resources/instances/instance_" + id + "-triangle.txt"));
-        } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
-            return;
-        }
-        NaiveSolver ds = new NaiveSolver(i);
-        ds.solve();
-        System.out.println("---Cout ns: " + i.getPlanningCurrent().getCout());
-        ShortestPathClients2 sp = new ShortestPathClients2(i);
-        try {
+        for (int j = 0; j < 40; j++) {
+            int id = j;
+            System.out.println(j);
+            try {
+                InstanceFileParser ifp = new InstanceFileParser();
+                i = ifp.parse(new File("src/main/resources/instances/instance_" + id + "-triangle.txt"));
+            } catch (Exception ex) {
+                LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
+                return;
+            }
+            NaiveSolver ds = new NaiveSolver(i);
+            ds.solve();
+            System.out.println("---Cout ns: " + i.getPlanningCurrent().getCout());
+            ShortestPathClients2 sp = new ShortestPathClients2(i);
+        /*try {
             sp.findShortestPath();
         } catch (SolverException e) {
             e.printStackTrace();
-        }
-        /*sp.solve();
+        }*/
+            sp.solve();
             System.out.println("---Cout sp: " + i.getPlanningCurrent().getCout());
-            try {
+            /*try {
                 SolutionWriter sw = new SolutionWriter();
                 sw.write(i, "target/instance_" + id + "-triangle_sol_sp.txt");
             } catch (Exception ex) {
                 LOGGER.log(Level.SEVERE, "Exception while writing a solution", ex);
             }*/
-        //}
+        }
     }
 
     @Override
