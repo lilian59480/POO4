@@ -53,7 +53,7 @@ import javax.persistence.UniqueConstraint;
             )
         }
 )
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "POINTTYPE", discriminatorType = DiscriminatorType.INTEGER)
 public abstract class Point implements Serializable {
     private static final long serialVersionUID = 1L;

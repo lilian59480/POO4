@@ -30,6 +30,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.eclipse.persistence.annotations.CascadeOnDelete;
 
 /**
  * Client model representation.
@@ -54,6 +55,7 @@ public class Client implements Serializable {
      * List of Client's Emplacements.
      */
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    @CascadeOnDelete
     private List<Emplacement> emplacements;
 
     /**
