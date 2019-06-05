@@ -18,7 +18,7 @@
  */
 package template;
 
-import algo.NaiveSolver;
+import algo.iterative.NaiveSolver;
 import io.input.FilenameIterator;
 import io.input.InstanceFileParser;
 import io.input.JarInstanceResourceReader;

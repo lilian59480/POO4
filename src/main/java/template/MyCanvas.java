@@ -18,7 +18,7 @@
  */
 package template;
 
-import algo.NaiveSolver;
+import algo.iterative.NaiveSolver;
 import java.awt.BasicStroke;
 import java.awt.Canvas;
 import java.awt.Color;
@@ -148,9 +148,15 @@ public class MyCanvas extends Canvas {
             this.zoom--;
         }
     }
+    /**
+     * Center canvas.
+     */
+    public void center() {
+        this.zoom = 1;
+    }
     
     /**
-     *  Set dragged X-Y to the canvas
+     *  Set dragged X-Y to the canvas.
      *  @param x abscisse
      *  @param y ordonne
      */
@@ -158,4 +164,13 @@ public class MyCanvas extends Canvas {
         this.draggedX = x;
         this.draggedY = y;
     }
+    /**
+     * Get zoom
+     * @return zoom.
+     */
+    public int getZoom() {
+        return zoom;
+    }
+    
+    
 }
