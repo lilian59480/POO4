@@ -69,6 +69,7 @@ public class EmplacementTest {
      * Test of getHeureDebut method, of class Emplacement.
      */
     @Test
+    @DisplayName("Get/Set HeureDebut")
     public void testGetHeureDebut() {
         int expectedHeureDebut = DEFAULT_HEURE_DEBUT;
         int resultHeureDebut = this.emplacementInstance.getHeureDebut();
@@ -79,6 +80,7 @@ public class EmplacementTest {
      * Test of getHeureFin method, of class Emplacement.
      */
     @Test
+    @DisplayName("Get/Set HeureFin")
     public void testGetHeureFin() {
         int expectedHeureFin = DEFAULT_HEURE_FIN;
         int resultHeureFin = this.emplacementInstance.getHeureFin();
@@ -89,6 +91,7 @@ public class EmplacementTest {
      * Test of getClient, setClient method, of class Emplacement.
      */
     @Test
+    @DisplayName("Get/Set Client")
     public void testClient() {
         Client expectedInit = null;
         Client resultInit = this.emplacementInstance.getClient();
@@ -118,6 +121,7 @@ public class EmplacementTest {
      * Test of toString method, of class Emplacement.
      */
     @Test
+    @DisplayName("toString")
     public void testToString() {
         String result = this.emplacementInstance.toString();
         assertNotNull(result, "toString must be defined and return a value");

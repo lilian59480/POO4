@@ -92,6 +92,9 @@ public class Instance {
      * @param capaciteVehicule The CapaciteVehicule.
      */
     public void setCapaciteVehicule(int capaciteVehicule) {
+        if (capaciteVehicule < 0) {
+            throw new IllegalArgumentException("capcciteVehicule should not be negative");
+        }
         this.capaciteVehicule = capaciteVehicule;
     }
 
@@ -110,6 +113,9 @@ public class Instance {
      * @param coutVehicule The CoutVehicule.
      */
     public void setCoutVehicule(int coutVehicule) {
+        if (coutVehicule < 0) {
+            throw new IllegalArgumentException("coutVehicule should not be negative");
+        }
         this.coutVehicule = coutVehicule;
     }
 
@@ -128,6 +134,9 @@ public class Instance {
      * @param clients A list of clients.
      */
     public void setClients(List<Client> clients) {
+        if (clients == null) {
+            throw new NullPointerException("List of clients should not be null");
+        }
         this.clients = clients;
     }
 
@@ -252,6 +261,9 @@ public class Instance {
      * @param nbVehicule New number of vehicule.
      */
     public void setNbVehicules(int nbVehicule) {
+        if (nbVehicule < 0) {
+            throw new IllegalArgumentException("nbVehicule should not be negative");
+        }
         this.nbVehicules = nbVehicule;
     }
 
