@@ -40,3 +40,6 @@ manifest.mf
 .vscode/
 
 /target/
+
+### Instances ###
+/instance*
