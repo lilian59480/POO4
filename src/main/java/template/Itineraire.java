@@ -19,6 +19,8 @@
 package template;
 
 import algo.iterative.NaiveSolver;
+import dao.DaoException;
+import dao.DaoFactory;
 import io.input.InstanceFileParser;
 import io.input.ParserException;
 import java.awt.BasicStroke;
@@ -35,6 +37,8 @@ import javax.swing.Action;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import model.Depot;
 import model.Emplacement;
 import model.Instance;
@@ -71,6 +75,7 @@ public class Itineraire extends JFrame { // NOSONAR
         this.instance = i;
         this.initComponents();
         this.initialisationFenetre();
+        
         this.costNLabel.setText("" + this.instance.getCoutVehicule());
         this.numberVLabel.setText("" + this.instance.getNbVehicules());
         LOGGER.log(Level.INFO, "Instance :", this.instance.toString());
@@ -90,6 +95,7 @@ public class Itineraire extends JFrame { // NOSONAR
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
     }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -267,10 +273,10 @@ public class Itineraire extends JFrame { // NOSONAR
 
     }//GEN-LAST:event_canvas2MouseWheelMoved
     /**
-                             * mouse dragged
-                             *
-                             * @param evt Dragg event
-                             */
+     * mouse dragged
+     *
+     * @param evt Dragg event
+     */
     private void canvas2MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_canvas2MouseDragged
         // TODO add your handling code here:
         this.canvas2.draggedCanvas(evt.getX(), evt.getY());

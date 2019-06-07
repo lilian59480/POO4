@@ -19,6 +19,8 @@
 package template;
 
 import algo.iterative.NaiveSolver;
+import dao.DaoException;
+import dao.DaoFactory;
 import io.input.FilenameIterator;
 import io.input.InstanceFileParser;
 import io.input.JarInstanceResourceReader;
@@ -31,6 +33,8 @@ import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import model.Instance;
 
@@ -56,13 +60,16 @@ public class ListeInstance extends JFrame { // NOSONAR
      * List of Instances.
      */
     private final DefaultListModel<Instance> dlm;
+    private DaoFactory daoFactory;
 
     /**
      * Creates new form List.
      */
     public ListeInstance() {
+        this.initConnexion();
         JarInstanceResourceReader instanceReader = new JarInstanceResourceReader();
         this.dlm = new DefaultListModel<>();
+
         for (FilenameIterator<InputStream> iterator = instanceReader.iterator(); iterator.hasNext();) {
             try {
                 InputStream next = iterator.next();
@@ -77,6 +84,8 @@ public class ListeInstance extends JFrame { // NOSONAR
 
         this.initComponents();
         this.initialisationFenetre();
+        LOGGER.log(Level.INFO, "daoFactory :", this.daoFactory.toString());
+
     }
 
     /**
@@ -90,6 +99,24 @@ public class ListeInstance extends JFrame { // NOSONAR
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
+    }
+
+    /**
+     * Allow to connect to the DB.
+     *
+     * @author Thibaut Fenain
+     */
+    private void initConnexion() {
+        try {
+            this.daoFactory = DaoFactory.getDaoFactory(DaoFactory.PersistenceType.JPA);
+        } catch (DaoException ex) {
+            Logger.getLogger(Itineraire.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane errorPane = new JOptionPane();
+            JOptionPane.showMessageDialog(this, "ERROR CONNEXION DATABASE",
+                    "Erreur Connection", ERROR_MESSAGE);
+            this.dispose();
+
+        }
     }
 
     /**
@@ -244,7 +271,8 @@ public class ListeInstance extends JFrame { // NOSONAR
     }//GEN-LAST:event_jButtonDisplayInstanceActionPerformed
     /**
      * Upload Instance.
-     * @param evt 
+     *
+     * @param evt event.
      */
     private void uploadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadButtonActionPerformed
         // TODO add your handling code here:
