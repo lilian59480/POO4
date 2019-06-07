@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Action;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import model.Depot;
@@ -70,6 +71,8 @@ public class Itineraire extends JFrame { // NOSONAR
         this.instance = i;
         this.initComponents();
         this.initialisationFenetre();
+        this.costNLabel.setText("" + this.instance.getCoutVehicule());
+        this.numberVLabel.setText("" + this.instance.getNbVehicules());
         LOGGER.log(Level.INFO, "Instance :", this.instance.toString());
     }
 
@@ -97,9 +100,16 @@ public class Itineraire extends JFrame { // NOSONAR
 
         canvas2 = new MyCanvas(this.instance);
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        levelZoomLabel = new javax.swing.JLabel();
         fitInButton = new javax.swing.JButton();
         zoomButton = new javax.swing.JButton();
+        costLabel = new javax.swing.JLabel();
+        costNLabel = new javax.swing.JLabel();
+        externalVlabel = new javax.swing.JLabel();
+        numberVLabel = new javax.swing.JLabel();
+        clientEmplacementLabel = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(186, 186, 186));
@@ -117,7 +127,7 @@ public class Itineraire extends JFrame { // NOSONAR
 
         jLabel1.setText("Zoom : ");
 
-        jLabel2.setText("100%");
+        levelZoomLabel.setText("100%");
 
         fitInButton.setText("Fit In Window");
         fitInButton.addActionListener(new java.awt.event.ActionListener() {
@@ -126,27 +136,67 @@ public class Itineraire extends JFrame { // NOSONAR
             }
         });
 
-        zoomButton.setText("Zoom out");
+        zoomButton.setText("Center");
+
+        costLabel.setText("Cost of this instance :");
+
+        costNLabel.setText("000000000");
+
+        externalVlabel.setText("Number of external vehicules:");
+
+        numberVLabel.setText("00");
+
+        clientEmplacementLabel.setText("Clients and Emplacements ");
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(jTable1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(0, 500, Short.MAX_VALUE)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addComponent(costLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(externalVlabel, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(clientEmplacementLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel2)
+                        .addComponent(levelZoomLabel)
                         .addGap(41, 41, 41)
                         .addComponent(zoomButton)
                         .addGap(50, 50, 50)
                         .addComponent(fitInButton)
                         .addGap(277, 277, 277))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(canvas2, javax.swing.GroupLayout.PREFERRED_SIZE, 649, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(39, 39, 39))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(costNLabel)
+                        .addGap(0, 0, Short.MAX_VALUE))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(247, 247, 247)
+                        .addComponent(numberVLabel))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                .addComponent(canvas2, javax.swing.GroupLayout.PREFERRED_SIZE, 649, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(39, 39, 39))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -154,12 +204,26 @@ public class Itineraire extends JFrame { // NOSONAR
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jLabel2)
+                    .addComponent(levelZoomLabel)
                     .addComponent(fitInButton)
                     .addComponent(zoomButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 111, Short.MAX_VALUE)
                 .addComponent(canvas2, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(33, 33, 33)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(costLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(costNLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(externalVlabel)
+                    .addComponent(numberVLabel))
+                .addGap(40, 40, 40)
+                .addComponent(clientEmplacementLabel)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         fitInButton.getAccessibleContext().setAccessibleName("fitIn");
@@ -198,12 +262,15 @@ public class Itineraire extends JFrame { // NOSONAR
 
         }
 
+        this.levelZoomLabel.setText(this.canvas2.getZoom() * 10 + "%");
+
+
     }//GEN-LAST:event_canvas2MouseWheelMoved
     /**
-     * mouse dragged
-     *
-     * @param evt Dragg event
-     */
+                             * mouse dragged
+                             *
+                             * @param evt Dragg event
+                             */
     private void canvas2MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_canvas2MouseDragged
         // TODO add your handling code here:
         this.canvas2.draggedCanvas(evt.getX(), evt.getY());
@@ -216,9 +283,16 @@ public class Itineraire extends JFrame { // NOSONAR
     private java.awt.Canvas canvas2;
     */
     private MyCanvas canvas2;
+    private javax.swing.JLabel clientEmplacementLabel;
+    private javax.swing.JLabel costLabel;
+    private javax.swing.JLabel costNLabel;
+    private javax.swing.JLabel externalVlabel;
     private javax.swing.JButton fitInButton;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JLabel levelZoomLabel;
+    private javax.swing.JLabel numberVLabel;
     private javax.swing.JButton zoomButton;
     // End of variables declaration//GEN-END:variables
 }
