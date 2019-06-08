@@ -11,10 +11,11 @@
     <class>model.Route</class>
     <class>model.Vehicule</class>
     <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/POO4_Project"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/POO4_Pro"/>
       <property name="javax.persistence.jdbc.user" value="username"/>
       <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
       <property name="javax.persistence.jdbc.password" value="password"/>
+      <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
     </properties>
   </persistence-unit>
 </persistence>

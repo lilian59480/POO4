@@ -326,7 +326,9 @@ public class Instance implements Serializable {
 
     @Override
     public String toString() {
-        return this.instanceName ;
+        if (this.instanceName != null )
+            return this.instanceName;
+        else return "instance : " + this.id ;
     }
 
 }

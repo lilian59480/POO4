@@ -21,6 +21,7 @@ package template;
 import algo.iterative.NaiveSolver;
 import dao.DaoException;
 import dao.DaoFactory;
+import dao.InstanceDao;
 import io.input.FilenameIterator;
 import io.input.InstanceFileParser;
 import io.input.JarInstanceResourceReader;
@@ -28,6 +29,7 @@ import io.input.ParserException;
 import java.awt.Color;
 import java.io.File;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
@@ -35,8 +37,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import javax.swing.ListModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import model.Instance;
+import template.metier.ModelList;
 
 /**
  * List instances.
@@ -61,6 +65,7 @@ public class ListeInstance extends JFrame { // NOSONAR
      */
     private final DefaultListModel<Instance> dlm;
     private DaoFactory daoFactory;
+    private final Collection<Instance> instances;
 
     /**
      * Creates new form List.
@@ -83,9 +88,11 @@ public class ListeInstance extends JFrame { // NOSONAR
         }
 
         this.initComponents();
+        InstanceDao instanceDao = this.daoFactory.getInstanceDao();
+        instances = instanceDao.findAll();
+        ModelList vv = new ModelList(this.instances);
+        this.jListInstanceDb.setModel(vv);
         this.initialisationFenetre();
-        LOGGER.log(Level.INFO, "daoFactory :", this.daoFactory.toString());
-
     }
 
     /**
@@ -109,10 +116,15 @@ public class ListeInstance extends JFrame { // NOSONAR
     private void initConnexion() {
         try {
             this.daoFactory = DaoFactory.getDaoFactory(DaoFactory.PersistenceType.JPA);
+            InstanceDao instanceManager = daoFactory.getInstanceDao();
+            Instance i1 = new Instance();
+            Instance i2 = new Instance();
+            instanceManager.create(i1);
+            instanceManager.create(i2);
         } catch (DaoException ex) {
             Logger.getLogger(Itineraire.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane errorPane = new JOptionPane();
-            JOptionPane.showMessageDialog(this, "ERROR CONNEXION DATABASE",
+            JOptionPane.showMessageDialog(errorPane, "ERROR CONNEXION DATABASE",
                     "Erreur Connection", ERROR_MESSAGE);
             this.dispose();
 
@@ -136,6 +148,8 @@ public class ListeInstance extends JFrame { // NOSONAR
         jSelectedInstance = new javax.swing.JLabel();
         uploadButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jListInstanceDb = new javax.swing.JList<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 51));
@@ -178,40 +192,49 @@ public class ListeInstance extends JFrame { // NOSONAR
 
         jLabel1.setText("Solve an external instance");
 
+        jScrollPane2.setViewportView(jListInstanceDb);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(228, 228, 228))
             .addGroup(layout.createSequentialGroup()
-                .addGap(118, 118, 118)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 596, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(67, 67, 67)
-                        .addComponent(uploadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(118, 118, 118)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jSelectectLabel)
+                                .addGap(78, 78, 78)
+                                .addComponent(jSelectedInstance, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jButtonDisplayInstance)
+                                .addGap(108, 108, 108)
+                                .addComponent(jButtonSolveInstance))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(67, 67, 67)
+                                .addComponent(uploadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jSelectectLabel)
-                        .addGap(78, 78, 78)
-                        .addComponent(jSelectedInstance, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(469, 469, 469)
+                        .addComponent(jTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButtonDisplayInstance)
-                        .addGap(108, 108, 108)
-                        .addComponent(jButtonSolveInstance)))
-                .addContainerGap(154, Short.MAX_VALUE))
+                        .addGap(145, 145, 145)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 811, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 826, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(280, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(47, 47, 47)
+                .addGap(49, 49, 49)
                 .addComponent(jTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 109, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 373, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(33, 33, 33)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(uploadButton)
                     .addComponent(jLabel1))
@@ -219,7 +242,7 @@ public class ListeInstance extends JFrame { // NOSONAR
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jSelectectLabel)
                     .addComponent(jSelectedInstance, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
+                .addGap(59, 59, 59)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonDisplayInstance)
                     .addComponent(jButtonSolveInstance))
@@ -264,10 +287,7 @@ public class ListeInstance extends JFrame { // NOSONAR
             NaiveSolver ds = createInstance(fileName);
             ds.solve();
             Itineraire itineraire = new Itineraire(ds.getInstance());
-
         }
-
-
     }//GEN-LAST:event_jButtonDisplayInstanceActionPerformed
     /**
      * Upload Instance.
@@ -312,7 +332,9 @@ public class ListeInstance extends JFrame { // NOSONAR
     private javax.swing.JButton jButtonSolveInstance;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JList<Instance> jListInstance;
+    private javax.swing.JList<Instance> jListInstanceDb;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel jSelectectLabel;
     private javax.swing.JLabel jSelectedInstance;
     private javax.swing.JLabel jTitle;

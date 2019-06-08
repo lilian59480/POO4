@@ -50,7 +50,6 @@ public class TestsDao {
      * @todo Create test.
      */
     @Test
-    @Disabled("COCO")
     @DisplayName("Is Dao Working")
     public void isDaoWorking() {
         DaoFactory daoFactory;
