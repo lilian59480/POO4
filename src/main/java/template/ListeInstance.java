@@ -302,7 +302,9 @@ public class ListeInstance extends JFrame { // NOSONAR
         chooser.setFileFilter(filter);
         int returnVal = chooser.showOpenDialog(this.getParent());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-
+            InstanceDao instanceManager = daoFactory.getInstanceDao();
+            Instance i2 = new Instance();
+            instanceManager.create(i2);
             this.jSelectedInstance.setText(chooser.getSelectedFile().getAbsolutePath());
         }
     }//GEN-LAST:event_uploadButtonActionPerformed
