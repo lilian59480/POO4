@@ -52,6 +52,7 @@ public class BestLabel {
 
     /**
      * BestLabel constructor with a Label
+     * @param label  the label
      */
     public BestLabel(Label label) {
         this.cost = label.getCost();
@@ -93,7 +94,7 @@ public class BestLabel {
     /**
      * Get the previous labels of BestLabel
      *
-     * @return
+     * @return the list of previous labels
      */
     public List<Label> getLabelsPre() {
         return labelsPre;

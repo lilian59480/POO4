@@ -19,11 +19,7 @@
 package algo.genetic;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import model.Emplacement;
 
 /**
  * ClientLabels class
@@ -31,6 +27,7 @@ import model.Emplacement;
  * @author Thomas
  */
 public class ClientLabels {
+
     /**
      * The client's number
      */
@@ -39,7 +36,7 @@ public class ClientLabels {
     /**
      * Map that associate an emplacement to a list of Label
      */
-    private Map<Emplacement, List<Label>> em2Labels;
+    private List<Label> labels;
 
     /**
      * ClientLabels constructor
@@ -48,26 +45,16 @@ public class ClientLabels {
      */
     public ClientLabels(int cnb) {
         clientNb = cnb;
-        em2Labels = new HashMap<>();
+        labels = new ArrayList<>();
     }
 
     /**
-     * Get em2Labels.
+     * Get labels.
      *
      * @return The em2Labels.
      */
-    public Map<Emplacement, List<Label>> getEm2Labels() {
-        return em2Labels;
-    }
-
-    /**
-     * Get the labels associated to an Emplacement
-     *
-     * @param e the emplacement you want the labels
-     * @return the labels
-     */
-    public List<Label> getLabels(Emplacement e) {
-        return em2Labels.get(e);
+    public List<Label> getLabels() {
+        return labels;
     }
 
     /**
@@ -80,59 +67,26 @@ public class ClientLabels {
     }
 
     /**
-     * Create an entry for an Emplacement
-     *
-     * @param e the emplacement
-     */
-    private void createEmplacementEntry(Emplacement e) {
-        if (!this.em2Labels.containsKey(e)) {
-            this.em2Labels.put(e, new ArrayList<Label>());
-        }
-    }
-
-    /**
-     * Add multiple labels to an Emplacement
-     *
-     * @param e      the emplacement you want to add a label to
-     * @param labels the labels to add
-     */
-    public void addLabelsToEmplacement(Emplacement e, List<Label> labels) {
-        if (!this.em2Labels.containsKey(e)) {
-            createEmplacementEntry(e);
-        }
-        for (Label label : labels) {
-            this.em2Labels.get(e).add(label);
-        }
-    }
-
-    /**
-     * Add a label to an Emplacement
-     *
-     * @param e     the emplacement you want to add a label to
-     * @param label the label to add
-     */
-    public void addLabelToEmplacement(Emplacement e, Label label) {
-        if (!this.em2Labels.containsKey(e)) {
-            createEmplacementEntry(e);
-        }
-        this.em2Labels.get(e).add(label);
-    }
-
-    /**
-     * Add multiple labels to multiple emplacements
+     * Add multiple labels
      *
      * @param labels the labels to add
      */
     public void addLabels(List<Label> labels) {
-        for (Label label : labels) {
-            this.addLabelToEmplacement(label.getEmplacement(), label);
-        }
+        this.labels.addAll(labels);
+    }
+
+    /**
+     * Add a label
+     *
+     * @param label the label to add
+     */
+    public void addLabel(Label label) {
+        this.labels.add(label);
     }
 
     @Override
     public String toString() {
-        return "ClientLabels{" + "client nb=" + clientNb + ", em2Labels=" + em2Labels + '}';
+        return "ClientLabels2{" + "clientNb=" + clientNb + ", labels=" + labels + '}';
     }
-
 
 }
