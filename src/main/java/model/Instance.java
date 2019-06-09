@@ -18,21 +18,38 @@
  */
 package model;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 /**
  * Instance model representation.
  *
  * @author Corentin
  */
-public class Instance {
+@Entity
+@Table(name = "INSTANCE")
+public class Instance implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Class logger.
      */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private int id;
     private static final Logger LOGGER = Logger.getLogger(Instance.class.getName());
 
     /**
@@ -53,28 +70,36 @@ public class Instance {
     /**
      * Depot.
      */
+    @OneToOne
     private Depot depot;
 
     /**
      * List of clients.
      */
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Client> clients;
 
     /**
      * List of vehicules.
      */
+    @OneToMany(mappedBy = "instance", cascade = CascadeType.ALL)
     private List<Vehicule> vehicules;
 
     /**
      * List of routes.
      */
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Route> routes;
 
     /**
      * List of plannings.
      */
+    @OneToMany(mappedBy = "instance", cascade = CascadeType.ALL)
     private List<Planning> plannings;
+    
+    private String instanceName;
 
+    
     /**
      * Instance constructor.
      */
@@ -265,6 +290,21 @@ public class Instance {
     }
 
     /**
+     * Get Instance name.
+     * @return The instance Name.
+     */
+    public String getInstanceName() {
+        return instanceName;
+    }
+    /**
+     * Set instance Name.
+     * @param instanceName  setted instanceName.
+     */
+    public void setInstanceName(String instanceName) {
+        this.instanceName = instanceName;
+    }
+
+    /**
      * Check the validity of this instance.
      *
      * Check the validity of all clients internally.
@@ -286,7 +326,7 @@ public class Instance {
 
     @Override
     public String toString() {
-        return "capV=" + this.capaciteVehicule + ", coutV=" + this.coutVehicule + ", nbC=" + this.clients.size() + ", nbV" + this.vehicules.size();
+        return this.instanceName ;
     }
 
 }

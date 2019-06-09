@@ -18,13 +18,29 @@
  */
 package model;
 
+import java.io.Serializable;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  * Depot model representation.
  *
  * @author Corentin
  */
-public class Depot extends Emplacement {
+@Entity
+@Table(name = "DEPOT")
+@DiscriminatorValue("2")
+public class Depot extends Emplacement implements Serializable {
 
+    /**
+     * Depot constructor.
+     *
+     */
+    public Depot() {
+        this(0, 0, 0, 0);
+    }
+    
     /**
      * Depot constructor.
      *

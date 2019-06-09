@@ -45,3 +45,6 @@ manifest.mf
 .idea/
 
 /target/
+
+### Instances ###
+/instance*
