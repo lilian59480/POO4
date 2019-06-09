@@ -108,7 +108,6 @@ public class ShortestPathClients implements ISolver {
             System.out.println("");
             findShortestPath();
             Tournee bestTournee = findShortestPath();
-
             System.out.println("");
             System.out.println("");
             System.out.println(bestTournee.toString());
@@ -160,8 +159,8 @@ public class ShortestPathClients implements ISolver {
     }
 
     /**
-     * Funcion that calculate the shortest path in the order of clients given by
-     * the chromosome
+     * Funcion that calculates the shortest path in the order of clients given
+     * by the chromosome
      *
      * @return The tournee of the shortests path
      * @throws SolverException If there is an internal exception or inconsistant
@@ -169,7 +168,6 @@ public class ShortestPathClients implements ISolver {
      */
     private Tournee findShortestPath() throws SolverException {
         List<BestLabel> listBestLabel = new ArrayList<>();
-
         for (int i = 0; i < this.chromosome.size(); i++) {
             List<Client> partialChromosome = new ArrayList<>();
             for (int j = i; j < this.chromosome.size(); j++) {
@@ -184,7 +182,6 @@ public class ShortestPathClients implements ISolver {
                         } else if (newTournee.getCost() == listBestLabel.get(i - 1).getCost() && newTournee.getLabelsPre().size() < listBestLabel.get(i - 1).getLabelsPre().size()) {
                             listBestLabel.set(j, newTournee);
                         }
-
                     } else {
                         if (i == 0) {
                             listBestLabel.add(new BestLabel(label));
@@ -201,10 +198,18 @@ public class ShortestPathClients implements ISolver {
                     }
                 }
             }
-
         }
 
-        BestLabel bestLabel = listBestLabel.get(listBestLabel.size() - 1);
+        return bestLabelToTournee(listBestLabel.get(listBestLabel.size() - 1));
+    }
+
+    /**
+     * Function that convert a BestLabel into a Tournee
+     *
+     * @param bestLabel the BestLabel to convert
+     * @return the Tournee
+     */
+    private Tournee bestLabelToTournee(BestLabel bestLabel) {
         Tournee bestTournee = new Tournee();
         for (Label label : bestLabel.getLabelsPre()) {
             bestTournee.addLabel(label);
@@ -215,18 +220,10 @@ public class ShortestPathClients implements ISolver {
     }
 
     /**
-     * Funcion that calculate the shortest path in the order of clients given by
-     * the chromosome
+     * Funcion that tries to find the shortest path going throught every clients
+     * if that path exists
      *
-     * @return The tournee of the shortests path
-     * @throws SolverException If there is an internal exception or inconsistant
-     * values.
-     */
-    /**
-     *
-     * @param partialChromosome the partial chromosome in which you want to
-     * calculate the shortests path that goes throught every clients
-     *
+     * @param partialChromosome the partial chromosome
      * @return A label if there is path path, null otherwise
      * @throws SolverException If there is an internal exception or inconsistant
      * values.
@@ -278,20 +275,22 @@ public class ShortestPathClients implements ISolver {
                                 labelsEC.get(i).addLabel(newLabel);
                                 labelPre.addSuivant(em);
                             }
-
                         }
-
                     }
-
                 }
             }
-
         }
-        ClientLabels cl = labelsEC.get(labelsEC.size() - 1);
-        //System.out.println("");
-        //System.out.println("");
-        //System.out.println(cl);
 
+        return getBestLabelFromClientLabels(labelsEC.get(labelsEC.size() - 1));
+    }
+
+    /**
+     * Function that retreive the best Label from a ClientLabels
+     *
+     * @param cl the ClientLabels
+     * @return the best Label
+     */
+    private Label getBestLabelFromClientLabels(ClientLabels cl) {
         if (cl.getLabels().size() == 0) {
             return null;
         }
