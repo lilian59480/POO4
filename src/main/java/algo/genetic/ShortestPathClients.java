@@ -254,34 +254,49 @@ public class ShortestPathClients implements ISolver {
                         }
                     }
                 } else if (i > 0) { //etend les labels precedents
-                    for (Label labelPre : labelsEC.get(i - 1).getLabels()) {
-                        Emplacement precedantEm = labelPre.getEmplacement();
-                        Route r0 = precedantEm.getRouteTo(depot);
-                        Route r1 = precedantEm.getRouteTo(em);
-                        Route r2 = em.getRouteTo(depot);
-                        int arrivalTime = Math.max(labelPre.getTime() - r0.getTemps() + r1.getTemps(), em.getHeureDebut());
-                        if (arrivalTime <= em.getHeureFin()) {
-                            int newLoad = labelPre.getLoad() + client.getDemande();
-                            int newTime = arrivalTime + r2.getTemps();
-                            if (newLoad <= capaV && newTime <= closeTime) {
-                                Label newLabel = new Label(
-                                        newLoad,
-                                        labelPre.getCost() - r0.getCout() + r1.getCout() + r2.getCout(),
-                                        newTime,
-                                        em,
-                                        labelPre.getPrecedents()
-                                );
-                                newLabel.addPrecedent(precedantEm);
-                                labelsEC.get(i).addLabel(newLabel);
-                                labelPre.addSuivant(em);
-                            }
-                        }
-                    }
+                    extendsPreviousLabels(em, labelsEC.get(i - 1), labelsEC.get(i));
                 }
             }
         }
-
         return getBestLabelFromClientLabels(labelsEC.get(labelsEC.size() - 1));
+    }
+
+    /**
+     * Functions that extends the previous labels
+     *
+     * @param em the emplacement you want to extends labels to
+     * @param previousClientLabels the previous ClientLabels (where there are
+     * the labels to extends)
+     * @param clientLabels the ClientLabels in which you want to put the
+     * extended labels
+     */
+    private void extendsPreviousLabels(Emplacement em, ClientLabels previousClientLabels, ClientLabels clientLabels) {
+        int capaV = this.instance.getCapaciteVehicule();
+        Depot depot = this.instance.getDepot();
+        int closeTime = depot.getHeureFin();
+        for (Label labelPre : previousClientLabels.getLabels()) {
+            Emplacement precedantEm = labelPre.getEmplacement();
+            Route r0 = precedantEm.getRouteTo(depot);
+            Route r1 = precedantEm.getRouteTo(em);
+            Route r2 = em.getRouteTo(depot);
+            int arrivalTime = Math.max(labelPre.getTime() - r0.getTemps() + r1.getTemps(), em.getHeureDebut());
+            if (arrivalTime <= em.getHeureFin()) {
+                int newLoad = labelPre.getLoad() + em.getClient().getDemande();
+                int newTime = arrivalTime + r2.getTemps();
+                if (newLoad <= capaV && newTime <= closeTime) {
+                    Label newLabel = new Label(
+                            newLoad,
+                            labelPre.getCost() - r0.getCout() + r1.getCout() + r2.getCout(),
+                            newTime,
+                            em,
+                            labelPre.getPrecedents()
+                    );
+                    newLabel.addPrecedent(precedantEm);
+                    clientLabels.addLabel(newLabel);
+                    labelPre.addSuivant(em);
+                }
+            }
+        }
     }
 
     /**
