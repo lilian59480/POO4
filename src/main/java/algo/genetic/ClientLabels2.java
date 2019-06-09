@@ -22,73 +22,71 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Tournee class
+ * ClientLabels class
  *
  * @author Thomas
  */
-public class Tournee {
+public class ClientLabels2 {
 
     /**
-     * Cost of the tournee
+     * The client's number
      */
-    private double cost;
-    /**
-     * Labels of the tournee
-     */
-    private List<Label> tournee;
+    private int clientNb;
 
     /**
-     * Tournee constructor
+     * Map that associate an emplacement to a list of Label
      */
-    public Tournee() {
-        this.cost = 0.0;
-        this.tournee = new ArrayList<>();
+    private List<Label> labels;
+
+    /**
+     * ClientLabels constructor
+     *
+     * @param cnb the client's number
+     */
+    public ClientLabels2(int cnb) {
+        clientNb = cnb;
+        labels = new ArrayList<>();
     }
 
     /**
-     * Tournee constructor that extend a Tournee
+     * Get labels.
      *
-     * @param label the Label
-     * @param parentTournee the parentTournee to extend
+     * @return The em2Labels.
      */
-    public Tournee(Label label, Tournee parentTournee) {
-        this.cost = label.getCost() + parentTournee.getCost();
-        this.tournee = new ArrayList<>(parentTournee.getTournee());
-        this.tournee.add(label);
+    public List<Label> getLabels() {
+        return labels;
     }
 
     /**
-     * Get the cost of the Tournee
+     * Get clientNb
      *
-     * @return the cost
+     * @return the clientNb
      */
-    public double getCost() {
-        return cost;
+    public int getClientNb() {
+        return clientNb;
     }
 
     /**
-     * Get the tournee of the Tournee
+     * Add multiple labels
      *
-     * @return the cost
+     * @param labels the labels to add
      */
-    public List<Label> getTournee() {
-        return tournee;
+    public void addLabels(List<Label> labels) {
+        this.labels.addAll(labels);
     }
 
     /**
-     * Add a label to the tournee
+     * Add multiple labels
      *
-     * @param label the label to add
+     * @param labels the labels to add
      */
     public void addLabel(Label label) {
-        this.tournee.add(label);
+        this.labels.add(label);
     }
 
     @Override
     public String toString() {
-        return "Tournee{"
-                + "cost=" + cost
-                + ", tournee=" + tournee
-                + '}';
+        return "ClientLabels2{" + "clientNb=" + clientNb + ", labels=" + labels + '}';
     }
+
 }

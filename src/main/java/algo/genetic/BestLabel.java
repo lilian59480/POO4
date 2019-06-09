@@ -22,43 +22,58 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Tournee class
+ * BestLabel class
  *
  * @author Thomas
  */
-public class Tournee {
+public class BestLabel {
 
     /**
-     * Cost of the tournee
+     * Cost of the BestLabel and the previous labels
      */
     private double cost;
     /**
-     * Labels of the tournee
+     * Labels of the BestLabel
      */
-    private List<Label> tournee;
+    private Label label;
 
     /**
-     * Tournee constructor
+     * List of previous labels
      */
-    public Tournee() {
+    private List<Label> labelsPre;
+
+    /**
+     * BestLabel constructor
+     */
+    public BestLabel() {
         this.cost = 0.0;
-        this.tournee = new ArrayList<>();
+        this.labelsPre = new ArrayList<>();
     }
 
     /**
-     * Tournee constructor that extend a Tournee
+     * BestLabel constructor with a Label
+     */
+    public BestLabel(Label label) {
+        this.cost = label.getCost();
+        this.label = label;
+        this.labelsPre = new ArrayList<>();
+    }
+
+    /**
+     * BestLabel constructor that extends a BestLabel
      *
      * @param label the Label
      * @param parentTournee the parentTournee to extend
      */
-    public Tournee(Label label, Tournee parentTournee) {
+    public BestLabel(Label label, BestLabel parentTournee) {
         this.cost = label.getCost() + parentTournee.getCost();
-        this.tournee = new ArrayList<>(parentTournee.getTournee());
-        this.tournee.add(label);
+        this.label = label;
+        this.labelsPre = new ArrayList<>(parentTournee.getLabelsPre());
+        this.labelsPre.add(parentTournee.getLabel());
     }
 
     /**
-     * Get the cost of the Tournee
+     * Get the cost of the BestLabel
      *
      * @return the cost
      */
@@ -67,28 +82,26 @@ public class Tournee {
     }
 
     /**
-     * Get the tournee of the Tournee
+     * Get the label of BestLabel
      *
-     * @return the cost
+     * @return the label
      */
-    public List<Label> getTournee() {
-        return tournee;
+    public Label getLabel() {
+        return label;
     }
 
     /**
-     * Add a label to the tournee
+     * Get the previous labels of BestLabel
      *
-     * @param label the label to add
+     * @return
      */
-    public void addLabel(Label label) {
-        this.tournee.add(label);
+    public List<Label> getLabelsPre() {
+        return labelsPre;
     }
 
     @Override
     public String toString() {
-        return "Tournee{"
-                + "cost=" + cost
-                + ", tournee=" + tournee
-                + '}';
+        return "Tournee2{" + "cost=" + cost + ", label=" + label + ", labelsPre=" + labelsPre + '}';
     }
+
 }
