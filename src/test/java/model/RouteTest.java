@@ -35,6 +35,8 @@ public class RouteTest {
 
     private static final double DEFAULT_X = -2;
     private static final double DEFAULT_Y = 7;
+    private static final int DEFAULT_HEURE_DEBUT = 0;
+    private static final int DEFAULT_HEURE_FIN = 10;
     private static final double DEFAULT_COST = 4;
     private static final int DEFAULT_TIME = 9;
 
@@ -44,8 +46,8 @@ public class RouteTest {
 
     @BeforeEach
     void createNewRoute() {
-        this.pointInstance = new Point(DEFAULT_X, DEFAULT_Y);
-        this.point2 = new Point(DEFAULT_Y, DEFAULT_X);
+        this.pointInstance = new Emplacement(DEFAULT_HEURE_DEBUT, DEFAULT_HEURE_FIN, DEFAULT_X, DEFAULT_Y);
+        this.point2 = new Emplacement(DEFAULT_HEURE_DEBUT, DEFAULT_HEURE_FIN, DEFAULT_Y, DEFAULT_X);
         this.routeInstance = new Route(this.pointInstance, this.point2, DEFAULT_COST, DEFAULT_TIME);
         this.pointInstance.addRouteTo(this.routeInstance);
     }

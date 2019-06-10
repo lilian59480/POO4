@@ -20,22 +20,42 @@ package model;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.io.Serializable;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import org.eclipse.persistence.annotations.CascadeOnDelete;
 
 /**
  * Client model representation.
  *
  * @author Corentin
  */
-public class Client {
+@Entity
+@Table(name = "CLIENT")
+public class Client implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Demand of the client.
      */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    protected Integer id;
     private int demande;
 
     /**
      * List of Client's Emplacements.
      */
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    @CascadeOnDelete
     private Set<Emplacement> emplacements;
 
     /**
@@ -46,6 +66,7 @@ public class Client {
     /**
      * Vehicule linked.
      */
+    @ManyToOne
     private Vehicule vehicule;
 
     /**
@@ -74,7 +95,7 @@ public class Client {
      * @return True if we can add this emplacement.
      */
     public boolean addEmplacement(Emplacement e) {
-        if (e == null) {
+        if (e == null || this.emplacements.contains(e)) {
             return false;
         }
         e.setClient(this);

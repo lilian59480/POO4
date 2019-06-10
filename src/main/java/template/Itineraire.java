@@ -19,9 +19,12 @@
 package template;
 
 import algo.iterative.NaiveSolver;
+import dao.DaoException;
+import dao.DaoFactory;
 import io.input.InstanceFileParser;
 import io.input.ParserException;
 import java.awt.BasicStroke;
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -30,7 +33,12 @@ import java.io.File;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.Action;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import model.Depot;
 import model.Emplacement;
 import model.Instance;
@@ -58,117 +66,19 @@ public class Itineraire extends JFrame { // NOSONAR
     /**
      * Creates new form itineraire with a null Instance.
      */
-    public Itineraire() {
-        this(null);
-    }
-
     /**
      * Creates new form itineraire.
      *
      * @param i Instance to display
      */
     public Itineraire(Instance i) {
+        this.instance = i;
         this.initComponents();
         this.initialisationFenetre();
-        this.instance = i;
+        
+        this.costNLabel.setText("" + this.instance.getCoutVehicule());
+        this.numberVLabel.setText("" + this.instance.getNbVehicules());
         LOGGER.log(Level.INFO, "Instance :", this.instance.toString());
-    }
-
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        Color c = g.getColor();
-        // DESSIN D'une Instance
-        NaiveSolver ds = this.createInstance();
-        if (ds == null) {
-            return;
-        }
-
-        Instance i = ds.getInstance();
-        if (i == null) {
-            return;
-        }
-
-        this.drawInstance(g, this.instance);
-        g.setColor(c);
-
-    }
-
-    /**
-     * Draw an Emplacement
-     *
-     * @param g Graphics zone.
-     * @param e Emplacement to draw.
-     */
-    private void drawEmplacement(Graphics g, Emplacement e) {
-        if (e == null) {
-            return;
-        }
-
-        if (e instanceof Depot) {
-            g.setColor(Color.RED);
-        } else {
-            g.setColor(Color.BLUE);
-        }
-        g.fillRect((int) e.getX() * 4 + 400 - 3, (int) e.getY() * 4 + 400 - 3, 6, 6);
-
-    }
-
-    /**
-     * Draw an instance.
-     *
-     * @param g Graphics zone.
-     * @param i Instance to draw.
-     */
-    private void drawInstance(Graphics g, Instance i) {
-        if (i == null) {
-            return;
-        }
-        //Dessin du depot
-        Depot d = i.getDepot();
-
-        List<Vehicule> vehicules = i.getVehicules();
-        int code = 0;
-
-        for (Vehicule v : vehicules) {
-            Emplacement source = d;
-            for (Emplacement destination : v.getEmplacements()) {
-                /*
-                 * Between 360 -> getHSBColor(X, 1, 0.8)
-                 */
-                g.setColor(Color.getHSBColor(code / 360.0f, 1, 0.8f));
-                Graphics2D g2 = (Graphics2D) g;
-                g2.setStroke(new BasicStroke(3));
-                g2.drawLine((int) source.getX() * 4 + 400, (int) source.getY() * 4 + 400, (int) destination.getX() * 4 + 400, (int) destination.getY() * 4 + 400);
-                source = destination;
-                this.drawEmplacement(g, destination);
-
-            }
-            g.drawLine((int) source.getX() * 4 + 400, (int) source.getY() * 4 + 400, (int) d.getX() * 4 + 400, (int) d.getY() * 4 + 400);
-            code += 20;
-        }
-        this.drawEmplacement(g, d);
-
-    }
-
-    /**
-     * ???.
-     *
-     * @todo What! Please refactor.
-     * @return A solver.
-     */
-    private NaiveSolver createInstance() {
-        Instance i;
-        try {
-            InstanceFileParser ifp = new InstanceFileParser();
-            i = ifp.parse(new File("src/main/resources/instances/instance_0-triangle.txt"));
-        } catch (ParserException ex) {
-            LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
-            return null;
-        }
-        NaiveSolver ds = new NaiveSolver(i);
-        ds.solve();
-        return ds;
     }
 
     /**
@@ -186,6 +96,7 @@ public class Itineraire extends JFrame { // NOSONAR
 
     }
 
+
     /**
      * This method is called from within the constructor to initialize the form.
      */
@@ -193,22 +104,201 @@ public class Itineraire extends JFrame { // NOSONAR
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        canvas2 = new MyCanvas(this.instance);
+        jLabel1 = new javax.swing.JLabel();
+        levelZoomLabel = new javax.swing.JLabel();
+        fitInButton = new javax.swing.JButton();
+        zoomButton = new javax.swing.JButton();
+        costLabel = new javax.swing.JLabel();
+        costNLabel = new javax.swing.JLabel();
+        externalVlabel = new javax.swing.JLabel();
+        numberVLabel = new javax.swing.JLabel();
+        clientEmplacementLabel = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setBackground(new java.awt.Color(186, 186, 186));
+
+        canvas2.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                canvas2MouseDragged(evt);
+            }
+        });
+        canvas2.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
+                canvas2MouseWheelMoved(evt);
+            }
+        });
+
+        jLabel1.setText("Zoom : ");
+
+        levelZoomLabel.setText("100%");
+
+        fitInButton.setText("Fit In Window");
+        fitInButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fitInButtonActionPerformed(evt);
+            }
+        });
+
+        zoomButton.setText("Center");
+
+        costLabel.setText("Cost of this instance :");
+
+        costNLabel.setText("000000000");
+
+        externalVlabel.setText("Number of external vehicules:");
+
+        numberVLabel.setText("00");
+
+        clientEmplacementLabel.setText("Clients and Emplacements ");
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(jTable1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(costLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(externalVlabel, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(clientEmplacementLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(levelZoomLabel)
+                        .addGap(41, 41, 41)
+                        .addComponent(zoomButton)
+                        .addGap(50, 50, 50)
+                        .addComponent(fitInButton)
+                        .addGap(277, 277, 277))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(costNLabel)
+                        .addGap(0, 0, Short.MAX_VALUE))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(247, 247, 247)
+                        .addComponent(numberVLabel))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                .addComponent(canvas2, javax.swing.GroupLayout.PREFERRED_SIZE, 649, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(39, 39, 39))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(levelZoomLabel)
+                    .addComponent(fitInButton)
+                    .addComponent(zoomButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 111, Short.MAX_VALUE)
+                .addComponent(canvas2, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(33, 33, 33)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(costLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(costNLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(externalVlabel)
+                    .addComponent(numberVLabel))
+                .addGap(40, 40, 40)
+                .addComponent(clientEmplacementLabel)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        fitInButton.getAccessibleContext().setAccessibleName("fitIn");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    /**
+     * Action Perfomed.
+     *
+     * @param evt Action evt
+     */
+    private void fitInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fitInButtonActionPerformed
+        // TODO add your handling code here:
+        canvas2.center();
+        canvas2.repaint();
+    }//GEN-LAST:event_fitInButtonActionPerformed
+    /**
+     * Mo
+     *
+     * @param evt Mouse event
+     */
+    private void canvas2MouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_canvas2MouseWheelMoved
+        // TODO add your handling code here:
+
+        if (evt.getWheelRotation() > 0) {
+            //zoom in (amount)
+            System.out.println("Zoom In/ Scrolled UP" + this.canvas2.getZoom());
+            canvas2.zoomIn();
+            canvas2.repaint();
+
+        } else {
+            //zoom out (amount)
+            System.out.println("Zoom out/ Scrolled Down" + this.canvas2.getZoom());
+            this.canvas2.zoomOut();
+            this.canvas2.repaint();
+
+        }
+
+        this.levelZoomLabel.setText(this.canvas2.getZoom() * 10 + "%");
+
+
+    }//GEN-LAST:event_canvas2MouseWheelMoved
+    /**
+     * mouse dragged
+     *
+     * @param evt Dragg event
+     */
+    private void canvas2MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_canvas2MouseDragged
+        // TODO add your handling code here:
+        this.canvas2.draggedCanvas(evt.getX(), evt.getY());
+        this.canvas2.repaint();
+
+    }//GEN-LAST:event_canvas2MouseDragged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    /*
+    private java.awt.Canvas canvas2;
+    */
+    private MyCanvas canvas2;
+    private javax.swing.JLabel clientEmplacementLabel;
+    private javax.swing.JLabel costLabel;
+    private javax.swing.JLabel costNLabel;
+    private javax.swing.JLabel externalVlabel;
+    private javax.swing.JButton fitInButton;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JLabel levelZoomLabel;
+    private javax.swing.JLabel numberVLabel;
+    private javax.swing.JButton zoomButton;
     // End of variables declaration//GEN-END:variables
 }
