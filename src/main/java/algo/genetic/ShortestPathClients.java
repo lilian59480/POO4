@@ -104,23 +104,7 @@ public class ShortestPathClients implements ISolver {
         LOGGER.log(Level.FINE, "Solving a new instance");
 
         try {
-            Tournee bestTournee = findShortestPath(1);
-            Tournee bestTourneeTemp = findShortestPath(1.5);
-            if(bestTourneeTemp.getCost()<bestTournee.getCost()) {
-                bestTournee = bestTourneeTemp;
-            }
-            bestTourneeTemp = findShortestPath(2);
-            if(bestTourneeTemp.getCost()<bestTournee.getCost()) {
-                bestTournee = bestTourneeTemp;
-            }
-            bestTourneeTemp = findShortestPath(2.5);
-            if(bestTourneeTemp.getCost()<bestTournee.getCost()) {
-                bestTournee = bestTourneeTemp;
-            }
-            bestTourneeTemp = findShortestPath(10);
-            if(bestTourneeTemp.getCost()<bestTournee.getCost()) {
-                bestTournee = bestTourneeTemp;
-            }
+            Tournee bestTournee = findBestTournee();
             this.instance.clear();
             List<Vehicule> vehicules = this.instance.getVehicules();
             int nbV = this.instance.getNbVehicules();
@@ -164,9 +148,39 @@ public class ShortestPathClients implements ISolver {
     }
 
     /**
+     * Function to ind the best Tournee using different percent
+     *
+     * @return the best Tournee
+     * @throws SolverException SolverException If there is an internal exception
+     * or inconsistant values.
+     */
+    private Tournee findBestTournee() throws SolverException {
+        Tournee bestTournee = findShortestPath(1);
+        Tournee bestTourneeTemp = findShortestPath(1.5);
+        if (bestTourneeTemp.getCost() < bestTournee.getCost()) {
+            bestTournee = bestTourneeTemp;
+        }
+        bestTourneeTemp = findShortestPath(2);
+        if (bestTourneeTemp.getCost() < bestTournee.getCost()) {
+            bestTournee = bestTourneeTemp;
+        }
+        bestTourneeTemp = findShortestPath(2.5);
+        if (bestTourneeTemp.getCost() < bestTournee.getCost()) {
+            bestTournee = bestTourneeTemp;
+        }
+        bestTourneeTemp = findShortestPath(10);
+        if (bestTourneeTemp.getCost() < bestTournee.getCost()) {
+            bestTournee = bestTourneeTemp;
+        }
+
+        return bestTournee;
+    }
+
+    /**
      * Funcion that calculates the shortest path in the order of clients given
      * by the chromosome
      *
+     * @param percent a number to ajustate the precision
      * @return The tournee of the shortests path
      * @throws SolverException If there is an internal exception or inconsistant
      * values.
@@ -181,14 +195,9 @@ public class ShortestPathClients implements ISolver {
                 Label label = findPartialShortestPath(partialChromosome);
                 if (label != null) {
                     if (listBestLabel.size() >= j + 1) {
-                        BestLabel newTournee = new BestLabel(label, listBestLabel.get(i - 1));
-                        if (newTournee.getLabelsPre().size() < listBestLabel.get(j).getLabelsPre().size() && newTournee.getCost() <= (listBestLabel.get(i - 1).getCost()*percent)) {
-                            //Should be unreachable
-                            listBestLabel.set(j, newTournee);
-                        } else if (newTournee.getLabelsPre().size() == listBestLabel.get(j).getLabelsPre().size() && newTournee.getCost() < listBestLabel.get(j).getCost()) {
-                            listBestLabel.set(j, newTournee);
-                        } else if((newTournee.getCost()*percent) < listBestLabel.get(j).getCost()) {
-                            listBestLabel.set(j, newTournee);
+                        BestLabel newLabel = new BestLabel(label, listBestLabel.get(i - 1));
+                        if (shouldReplaceCurrentLabel(listBestLabel.get(j), newLabel, percent)) {
+                            listBestLabel.set(j, newLabel);
                         }
                     } else {
                         if (i == 0) {
@@ -212,9 +221,33 @@ public class ShortestPathClients implements ISolver {
     }
 
     /**
+     * Function that checks whether we should replace the current BestLabel
+     *
+     * @param currentLabel the current label
+     * @param newLabel the new label
+     * @param percent a number to ajustate the precision
+     * @return whether we should replace it or not
+     */
+    private boolean shouldReplaceCurrentLabel(BestLabel currentLabel, BestLabel newLabel, double percent) {
+        if (newLabel.getLabelsPre().size() < currentLabel.getLabelsPre().size() && newLabel.getCost() <= (currentLabel.getCost() * percent)) {
+            //Should be unreachable
+            return true;
+        }
+        if (newLabel.getLabelsPre().size() == currentLabel.getLabelsPre().size() && newLabel.getCost() < currentLabel.getCost()) {
+            return true;
+        }
+        if ((newLabel.getCost() * percent) < currentLabel.getCost()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Function that convert a BestLabel into a Tournee
      *
      * @param bestLabel the BestLabel to convert
+     * @param nbVehicule the number of vehicule of the tournee
+     * @param costExtraVehicle the cost for extra vehicules
      * @return the Tournee
      */
     private Tournee bestLabelToTournee(BestLabel bestLabel, int nbVehicule, double costExtraVehicle) {
