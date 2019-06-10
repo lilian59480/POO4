@@ -50,7 +50,8 @@ public class Tournee {
 
     /**
      * Tournee constructor
-     * @param nbVehicle the number of vehicule of the tournee
+     *
+     * @param nbVehicle         the number of vehicule of the tournee
      * @param costExtraVehicule the cost for extra vehicle
      */
     public Tournee(int nbVehicle, double costExtraVehicule) {
@@ -61,9 +62,9 @@ public class Tournee {
     }
 
     /**
-     * Tournee constructor that extend a Tournee
+     * Tournee constructor that extends a Tournee
      *
-     * @param label the Label
+     * @param label         the Label
      * @param parentTournee the parentTournee to extend
      */
     public Tournee(Label label, Tournee parentTournee) {
@@ -72,14 +73,41 @@ public class Tournee {
         this.tournee = new ArrayList<>(parentTournee.getTournee());
         this.tournee.add(label);
     }
-    
+
+    /**
+     * Tournee constructor that copies a Tournee
+     *
+     * @param tournee the parentTournee to extend
+     */
+    public Tournee(Tournee tournee) {
+        this.nbVehicule = tournee.getNbVehicule();
+        this.costExtraVehicule = tournee.getCostExtraVehicule();
+        this.cost = tournee.getCost();
+        this.tournee = new ArrayList<>(tournee.getTournee());
+    }
+
+    /**
+     * Tournee constructor that convert a BestLabel
+     *
+     * @param bestLabel         the BestLabel to convert
+     * @param nbVehicule        the number of vehicule of the tournee
+     * @param costExtraVehicule the cost for extra vehicle
+     */
+    public Tournee(BestLabel bestLabel, int nbVehicule, double costExtraVehicule) {
+        this.nbVehicule = nbVehicule;
+        this.costExtraVehicule = costExtraVehicule;
+        this.cost = 0.0;
+        this.tournee = new ArrayList<>(bestLabel.getLabelsPre());
+        this.addLabel(bestLabel.getLabel());
+    }
+
     /**
      * Function that updates the cost of the Tournee
      */
     private void updateCost() {
         int nbExtraVRequired = Math.max(this.tournee.size() - this.nbVehicule, 0);
         double cost = 0.0;
-        for(Label label: tournee) {
+        for (Label label : tournee) {
             cost += label.getCost();
         }
         this.cost = cost + nbExtraVRequired * costExtraVehicule;
@@ -112,7 +140,7 @@ public class Tournee {
         this.tournee.add(label);
         updateCost();
     }
-    
+
     /**
      * Add a labels to the tournee
      *
@@ -125,7 +153,7 @@ public class Tournee {
 
     /**
      * Get the number of vehicule of the tournee
-     * 
+     *
      * @return the number of vehicule
      */
     public int getNbVehicule() {
@@ -134,7 +162,7 @@ public class Tournee {
 
     /**
      * Get the cost for extra vehicule
-     * 
+     *
      * @return the cost for extra vehicule
      */
     public double getCostExtraVehicule() {
