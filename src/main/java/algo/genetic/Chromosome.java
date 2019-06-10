@@ -19,7 +19,12 @@
 package algo.genetic;
 
 import algo.SolverException;
-import model.*;
+
+import model.Client;
+import model.Emplacement;
+import model.Instance;
+import model.Planning;
+import model.Vehicule;
 
 import java.util.ArrayList;
 import java.util.List;

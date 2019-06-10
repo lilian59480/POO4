@@ -23,7 +23,9 @@ import algo.SolverException;
 import algo.iterative.NaiveSolver;
 import algo.iterative.RandomSolver;
 import io.input.InstanceFileParser;
-import model.*;
+
+import model.Instance;
+import model.Vehicule;
 
 import java.io.File;
 import java.util.ArrayList;

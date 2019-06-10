@@ -19,7 +19,11 @@
 package algo.genetic;
 
 import algo.SolverException;
-import model.*;
+import model.Client;
+import model.Depot;
+import model.Emplacement;
+import model.Instance;
+import model.Route;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,14 +74,6 @@ public class ShortestPathClients {
     public ShortestPathClients(Instance i, Chromosome chromosome) {
         this.instance = i;
         this.chromosome = chromosome;
-    }
-
-    public Instance getInstance() {
-        return instance;
-    }
-
-    public void setInstance(Instance i) {
-        this.instance = i;
     }
 
     /**
