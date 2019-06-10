@@ -41,6 +41,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "INSTANCE")
 public class Instance implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -96,10 +97,9 @@ public class Instance implements Serializable {
      */
     @OneToMany(mappedBy = "instance", cascade = CascadeType.ALL)
     private List<Planning> plannings;
-    
+
     private String instanceName;
 
-    
     /**
      * Instance constructor.
      */
@@ -303,14 +303,17 @@ public class Instance implements Serializable {
 
     /**
      * Get Instance name.
+     *
      * @return The instance Name.
      */
     public String getInstanceName() {
         return instanceName;
     }
+
     /**
      * Set instance Name.
-     * @param instanceName  setted instanceName.
+     *
+     * @param instanceName setted instanceName.
      */
     public void setInstanceName(String instanceName) {
         this.instanceName = instanceName;
@@ -338,7 +341,7 @@ public class Instance implements Serializable {
 
     @Override
     public String toString() {
-        return this.instanceName ;
+        return "Instance " + this.instanceName;
     }
 
 }
