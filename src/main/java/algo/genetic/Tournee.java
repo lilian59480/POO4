@@ -32,6 +32,17 @@ public class Tournee {
      * Cost of the tournee
      */
     private double cost;
+
+    /**
+     * Number of vehicle in the Tournee
+     */
+    private int nbVehicule;
+
+    /**
+     * Cost for extra vehicles
+     */
+    private double costExtraVehicule;
+
     /**
      * Labels of the tournee
      */
@@ -39,8 +50,12 @@ public class Tournee {
 
     /**
      * Tournee constructor
+     * @param nbVehicle the number of vehicule of the tournee
+     * @param costExtraVehicule the cost for extra vehicle
      */
-    public Tournee() {
+    public Tournee(int nbVehicle, double costExtraVehicule) {
+        this.nbVehicule = nbVehicle;
+        this.costExtraVehicule = costExtraVehicule;
         this.cost = 0.0;
         this.tournee = new ArrayList<>();
     }
@@ -52,9 +67,22 @@ public class Tournee {
      * @param parentTournee the parentTournee to extend
      */
     public Tournee(Label label, Tournee parentTournee) {
-        this.cost = label.getCost() + parentTournee.getCost();
+        this.nbVehicule = parentTournee.getNbVehicule();
+        this.costExtraVehicule = parentTournee.getCostExtraVehicule();
         this.tournee = new ArrayList<>(parentTournee.getTournee());
         this.tournee.add(label);
+    }
+    
+    /**
+     * Function that updates the cost of the Tournee
+     */
+    private void updateCost() {
+        int nbExtraVRequired = Math.max(this.tournee.size() - this.nbVehicule, 0);
+        double cost = 0.0;
+        for(Label label: tournee) {
+            cost += label.getCost();
+        }
+        this.cost = cost + nbExtraVRequired * costExtraVehicule;
     }
 
     /**
@@ -82,13 +110,40 @@ public class Tournee {
      */
     public void addLabel(Label label) {
         this.tournee.add(label);
+        updateCost();
+    }
+    
+    /**
+     * Add a labels to the tournee
+     *
+     * @param labels labels to add
+     */
+    public void addLabels(List<Label> labels) {
+        this.tournee.addAll(labels);
+        updateCost();
+    }
+
+    /**
+     * Get the number of vehicule of the tournee
+     * 
+     * @return the number of vehicule
+     */
+    public int getNbVehicule() {
+        return nbVehicule;
+    }
+
+    /**
+     * Get the cost for extra vehicule
+     * 
+     * @return the cost for extra vehicule
+     */
+    public double getCostExtraVehicule() {
+        return costExtraVehicule;
     }
 
     @Override
     public String toString() {
-        return "Tournee{"
-                + "cost=" + cost
-                + ", tournee=" + tournee
-                + '}';
+        return "Tournee{" + "cost=" + cost + ", nbVehicule=" + nbVehicule + ", costExtraVehicule=" + costExtraVehicule + ", tournee=" + tournee + '}';
     }
+
 }

@@ -21,6 +21,7 @@ package algo.genetic;
 import algo.ISolver;
 import algo.SolverException;
 import algo.iterative.NaiveSolver;
+import algo.iterative.RandomSolver;
 import io.input.InstanceFileParser;
 import io.output.SolutionWriter;
 
@@ -103,19 +104,23 @@ public class ShortestPathClients implements ISolver {
         LOGGER.log(Level.FINE, "Solving a new instance");
 
         try {
-            //List<ClientLabels2> labelsEC = this.labelChromosome();
-            System.out.println("");
-            System.out.println("");
-            findShortestPath();
-            Tournee bestTournee = findShortestPath();
-            System.out.println("");
-            System.out.println("");
-            System.out.println(bestTournee.toString());
-            System.out.println("");
-            int nbExtraVRequired = Math.max(bestTournee.getTournee().size() - this.instance.getNbVehicules(), 0);
-            double realCost = bestTournee.getCost() + nbExtraVRequired * this.instance.getCoutVehicule();
-            System.out.println("Cost: " + realCost + " (" + nbExtraVRequired + " extra vehicules required)");
-
+            Tournee bestTournee = findShortestPath(1);
+            Tournee bestTourneeTemp = findShortestPath(1.5);
+            if(bestTourneeTemp.getCost()<bestTournee.getCost()) {
+                bestTournee = bestTourneeTemp;
+            }
+            bestTourneeTemp = findShortestPath(2);
+            if(bestTourneeTemp.getCost()<bestTournee.getCost()) {
+                bestTournee = bestTourneeTemp;
+            }
+            bestTourneeTemp = findShortestPath(2.5);
+            if(bestTourneeTemp.getCost()<bestTournee.getCost()) {
+                bestTournee = bestTourneeTemp;
+            }
+            bestTourneeTemp = findShortestPath(10);
+            if(bestTourneeTemp.getCost()<bestTournee.getCost()) {
+                bestTournee = bestTourneeTemp;
+            }
             this.instance.clear();
             List<Vehicule> vehicules = this.instance.getVehicules();
             int nbV = this.instance.getNbVehicules();
@@ -166,7 +171,7 @@ public class ShortestPathClients implements ISolver {
      * @throws SolverException If there is an internal exception or inconsistant
      * values.
      */
-    private Tournee findShortestPath() throws SolverException {
+    private Tournee findShortestPath(double percent) throws SolverException {
         List<BestLabel> listBestLabel = new ArrayList<>();
         for (int i = 0; i < this.chromosome.size(); i++) {
             List<Client> partialChromosome = new ArrayList<>();
@@ -177,9 +182,12 @@ public class ShortestPathClients implements ISolver {
                 if (label != null) {
                     if (listBestLabel.size() >= j + 1) {
                         BestLabel newTournee = new BestLabel(label, listBestLabel.get(i - 1));
-                        if (newTournee.getCost() < listBestLabel.get(i - 1).getCost()) {
+                        if (newTournee.getLabelsPre().size() < listBestLabel.get(j).getLabelsPre().size() && newTournee.getCost() <= (listBestLabel.get(i - 1).getCost()*percent)) {
+                            //Should be unreachable
                             listBestLabel.set(j, newTournee);
-                        } else if (newTournee.getCost() == listBestLabel.get(i - 1).getCost() && newTournee.getLabelsPre().size() < listBestLabel.get(i - 1).getLabelsPre().size()) {
+                        } else if (newTournee.getLabelsPre().size() == listBestLabel.get(j).getLabelsPre().size() && newTournee.getCost() < listBestLabel.get(j).getCost()) {
+                            listBestLabel.set(j, newTournee);
+                        } else if((newTournee.getCost()*percent) < listBestLabel.get(j).getCost()) {
                             listBestLabel.set(j, newTournee);
                         }
                     } else {
@@ -200,7 +208,7 @@ public class ShortestPathClients implements ISolver {
             }
         }
 
-        return bestLabelToTournee(listBestLabel.get(listBestLabel.size() - 1));
+        return bestLabelToTournee(listBestLabel.get(listBestLabel.size() - 1), this.instance.getNbVehicules(), this.instance.getCoutVehicule());
     }
 
     /**
@@ -209,11 +217,9 @@ public class ShortestPathClients implements ISolver {
      * @param bestLabel the BestLabel to convert
      * @return the Tournee
      */
-    private Tournee bestLabelToTournee(BestLabel bestLabel) {
-        Tournee bestTournee = new Tournee();
-        for (Label label : bestLabel.getLabelsPre()) {
-            bestTournee.addLabel(label);
-        }
+    private Tournee bestLabelToTournee(BestLabel bestLabel, int nbVehicule, double costExtraVehicle) {
+        Tournee bestTournee = new Tournee(nbVehicule, costExtraVehicle);
+        bestTournee.addLabels(bestLabel.getLabelsPre());
         bestTournee.addLabel(bestLabel.getLabel());
 
         return bestTournee;
@@ -364,16 +370,17 @@ public class ShortestPathClients implements ISolver {
             double cns = i.getPlanningCurrent().getCout();
             System.out.println("---Cout ns: " + cns);
             ShortestPathClients sp = new ShortestPathClients(i);
-            /*try {
-                System.out.println("");
-                System.out.println("");
-                sp.findShortestPath();
-            } catch (SolverException e) {
-                e.printStackTrace();
-            }*/
             sp.solve();
             double csp = i.getPlanningCurrent().getCout();
             System.out.println("---Cout sp: " + csp + " ( " + (csp - cns) + " )");
+            RandomSolver rs = new RandomSolver(i);
+            rs.solve();
+            double crs = i.getPlanningCurrent().getCout();
+            System.out.println("---Cout rs: " + crs);
+            sp = new ShortestPathClients(i);
+            sp.solve();
+            csp = i.getPlanningCurrent().getCout();
+            System.out.println("---Cout sp: " + csp + " ( " + (csp - crs) + " )");
             /*try {
                 SolutionWriter sw = new SolutionWriter();
                 sw.write(i, "target/instance_" + id + "-triangle_sol_sp.txt");
