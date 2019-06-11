@@ -70,7 +70,7 @@ public class Instance implements Serializable {
     /**
      * Depot.
      */
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Depot depot;
 
     /**

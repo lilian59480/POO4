@@ -34,7 +34,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 /**
  * Point model representation.
@@ -43,19 +42,20 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(
-        name = "POINT",
-        uniqueConstraints = {
-            @UniqueConstraint(
-                    columnNames = {
-                        "X",
-                        "Y"
-                    }
-            )
-        }
+        name = "POINT"
+//        uniqueConstraints = {
+//            @UniqueConstraint(
+//                    columnNames = {
+//                        "X",
+//                        "Y"
+//                    }
+//            )
+//        }
 )
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "POINTTYPE", discriminatorType = DiscriminatorType.INTEGER)
 public abstract class Point implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -80,7 +80,7 @@ public abstract class Point implements Serializable {
      * Map of route to a specific Point.
      */
     @OneToMany(mappedBy = "from", cascade = CascadeType.ALL)
-    @MapKey(name = "to" )
+    @MapKey(name = "to")
     private Map<Point, Route> routeTo;
 
     /**
