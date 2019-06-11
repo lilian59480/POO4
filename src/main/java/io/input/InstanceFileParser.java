@@ -42,7 +42,6 @@ import model.Client;
 import model.Depot;
 import model.Emplacement;
 import model.Instance;
-import model.Point;
 import model.Route;
 import model.Vehicule;
 import org.w3c.dom.Document;
@@ -413,8 +412,8 @@ public class InstanceFileParser {
             double cost = Double.parseDouble(elt[2]);
             int time = Integer.parseInt(elt[3]);
 
-            Point from = locations.get(idFrom);
-            Point to = locations.get(idTo);
+            Emplacement from = locations.get(idFrom);
+            Emplacement to = locations.get(idTo);
 
             Route r = new Route(from, to, cost, time);
 
