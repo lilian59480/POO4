@@ -275,7 +275,7 @@ public class InstanceFileParser {
         while (depotIter.hasNext()) {
             String[] elt = depotIter.next();
             // ID DEMAND NBLOC LOCS
-            int id = Integer.parseInt(elt[0]);
+            int fileId = Integer.parseInt(elt[0]);
             // Demand should be equals to 0 in all cases
             int demand = Integer.parseInt(elt[1]);
             if (demand != 0) {
@@ -292,7 +292,7 @@ public class InstanceFileParser {
 
             Emplacement emp = locations.get(locId);
             Depot depot = new Depot(emp);
-            depotMap.put(id, depot);
+            depotMap.put(fileId, depot);
         }
 
         return depotMap;
@@ -323,7 +323,7 @@ public class InstanceFileParser {
         while (customerIter.hasNext()) {
             String[] elt = customerIter.next();
             // ID DEMAND NBLOC LOCS
-            int id = Integer.parseInt(elt[0]);
+            int fileId = Integer.parseInt(elt[0]);
             // Demand should be equals to 0 in all cases
             int demand = Integer.parseInt(elt[1]);
             int nbloc = Integer.parseInt(elt[2]);
@@ -338,7 +338,7 @@ public class InstanceFileParser {
                 client.addEmplacement(emp);
             }
 
-            clientMap.put(id, client);
+            clientMap.put(fileId, client);
         }
 
         return clientMap;
@@ -368,16 +368,16 @@ public class InstanceFileParser {
         while (locationIter.hasNext()) {
             String[] elt = locationIter.next();
             // ID x y TWE TWL
-            int id = Integer.parseInt(elt[0]);
+            int fileId = Integer.parseInt(elt[0]);
             double x = Double.parseDouble(elt[1]);
             double y = Double.parseDouble(elt[2]);
             int twe = Integer.parseInt(elt[3]);
             int twl = Integer.parseInt(elt[4]);
 
             Emplacement emplacement = new Emplacement(twe, twl, x, y);
-            emplacement.setId(id);
+            //emplacement.setId(fileId);
 
-            locationMap.put(id, emplacement);
+            locationMap.put(fileId, emplacement);
         }
 
         return locationMap;
@@ -407,13 +407,13 @@ public class InstanceFileParser {
         while (routeIter.hasNext()) {
             String[] elt = routeIter.next();
             // IDFROM	IDTO	COST	TIME
-            int idFrom = Integer.parseInt(elt[0]);
-            int idTo = Integer.parseInt(elt[1]);
+            int fileIdFrom = Integer.parseInt(elt[0]);
+            int fileIdTo = Integer.parseInt(elt[1]);
             double cost = Double.parseDouble(elt[2]);
             int time = Integer.parseInt(elt[3]);
 
-            Emplacement from = locations.get(idFrom);
-            Emplacement to = locations.get(idTo);
+            Emplacement from = locations.get(fileIdFrom);
+            Emplacement to = locations.get(fileIdTo);
 
             Route r = new Route(from, to, cost, time);
 
