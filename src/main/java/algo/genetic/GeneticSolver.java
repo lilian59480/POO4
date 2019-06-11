@@ -30,14 +30,18 @@ import model.Vehicule;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
+import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import model.Client;
 
 /**
- * ShortestPathSolver class
+ * GeneticSolver class
+ * The solver is inspired by this research paper:
+ * http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=9CC8F10669C22FB1E97F168D3B770E30?doi=10.1.1.359.9152&rep=rep1&type=pdf&fbclid=IwAR3XEHdHNzlu8G14-ZEWgYUmZNcEA6mICU8VlqTq5DJD4hu6qiw0Sqhr9Nc
  *
  * @author Thomas
  */
@@ -53,13 +57,31 @@ public class GeneticSolver implements ISolver {
      */
     private Instance instance;
 
+    /**
+     * The pool of chromosome to do some genetic on
+     */
     private List<Chromosome> chromosomePool;
 
+    /**
+     * The minimum cost difference to make two chromosomes not equals
+     */
     private int minCostSpace;
 
+    /**
+     * The maximum number of general iterations
+     */
     private int maxIterations;
 
+    /**
+     * The maximal number of iterations without improving the best solution
+     */
     private int maxIterationsWithoutImproving;
+
+    /**
+     * The mutation rate (between 0 and 1)
+     * The bigger the more aggressive the genetic algo
+     */
+    private double mutationRate;
 
     /**
      * ShortestPathSolver constructor, without an Instance.
@@ -67,43 +89,47 @@ public class GeneticSolver implements ISolver {
      * This constructor is recommended as you can solve multiples instances by
      * using the instance setter.
      *
-     * @param minCostSpace the minimum delta for the cost to consider two
-     * chromosome equal
-     * @param maxIterations the maximum of iterations
+     * @param minCostSpace                  the minimum delta for the cost to consider two
+     *                                      chromosome equal
+     * @param maxIterations                 the maximum of iterations
      * @param maxIterationsWithoutImproving the maximum of iterations without
-     * improvement of the best solution
+     *                                      improvement of the best solution
+     * @param mutationRate                  the mutation rate
      */
-    public GeneticSolver(int minCostSpace, int maxIterations, int maxIterationsWithoutImproving) {
-        this(null, minCostSpace, maxIterations, maxIterationsWithoutImproving);
+    public GeneticSolver(int minCostSpace, int maxIterations, int maxIterationsWithoutImproving, double mutationRate) {
+        this(null, minCostSpace, maxIterations, maxIterationsWithoutImproving, mutationRate);
     }
 
     /**
      * ShortestPathSolver constructor with an Instance and a minCostSpace
      *
-     * @param i Instance to solve
-     * @param minCostSpace the minimum delta for the cost to consider two
-     * chromosome equal
-     * @param maxIterations the maximum of iterations
+     * @param i                             Instance to solve
+     * @param minCostSpace                  the minimum delta for the cost to consider two
+     *                                      chromosome equal
+     * @param maxIterations                 the maximum of iterations
      * @param maxIterationsWithoutImproving the maximum of iterations without
-     * improvement of the best solution
+     *                                      improvement of the best solution
+     * @param mutationRate                  the mutation rate
      */
-    public GeneticSolver(Instance i, int minCostSpace, int maxIterations, int maxIterationsWithoutImproving) {
+    public GeneticSolver(Instance i, int minCostSpace, int maxIterations, int maxIterationsWithoutImproving, double mutationRate) {
         this.instance = i;
         this.minCostSpace = minCostSpace;
         this.maxIterations = maxIterations;
         this.maxIterationsWithoutImproving = maxIterationsWithoutImproving;
+        this.mutationRate = mutationRate;
     }
 
     /**
      * ShortestPathSolver constructor, with an Instance.
      *
-     * @param i Instance to solve
-     * @param maxIterations the maximum of iterations
+     * @param i                             Instance to solve
+     * @param maxIterations                 the maximum of iterations
      * @param maxIterationsWithoutImproving the maximum of iterations without
-     * improvement of the best solution
+     *                                      improvement of the best solution
+     * @param mutationRate                  the mutation rate
      */
-    public GeneticSolver(Instance i, int maxIterations, int maxIterationsWithoutImproving) {
-        this(i, 1, maxIterations, maxIterationsWithoutImproving);
+    public GeneticSolver(Instance i, int maxIterations, int maxIterationsWithoutImproving, double mutationRate) {
+        this(i, 1, maxIterations, maxIterationsWithoutImproving, mutationRate);
     }
 
     @Override
@@ -165,26 +191,50 @@ public class GeneticSolver implements ISolver {
         return this.instance.check();
     }
 
+    /**
+     * Solve the current instance using a genetic algorithm.
+     *
+     * @throws SolverException If there is an internal exception or inconsistant
+     *                         values.
+     */
     private void geneticSolve() throws SolverException {
         int iterations = 0;
-        int interationsWithoutImprovement = 0;
-        double mutationRate = 0.1;
+        int iterationsWithoutImprovement = 0;
         this.generateChromosomePool();
-        while (iterations <= this.maxIterations && interationsWithoutImprovement <= this.maxIterationsWithoutImproving) {
+        while (iterations < this.maxIterations && iterationsWithoutImprovement < this.maxIterationsWithoutImproving) {
             iterations++;
-            //Do crossover
-
-            if (Math.random() <= mutationRate) {
+            Chromosome parent1 = getRandomChromosome();
+            Chromosome parent2 = getRandomChromosome();
+            //Ensure that parent2 and parent1 are not the same
+            while (parent1.equals(parent2)) {
+                parent2 = getRandomChromosome();
+            }
+            Random r = new Random();
+            //Do crossover on a random parent order
+            Chromosome child;
+            if (r.nextBoolean()) {
+                child = doCrossover(parent1, parent2);
+            } else {
+                child = doCrossover(parent2, parent1);
+            }
+            //Will the child mutate?
+            if (r.nextFloat() <= this.mutationRate) {
                 //Do mutation
 
             }
             //If the new chromosome has a cost that isn't a duplicate and has a cost in the range of the pool
-            //then interationsWithoutImprovement=0 & put the chromosome in the pool
+            //then iterationsWithoutImprovement=0 & put the chromosome in the pool
 
-            //Else interationsWithoutImprovement++
+            //Else iterationsWithoutImprovement++
         }
     }
 
+    /**
+     * Function that generates a pool of chromosome using the other solvers
+     *
+     * @throws SolverException If there is an internal exception or inconsistant
+     *                         values.
+     */
     private void generateChromosomePool() throws SolverException {
         this.chromosomePool = new ArrayList<>();
         //Chromosome in the "normal" order
@@ -233,6 +283,9 @@ public class GeneticSolver implements ISolver {
         }*/
     }
 
+    /**
+     * Function that sort the chromosome pool by increasing Tournee cost
+     */
     private void sortChromosomePool() {
         Collections.sort(this.chromosomePool, new Comparator<Chromosome>() {
             @Override
@@ -247,6 +300,14 @@ public class GeneticSolver implements ISolver {
         });
     }
 
+    /**
+     * Function that check if a Chromosome exists in the pool
+     *
+     * @param c the Chromosome to test
+     * @return whether the Chromosome exists in the pool
+     * @throws SolverException If there is an internal exception or inconsistant
+     *                         values.
+     */
     private boolean isChromosomePoolDuplicates(Chromosome c) throws SolverException {
         for (Chromosome ch : this.chromosomePool) {
             if (Math.abs(c.getTournee().getCost() - ch.getTournee().getCost()) < this.minCostSpace) {
@@ -254,6 +315,55 @@ public class GeneticSolver implements ISolver {
             }
         }
         return false;
+    }
+
+    /**
+     * Functions that does the crossover of two Chromosome
+     *
+     * @param p1 the first parent Chromosome
+     * @param p2 the second parent Chromosome
+     * @return the child Chromosome
+     */
+    private Chromosome doCrossover(Chromosome p1, Chromosome p2) {
+        ///Create a copy of the parent chromosomes
+        List<Client> p2Cli = new ArrayList<>(p2.getClients());
+        ///Left rotate the copy of the parents
+        Collections.rotate(p2Cli, -1);
+        ///Create a child from the first parents chromosome
+        List<Client> childCli = new ArrayList<>(p1.getClients());
+        ///Get a random range
+        Random r = new Random();
+        int i = r.nextInt(childCli.size());
+        int j = r.nextInt(childCli.size());
+        //System.out.println("Range from " + Math.min(i, j) + " to " + Math.max(i, j));
+        //Make of the copy of the randomly selected range
+        List<Client> p1Range = p1.getClients().subList(Math.min(i, j), Math.max(i, j) + 1);
+        //Fill the chromosome with the remaining clients
+        int l = ((Math.max(i, j) + 1) % childCli.size());
+        for (int k = ((Math.max(i, j) + 1) % childCli.size()); k != (Math.min(i, j) % childCli.size()); k = (k + 1) % childCli.size()) {
+            while (p1Range.contains(p2Cli.get(l))) {
+                l = (l + 1) % childCli.size();
+            }
+            //System.out.println("---> k=" + k + "  l=" + l);
+            childCli.set(k, p2Cli.get(l));
+            l = (l + 1) % childCli.size();
+        }
+        /*System.out.println("-----------");
+        System.out.println(p1.getClients());
+        System.out.println(p2Cli);
+        System.out.println(childCli);
+        System.out.println("-----------");*/
+        return new Chromosome(p1.getInstance(), childCli);
+    }
+
+    /**
+     * Functions that returns a random Chromosome from the pool
+     *
+     * @return a random Chromosome
+     */
+    public Chromosome getRandomChromosome() {
+        Random rand = new Random();
+        return this.chromosomePool.get(rand.nextInt(this.chromosomePool.size()));
     }
 
     /**
@@ -273,20 +383,21 @@ public class GeneticSolver implements ISolver {
             LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
             return;
         }
-        GeneticSolver gs = new GeneticSolver(i, 500, 100);
+        //GeneticSolver gs = new GeneticSolver(i, 500, 100, 0.2);
+        GeneticSolver gs = new GeneticSolver(i, 1, 1, 0.2);
 
         try {
-            gs.generateChromosomePool();
-            
-            /*try {
-            SolutionWriter sw = new SolutionWriter();
-            sw.write(i, "target/instance_" + id + "-triangle_sol_sp.txt");
-            } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, "Exception while writing a solution", ex);
-            }*/
-            //}
+            gs.geneticSolve();
+
         } catch (SolverException ex) {
             Logger.getLogger(GeneticSolver.class.getName()).log(Level.SEVERE, null, ex);
         }
+        /*try {
+        SolutionWriter sw = new SolutionWriter();
+        sw.write(i, "target/instance_" + id + "-triangle_sol_sp.txt");
+        } catch (Exception ex) {
+        LOGGER.log(Level.SEVERE, "Exception while writing a solution", ex);
+        }*/
+        //}
     }
 }

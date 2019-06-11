@@ -28,6 +28,7 @@ import model.Vehicule;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Chromosome class
@@ -90,7 +91,7 @@ public class Chromosome {
     /**
      * Chromosome constructor using a list of clients
      *
-     * @param i The instance to convert
+     * @param i       The instance to convert
      * @param clients The list of client
      */
     Chromosome(Instance i, List<Client> clients) {
@@ -114,7 +115,7 @@ public class Chromosome {
      * @return the tournee
      */
     public Tournee getTournee() throws SolverException {
-        if(this.tournee==null) {
+        if (this.tournee == null) {
             this.generateTournee();
         }
         return tournee;
@@ -146,5 +147,18 @@ public class Chromosome {
                 "clients=" + clients +
                 ", tournee=" + tournee +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Chromosome that = (Chromosome) o;
+        return clients.equals(that.clients);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(clients);
     }
 }
