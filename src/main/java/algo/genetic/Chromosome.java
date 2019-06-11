@@ -28,7 +28,6 @@ import model.Vehicule;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Chromosome class
@@ -82,10 +81,21 @@ public class Chromosome {
      *
      * @param chromosome the chromosome to copy
      */
-    public Chromosome(Chromosome chromosome) {
+    public Chromosome(Chromosome chromosome) throws SolverException {
         this.instance = chromosome.getInstance();
         this.clients = new ArrayList<>(chromosome.getClients());
         this.tournee = new Tournee(chromosome.getTournee());
+    }
+
+    /**
+     * Chromosome constructor using a list of clients
+     *
+     * @param i The instance to convert
+     * @param clients The list of client
+     */
+    Chromosome(Instance i, List<Client> clients) {
+        this.instance = i;
+        this.clients = new ArrayList<>(clients);
     }
 
     /**
@@ -99,10 +109,14 @@ public class Chromosome {
 
     /**
      * Get the tournee of the chromosome
+     * and generate it if it doesn't exist
      *
      * @return the tournee
      */
-    public Tournee getTournee() {
+    public Tournee getTournee() throws SolverException {
+        if(this.tournee==null) {
+            this.generateTournee();
+        }
         return tournee;
     }
 
@@ -124,19 +138,6 @@ public class Chromosome {
     public void generateTournee() throws SolverException {
         ShortestPathClients sp = new ShortestPathClients(this.instance, this);
         this.tournee = sp.findBestTournee();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Chromosome that = (Chromosome) o;
-        return clients.equals(that.clients);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(clients);
     }
 
     @Override

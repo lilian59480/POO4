@@ -21,7 +21,6 @@ package algo.genetic;
 import algo.ISolver;
 import algo.SolverException;
 import algo.iterative.NaiveSolver;
-import algo.iterative.RandomSolver;
 import io.input.InstanceFileParser;
 
 import model.Instance;
@@ -86,7 +85,6 @@ public class ShortestPathSolver implements ISolver {
 
         try {
             Chromosome chromosome = new Chromosome(this.instance);
-            chromosome.generateTournee();
             this.instance.clear();
             List<Vehicule> vehicules = this.instance.getVehicules();
             int nbV = this.instance.getNbVehicules();
@@ -154,14 +152,6 @@ public class ShortestPathSolver implements ISolver {
             sp.solve();
             double csp = i.getPlanningCurrent().getCout();
             System.out.println("---Cout sp: " + csp + " ( " + (csp - cns) + " )");
-            RandomSolver rs = new RandomSolver(i);
-            rs.solve();
-            double crs = i.getPlanningCurrent().getCout();
-            System.out.println("---Cout rs: " + crs);
-            sp = new ShortestPathSolver(i);
-            sp.solve();
-            csp = i.getPlanningCurrent().getCout();
-            System.out.println("---Cout sp: " + csp + " ( " + (csp - crs) + " )");
             /*try {
                 SolutionWriter sw = new SolutionWriter();
                 sw.write(i, "target/instance_" + id + "-triangle_sol_sp.txt");
