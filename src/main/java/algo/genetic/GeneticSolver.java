@@ -147,13 +147,14 @@ public class GeneticSolver implements ISolver {
         LOGGER.log(Level.FINE, "Solving a new instance");
 
         try {
-            Chromosome chromosome = new Chromosome(this.instance);
-            chromosome.generateTournee();
+            this.geneticSolve();
+            this.sortChromosomePool();
+            Chromosome bestChromosome = this.chromosomePool.get(0);
             this.instance.clear();
             List<Vehicule> vehicules = this.instance.getVehicules();
             int nbV = this.instance.getNbVehicules();
 
-            List<Label> tournee = new ArrayList<>(chromosome.getTournee().getTournee());
+            List<Label> tournee = new ArrayList<>(bestChromosome.getTournee().getTournee());
             Collections.reverse(tournee);
             Vehicule v;
             for (int i = 0; i < tournee.size(); i++) {
@@ -220,12 +221,15 @@ public class GeneticSolver implements ISolver {
             //Will the child mutate?
             if (r.nextFloat() <= this.mutationRate) {
                 //Do mutation
-
+                System.out.println("Mutation occurs");
             }
-            //If the new chromosome has a cost that isn't a duplicate and has a cost in the range of the pool
-            //then iterationsWithoutImprovement=0 & put the chromosome in the pool
-
-            //Else iterationsWithoutImprovement++
+            if (!this.isChromosomePoolDuplicates(child)) {
+                iterationsWithoutImprovement = 0;
+                this.chromosomePool.add(child);
+                this.sortChromosomePool();
+            } else {
+                iterationsWithoutImprovement++;
+            }
         }
     }
 
@@ -374,24 +378,31 @@ public class GeneticSolver implements ISolver {
     public static void main(String[] args) {
         Instance i = null;
         //for (int j = 0; j < 40; j++) {
-        int id = 1;
-        System.out.println(id);
-        try {
-            InstanceFileParser ifp = new InstanceFileParser();
-            i = ifp.parse(new File("src/main/resources/instances/instance_" + id + "-triangle.txt"));
-        } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
-            return;
-        }
-        //GeneticSolver gs = new GeneticSolver(i, 500, 100, 0.2);
-        GeneticSolver gs = new GeneticSolver(i, 1, 1, 0.2);
+            int id = 30;
+            System.out.println(id);
+            try {
+                InstanceFileParser ifp = new InstanceFileParser();
+                i = ifp.parse(new File("src/main/resources/instances/instance_" + id + "-triangle.txt"));
+            } catch (Exception ex) {
+                LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
+                return;
+            }
 
-        try {
-            gs.geneticSolve();
 
-        } catch (SolverException ex) {
-            Logger.getLogger(GeneticSolver.class.getName()).log(Level.SEVERE, null, ex);
+            NaiveSolver ds = new NaiveSolver(i);
+            ds.solve();
+            double cns = i.getPlanningCurrent().getCout();
+            System.out.println("---Cout ns: " + cns);
+            GeneticSolver gs = new GeneticSolver(i, 2, 5000, 2500, 0.0);
+            gs.solve();
+            double cgs = i.getPlanningCurrent().getCout();
+            System.out.println("---Cout gs: " + cgs + " ( " + (cgs - cns) + " )");
+        try {
+            System.out.println(gs.chromosomePool.get(gs.chromosomePool.size()-1).getTournee().getCost());
+        } catch (SolverException e) {
+            e.printStackTrace();
         }
+        System.out.println(gs.chromosomePool.size());
         /*try {
         SolutionWriter sw = new SolutionWriter();
         sw.write(i, "target/instance_" + id + "-triangle_sol_sp.txt");

@@ -81,6 +81,8 @@ public class Chromosome {
      * Chromosome constructor that copies a Chromosome
      *
      * @param chromosome the chromosome to copy
+     * @throws SolverException If there is an internal exception or inconsistant
+     *                         values.
      */
     public Chromosome(Chromosome chromosome) throws SolverException {
         this.instance = chromosome.getInstance();
@@ -113,6 +115,8 @@ public class Chromosome {
      * and generate it if it doesn't exist
      *
      * @return the tournee
+     * @throws SolverException If there is an internal exception or inconsistant
+     *                         values.
      */
     public Tournee getTournee() throws SolverException {
         if (this.tournee == null) {
