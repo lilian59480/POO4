@@ -68,8 +68,8 @@ public class MyCanvas extends Canvas {
         super.paint(g);
 
         Graphics2D graphics2D = (Graphics2D) g;
-        this.drawBorder(graphics2D);
         this.drawInstance(graphics2D, this.instance);
+        this.drawBorder(graphics2D);
     }
 
     /**
@@ -80,12 +80,11 @@ public class MyCanvas extends Canvas {
     public void drawBorder(Graphics2D g) {
         int width = this.getWidth();
         int height = this.getHeight();
-        int borderSize = 10;
-        g.setStroke(new BasicStroke(1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-        g.drawLine(borderSize, borderSize, width - borderSize, borderSize);
-        g.drawLine(width - borderSize, borderSize, width - borderSize, height - borderSize);
-        g.drawLine(width - borderSize, height - borderSize, borderSize, height - borderSize);
-        g.drawLine(borderSize, height - borderSize, borderSize, borderSize);
+        g.setStroke(new BasicStroke(10, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        g.drawLine(0, 0, width, 0);
+        g.drawLine(width, 0, width, height);
+        g.drawLine(width, height, 0, height);
+        g.drawLine(0, height, 0, 0);
     }
 
     /**
