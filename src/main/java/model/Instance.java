@@ -44,6 +44,7 @@ import javax.persistence.Table;
 public class Instance implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    private static final Logger LOGGER = Logger.getLogger(Instance.class.getName());
 
     /**
      * Class logger.
@@ -52,7 +53,6 @@ public class Instance implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private int id;
-    private static final Logger LOGGER = Logger.getLogger(Instance.class.getName());
 
     /**
      * Vehicule capacity.
@@ -341,7 +341,7 @@ public class Instance implements Serializable {
      * @return The instance Name.
      */
     public String getInstanceName() {
-        return instanceName;
+        return this.instanceName;
     }
 
     /**
