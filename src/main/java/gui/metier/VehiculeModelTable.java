@@ -32,7 +32,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import static javax.swing.UIManager.get;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
 import model.Client;
 import model.Route;
 import model.Vehicule;
@@ -68,7 +70,7 @@ public class VehiculeModelTable extends AbstractTableModel {
 
         this.vehicules = new HashMap<>();
         for (Vehicule v : data) {
-            this.vehicules.put(v, false);
+            this.vehicules.put(v, true);
         }
     }
 
@@ -153,23 +155,28 @@ public class VehiculeModelTable extends AbstractTableModel {
      */
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        if (0 == columnIndex) {
-            this.vehicules.put(data.get(rowIndex), (Boolean) aValue);
+        System.out.println("on click cellule :" + aValue.toString());
+        if (aValue instanceof Boolean) {
+            if (columnIndex == 0) {
+                this.vehicules.put(data.get(rowIndex), (Boolean) aValue);
+            }
         }
+        fireTableCellUpdated(rowIndex, columnIndex);// notify listeners
     }
+
     /**
-     *  Allow Editable cellule.
+     * Allow Editable cellule.
+     *
      * @param rowIndex
      * @param columnIndex
-     * @return  boolean
+     * @return boolean
      */
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-       if(columnIndex == 0) 
-        return true;
-       else return false;
+
+        return columnIndex == 0;
     }
-    
+
     /**
      * display true vehicules.
      *
@@ -179,6 +186,7 @@ public class VehiculeModelTable extends AbstractTableModel {
         List<Vehicule> vehicules = new ArrayList<Vehicule>();
         for (Vehicule v : this.data) {
             if (this.vehicules.get(v).booleanValue()) {
+                System.out.println(v.toString());
                 vehicules.add(v);
             }
         }

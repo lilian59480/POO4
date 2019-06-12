@@ -65,7 +65,26 @@ public class MyCanvas extends Canvas {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        this.drawInstance((Graphics2D) g, this.instance);
+
+        Graphics2D graphics2D = (Graphics2D) g;
+        this.drawBorder(graphics2D);
+        this.drawInstance(graphics2D, this.instance);
+    }
+
+    /**
+     * Draw Canva Border
+     *
+     * @param g graphic
+     */
+    public void drawBorder(Graphics2D g) {
+        int width = this.getWidth();
+        int height = this.getHeight();
+        g.setStroke(new BasicStroke(1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        g.drawLine(10, 10, width - 10, 10);
+        g.drawLine(width - 10, 10, width - 10, height - 10);
+        g.drawLine(width - 10, height - 10, 10, height - 10);
+        g.drawLine(10, height - 10, 10, 10);
+
     }
 
     /**
@@ -102,6 +121,7 @@ public class MyCanvas extends Canvas {
         Depot d = i.getDepot();
 
         List<Vehicule> vehicules = this.vModel.getDisplayVehicules();
+        System.out.println("test vehicule Canvas" + vehicules.toString());
         int code = 0;
 
         for (Vehicule v : vehicules) {
