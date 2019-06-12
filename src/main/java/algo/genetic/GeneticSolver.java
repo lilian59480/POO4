@@ -134,7 +134,7 @@ public class GeneticSolver implements ISolver {
 
     @Override
     public Instance getInstance() {
-        return instance;
+        return this.instance;
     }
 
     @Override
@@ -204,19 +204,19 @@ public class GeneticSolver implements ISolver {
         this.generateChromosomePool();
         while (iterations < this.maxIterations && iterationsWithoutImprovement < this.maxIterationsWithoutImproving) {
             iterations++;
-            Chromosome parent1 = getRandomChromosome();
-            Chromosome parent2 = getRandomChromosome();
+            Chromosome parent1 = this.getRandomChromosome();
+            Chromosome parent2 = this.getRandomChromosome();
             //Ensure that parent2 and parent1 are not the same
             while (parent1.equals(parent2)) {
-                parent2 = getRandomChromosome();
+                parent2 = this.getRandomChromosome();
             }
             Random r = new Random();
             //Do crossover on a random parent order
             Chromosome child;
             if (r.nextBoolean()) {
-                child = doCrossover(parent1, parent2);
+                child = this.doCrossover(parent1, parent2);
             } else {
-                child = doCrossover(parent2, parent1);
+                child = this.doCrossover(parent2, parent1);
             }
             //Will the child mutate?
             if (r.nextFloat() <= this.mutationRate) {

@@ -118,7 +118,7 @@ public class ListeInstance extends JFrame { // NOSONAR
 
         }
     }
-
+    //CHECKSTYLE:OFF
     /**
      * This method is called from within the constructor to initialize the form.
      */
@@ -228,7 +228,8 @@ public class ListeInstance extends JFrame { // NOSONAR
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    //CHECKSTYLE:ON
+    
     /**
      * @todo Write Code and Javadoc
      * @param evt Event
@@ -261,7 +262,7 @@ public class ListeInstance extends JFrame { // NOSONAR
 
             String fileName = this.jSelectedInstance.getText();
 
-            NaiveSolver ds = createInstance(fileName);
+            NaiveSolver ds = this.createInstance(fileName);
             ds.solve();
             Itineraire itineraire = new Itineraire(ds.getInstance());
 
@@ -307,6 +308,7 @@ public class ListeInstance extends JFrame { // NOSONAR
         ds.solve();
         return ds;
     }
+    //CHECKSTYLE:OFF
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonDisplayInstance;
     private javax.swing.JButton jButtonSolveInstance;
@@ -318,4 +320,5 @@ public class ListeInstance extends JFrame { // NOSONAR
     private javax.swing.JLabel jTitle;
     private javax.swing.JButton uploadButton;
     // End of variables declaration//GEN-END:variables
+    //CHECKSTYLE:ON
 }

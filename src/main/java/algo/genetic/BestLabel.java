@@ -79,7 +79,7 @@ public class BestLabel {
      * @return the cost
      */
     public double getCost() {
-        return cost;
+        return this.cost;
     }
 
     /**
@@ -88,7 +88,7 @@ public class BestLabel {
      * @return the label
      */
     public Label getLabel() {
-        return label;
+        return this.label;
     }
 
     /**
@@ -97,7 +97,7 @@ public class BestLabel {
      * @return the list of previous labels
      */
     public List<Label> getLabelsPre() {
-        return labelsPre;
+        return this.labelsPre;
     }
 
     @Override

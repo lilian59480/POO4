@@ -84,25 +84,24 @@ public class ShortestPathClients {
      *                         or inconsistant values.
      */
     public Tournee findBestTournee() throws SolverException {
-        Tournee bestTournee = findShortestPath(1);
-        Tournee bestTourneeTemp = findShortestPath(1.5);
-        if (bestTourneeTemp.getCost() < bestTournee.getCost()) {
-            bestTournee = bestTourneeTemp;
-        }
-        bestTourneeTemp = findShortestPath(2);
-        if (bestTourneeTemp.getCost() < bestTournee.getCost()) {
-            bestTournee = bestTourneeTemp;
-        }
-        bestTourneeTemp = findShortestPath(2.5);
-        if (bestTourneeTemp.getCost() < bestTournee.getCost()) {
-            bestTournee = bestTourneeTemp;
-        }
-        bestTourneeTemp = findShortestPath(10);
-        if (bestTourneeTemp.getCost() < bestTournee.getCost()) {
-            bestTournee = bestTourneeTemp;
-        }
+        Tournee bestTournee = this.getBestTournee(this.findShortestPath(1), this.findShortestPath(1.5));
+        bestTournee = this.getBestTournee(bestTournee, this.findShortestPath(2));
+        bestTournee = this.getBestTournee(bestTournee, this.findShortestPath(2.5));
 
-        return bestTournee;
+        return this.getBestTournee(bestTournee, this.findShortestPath(10));
+    }
+    
+    /**
+     * Find the best tournee of the two input tournee
+     * @param tournee1 the first tournee
+     * @param tournee2 the second tournee
+     * @return the best tournee of the two
+     */
+    public Tournee getBestTournee(Tournee tournee1, Tournee tournee2) {
+        if (tournee1.getCost() < tournee2.getCost()) {
+            return tournee1;
+        }
+        return tournee2;
     }
 
     /**
@@ -121,11 +120,11 @@ public class ShortestPathClients {
             for (int j = i; j < this.chromosome.getClients().size(); j++) {
                 Client client = this.chromosome.getClients().get(j);
                 partialChromosome.getClients().add(client);
-                Label label = findPartialShortestPath(partialChromosome);
+                Label label = this.findPartialShortestPath(partialChromosome);
                 if (label != null) {
                     if (listBestLabel.size() >= j + 1) {
                         BestLabel newLabel = new BestLabel(label, listBestLabel.get(i - 1));
-                        if (shouldReplaceCurrentLabel(listBestLabel.get(j), newLabel, percent)) {
+                        if (this.shouldReplaceCurrentLabel(listBestLabel.get(j), newLabel, percent)) {
                             listBestLabel.set(j, newLabel);
                         }
                     } else {
@@ -200,11 +199,11 @@ public class ShortestPathClients {
                         }
                     }
                 } else if (i > 0) { //etend les labels precedents
-                    extendsPreviousLabels(em, labelsEC.get(i - 1), labelsEC.get(i));
+                    this.extendsPreviousLabels(em, labelsEC.get(i - 1), labelsEC.get(i));
                 }
             }
         }
-        return getBestLabelFromClientLabels(labelsEC.get(labelsEC.size() - 1));
+        return this.getBestLabelFromClientLabels(labelsEC.get(labelsEC.size() - 1));
     }
 
     /**

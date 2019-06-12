@@ -18,31 +18,12 @@
  */
 package template;
 
-import algo.iterative.NaiveSolver;
-import dao.DaoException;
-import dao.DaoFactory;
-import io.input.InstanceFileParser;
-import io.input.ParserException;
-import java.awt.BasicStroke;
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.io.File;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.Action;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import static javax.swing.JOptionPane.ERROR_MESSAGE;
-import model.Depot;
-import model.Emplacement;
 import model.Instance;
-import model.Vehicule;
 
 /**
  * Planning representation.
@@ -96,7 +77,7 @@ public class Itineraire extends JFrame { // NOSONAR
 
     }
 
-
+    //CHECKSTYLE:OFF
     /**
      * This method is called from within the constructor to initialize the form.
      */
@@ -236,6 +217,8 @@ public class Itineraire extends JFrame { // NOSONAR
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    //CHECKSTYLE:ON
+    
     /**
      * Action Perfomed.
      *
@@ -243,8 +226,8 @@ public class Itineraire extends JFrame { // NOSONAR
      */
     private void fitInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fitInButtonActionPerformed
         // TODO add your handling code here:
-        canvas2.center();
-        canvas2.repaint();
+        this.canvas2.center();
+        this.canvas2.repaint();
     }//GEN-LAST:event_fitInButtonActionPerformed
     /**
      * Mo
@@ -257,8 +240,8 @@ public class Itineraire extends JFrame { // NOSONAR
         if (evt.getWheelRotation() > 0) {
             //zoom in (amount)
             System.out.println("Zoom In/ Scrolled UP" + this.canvas2.getZoom());
-            canvas2.zoomIn();
-            canvas2.repaint();
+            this.canvas2.zoomIn();
+            this.canvas2.repaint();
 
         } else {
             //zoom out (amount)
@@ -284,6 +267,7 @@ public class Itineraire extends JFrame { // NOSONAR
 
     }//GEN-LAST:event_canvas2MouseDragged
 
+    //CHECKSTYLE:OFF
     // Variables declaration - do not modify//GEN-BEGIN:variables
     /*
     private java.awt.Canvas canvas2;
@@ -301,4 +285,5 @@ public class Itineraire extends JFrame { // NOSONAR
     private javax.swing.JLabel numberVLabel;
     private javax.swing.JButton zoomButton;
     // End of variables declaration//GEN-END:variables
+    //CHECKSTYLE:ON
 }

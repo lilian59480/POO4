@@ -106,11 +106,11 @@ public class Tournee {
      */
     private void updateCost() {
         int nbExtraVRequired = Math.max(this.tournee.size() - this.nbVehicule, 0);
-        double cost = 0.0;
-        for (Label label : tournee) {
-            cost += label.getCost();
+        double tempCost = 0.0;
+        for (Label label : this.tournee) {
+            tempCost += label.getCost();
         }
-        this.cost = cost + nbExtraVRequired * costExtraVehicule;
+        this.cost = tempCost + nbExtraVRequired * this.costExtraVehicule;
     }
 
     /**
@@ -119,7 +119,7 @@ public class Tournee {
      * @return the cost
      */
     public double getCost() {
-        return cost;
+        return this.cost;
     }
 
     /**
@@ -128,7 +128,7 @@ public class Tournee {
      * @return the cost
      */
     public List<Label> getTournee() {
-        return tournee;
+        return this.tournee;
     }
 
     /**
@@ -138,7 +138,7 @@ public class Tournee {
      */
     public void addLabel(Label label) {
         this.tournee.add(label);
-        updateCost();
+        this.updateCost();
     }
 
     /**
@@ -148,7 +148,7 @@ public class Tournee {
      */
     public void addLabels(List<Label> labels) {
         this.tournee.addAll(labels);
-        updateCost();
+        this.updateCost();
     }
 
     /**
@@ -157,7 +157,7 @@ public class Tournee {
      * @return the number of vehicule
      */
     public int getNbVehicule() {
-        return nbVehicule;
+        return this.nbVehicule;
     }
 
     /**
@@ -166,7 +166,7 @@ public class Tournee {
      * @return the cost for extra vehicule
      */
     public double getCostExtraVehicule() {
-        return costExtraVehicule;
+        return this.costExtraVehicule;
     }
 
     @Override
