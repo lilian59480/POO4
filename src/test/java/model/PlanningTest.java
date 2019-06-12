@@ -18,7 +18,12 @@
  */
 package model;
 
+import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -30,16 +35,44 @@ import org.junit.jupiter.api.Test;
 @DisplayName("Planning")
 public class PlanningTest {
 
-    @Test
-    @DisplayName("New planning should have a vehicule list")
+    private Planning planningInstance;
+
+    @BeforeEach
+    void createNewInstance() {
+        this.planningInstance = new Planning();
+    }
+
     /**
-     * @todo Create a proper test.
+     * Test of getVehicules, addVehicule method, of class Planning.
      */
-    public void newPlanningHaveVL() {
+    @Test
+    @DisplayName("Get/Add Vehicules")
+    public void testVehicules() {
+        List<Vehicule> expectedInit = null;
+        List<Vehicule> resultInit = this.planningInstance.getVehicules();
+        assertNotEquals(expectedInit, resultInit, "Default vehicule list should not be null");
 
-        Planning p = new Planning();
+        Vehicule v = new Vehicule();
+        boolean expectAddValid = true;
+        boolean actualAddValid = this.planningInstance.addVehicule(v);
 
-        assertNotNull(p.getVehicules(), "Vehicule list is needed");
+        assertEquals(expectAddValid, actualAddValid, "A valid vehicule should be added");
+
+        Vehicule v2 = null;
+        boolean expectAddNull = false;
+        boolean actualAddNull = this.planningInstance.addVehicule(v2);
+        assertEquals(expectAddNull, actualAddNull, "A null vehicule should not be added");
+    }
+
+    /**
+     * Test of toString method, of class Planning.
+     */
+    @Test
+    @DisplayName("toString")
+    public void testToString() {
+        String result = this.planningInstance.toString();
+        assertNotNull(result, "toString must be defined and return a value");
+        assertFalse(result.isEmpty(), "toString must be defined and return a value");
     }
 
 }

@@ -19,11 +19,11 @@
 package model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 
 /**
  * Tests for {@link Depot}
@@ -33,39 +33,54 @@ import org.junit.jupiter.api.function.Executable;
 @DisplayName("Depot")
 public class DepotTest {
 
+    private Depot depotInstance;
+
+    private static final int DEFAULT_HEURE_DEBUT = 0;
+    private static final int DEFAULT_HEURE_FIN = 10;
+    private static final double DEFAULT_X = -2;
+    private static final double DEFAULT_Y = 7;
+
+    @BeforeEach
+    void createNewDepot() {
+        this.depotInstance = new Depot(DEFAULT_HEURE_DEBUT, DEFAULT_HEURE_FIN, DEFAULT_X, DEFAULT_Y);
+    }
+
     /**
      * Check if creating from an Emplacement is working.
      */
     @Test
     @DisplayName("Creating from Emplacement should work")
     public void instanciateFromEmplacement() {
-        Emplacement e = new Emplacement(10, 20, 30.20, 40.24);
+        Emplacement e = new Emplacement(DEFAULT_HEURE_DEBUT, DEFAULT_HEURE_FIN, DEFAULT_X, DEFAULT_Y);
 
         Depot d = new Depot(e);
 
-        assertEquals(10, d.getHeureDebut(), "Emplacement's heureDebut field must be propagated");
-        assertEquals(20, d.getHeureFin(), "Emplacement's heureFin field must be propagated");
-        assertEquals(30.20, d.getX(), "Emplacement's X field must be propagated");
-        assertEquals(40.24, d.getY(), "Emplacement's Y field must be propagated");
+        int expectedHeureDebut = DEFAULT_HEURE_DEBUT;
+        int resultHeureDebut = d.getHeureDebut();
+        assertEquals(expectedHeureDebut, resultHeureDebut, "Emplacement's heureDebut field should be propagated");
 
+        int expectedHeureFin = DEFAULT_HEURE_FIN;
+        int resultHeureFin = d.getHeureFin();
+        assertEquals(expectedHeureFin, resultHeureFin, "Emplacement's heureFin field should be propagated");
+
+        double expectedX = DEFAULT_X;
+        double resultX = d.getX();
+        assertEquals(expectedX, resultX, "Emplacement's X field should be propagated");
+
+        double expectedY = DEFAULT_Y;
+        double resultY = d.getY();
+        assertEquals(expectedY, resultY, "Emplacement's Y field should be propagated");
     }
 
     /**
-     * Check if creating from a null Emplacement is not working.
+     * Test of toString method, of class Depot.
      */
     @Test
-    @DisplayName("Creating from null should not work")
-    public void instanciateFromNullEmplacement() {
-        Emplacement e = null;
-
-        Exception ex = assertThrows(NullPointerException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                Depot d = new Depot(e);
-            }
-        }, "NullPointerException must be raised");
-
-        assertNotNull(ex, "Exception must not be null");
+    @DisplayName("toString")
+    public void testToString() {
+        String result = this.depotInstance.toString();
+        assertNotNull(result, "toString must be defined and return a value");
+        assertFalse(result.isEmpty(), "toString must be defined and return a value");
     }
 
 }

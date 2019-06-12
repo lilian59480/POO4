@@ -41,6 +41,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "INSTANCE")
 public class Instance implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -70,7 +71,7 @@ public class Instance implements Serializable {
     /**
      * Depot.
      */
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Depot depot;
 
     /**
@@ -96,10 +97,9 @@ public class Instance implements Serializable {
      */
     @OneToMany(mappedBy = "instance", cascade = CascadeType.ALL)
     private List<Planning> plannings;
-    
+
     private String instanceName;
 
-    
     /**
      * Instance constructor.
      */
@@ -117,6 +117,9 @@ public class Instance implements Serializable {
      * @param capaciteVehicule The CapaciteVehicule.
      */
     public void setCapaciteVehicule(int capaciteVehicule) {
+        if (capaciteVehicule < 0) {
+            throw new IllegalArgumentException("capcciteVehicule should not be negative");
+        }
         this.capaciteVehicule = capaciteVehicule;
     }
 
@@ -135,6 +138,9 @@ public class Instance implements Serializable {
      * @param coutVehicule The CoutVehicule.
      */
     public void setCoutVehicule(int coutVehicule) {
+        if (coutVehicule < 0) {
+            throw new IllegalArgumentException("coutVehicule should not be negative");
+        }
         this.coutVehicule = coutVehicule;
     }
 
@@ -153,6 +159,9 @@ public class Instance implements Serializable {
      * @param clients A list of clients.
      */
     public void setClients(List<Client> clients) {
+        if (clients == null) {
+            throw new NullPointerException("List of clients should not be null");
+        }
         this.clients = clients;
     }
 
@@ -277,6 +286,9 @@ public class Instance implements Serializable {
      * @param nbVehicule New number of vehicule.
      */
     public void setNbVehicules(int nbVehicule) {
+        if (nbVehicule < 0) {
+            throw new IllegalArgumentException("nbVehicule should not be negative");
+        }
         this.nbVehicules = nbVehicule;
     }
 
@@ -291,14 +303,17 @@ public class Instance implements Serializable {
 
     /**
      * Get Instance name.
+     *
      * @return The instance Name.
      */
     public String getInstanceName() {
         return instanceName;
     }
+
     /**
      * Set instance Name.
-     * @param instanceName  setted instanceName.
+     *
+     * @param instanceName setted instanceName.
      */
     public void setInstanceName(String instanceName) {
         this.instanceName = instanceName;
@@ -326,7 +341,7 @@ public class Instance implements Serializable {
 
     @Override
     public String toString() {
-        return this.instanceName ;
+        return "Instance " + this.instanceName;
     }
 
 }

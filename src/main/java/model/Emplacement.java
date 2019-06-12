@@ -109,6 +109,9 @@ public class Emplacement extends Point implements Serializable {
      * @param client The client.
      */
     public void setClient(Client client) {
+        if (client == null) {
+            throw new NullPointerException("");
+        }
         this.client = client;
     }
 

@@ -37,6 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import utils.CliUtils;
 import model.Instance;
 import model.Planning;
 
@@ -94,40 +95,6 @@ public class Cli {
     }
 
     /**
-     * Print intro text.
-     */
-    private void printIntro() {
-        Cli.PS.println("+------------+");
-        Cli.PS.println("|POO4 Project|");
-        Cli.PS.println("+------------+");
-
-        Cli.PS.println("Made by");
-        Cli.PS.println("+ Lilian Petitpas");
-        Cli.PS.println("+ Thomas Ternisien");
-        Cli.PS.println("+ Thibaut Fenain");
-        Cli.PS.println("+ Corentin Apolinario");
-    }
-
-    /**
-     * Print licence text.
-     */
-    private void printLicence() {
-        Cli.PS.println("******************");
-
-        Cli.PS.println("POO4-Project Copyright (C) 2019 "
-                + "Lilian Petitpas, "
-                + "Thomas Ternisien, "
-                + "Thibaut Fenain, "
-                + "Corentin Apolinario");
-        Cli.PS.println("");
-        Cli.PS.println("This program comes with ABSOLUTELY NO WARRANTY");
-        Cli.PS.println("This is free software, and you are welcome to "
-                + "redistribute under certain conditions");
-
-        Cli.PS.println("******************");
-    }
-
-    /**
      * Print help text.
      */
     private void printHelp() {
@@ -136,7 +103,6 @@ public class Cli {
         Cli.PS.println("Options :");
         Cli.PS.println("\thelp\tPrint help");
         Cli.PS.println("\tusage\tPrint help");
-
     }
 
     /**
@@ -267,22 +233,27 @@ public class Cli {
             System.exit(-1);
             return;
         }
-        self.printIntro();
-        self.printLicence();
+        CliUtils.printIntro(Cli.PS);
+        Cli.PS.println("******************");
+        CliUtils.printLicence(Cli.PS);
+        Cli.PS.println("******************");
 
-        if (args.length >= 1) {
-            if ("help".equals(args[0]) || "usage".equals(args[0])) {
+        CliUtils.Options ops = CliUtils.parseArguments(args);
+
+        switch (ops) {
+            case UNKNOWN:
+                Cli.PS.println("Unknown arguments");
                 self.printHelp();
-                return;
-            }
-
-            // Unknown argument
-            self.printHelp();
-            return;
-
+                break;
+            case HELP:
+            case USAGE:
+                self.printHelp();
+                break;
+            case NO_ARGS:
+            default:
+                self.runAllInstancesOnAllSolvers();
         }
 
-        self.runAllInstancesOnAllSolvers();
     }
 
     /**
