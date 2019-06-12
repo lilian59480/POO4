@@ -28,6 +28,7 @@ import java.util.List;
 import model.Depot;
 import model.Emplacement;
 import model.Instance;
+import model.Point;
 import model.Vehicule;
 
 /**
@@ -103,7 +104,7 @@ public class MyCanvas extends Canvas {
         } else {
             g.setColor(Color.BLUE);
         }
-        g.fillRect((int) ((int) e.getX() * this.zoom + this.draggedX - 3), (int) e.getY() * this.zoom + this.draggedY - 3, 6, 6);
+        g.fillRect(this.getDrawedX(e) - 3, this.getDrawedY(e) - 3, 6, 6);
 
     }
 
@@ -132,12 +133,12 @@ public class MyCanvas extends Canvas {
                  */
                 g.setColor(Color.getHSBColor(code / 360.0f, 1, 0.8f));
                 g.setStroke(new BasicStroke(3));
-                g.drawLine((int) source.getX() * this.zoom + this.draggedX, (int) source.getY() * this.zoom + this.draggedY, (int) destination.getX() * this.zoom + this.draggedX, (int) destination.getY() * this.zoom + this.draggedY);
+                g.drawLine(this.getDrawedX(source), this.getDrawedY(source), this.getDrawedX(destination), this.getDrawedY(destination));
                 source = destination;
                 this.drawEmplacement(g, destination);
 
             }
-            g.drawLine((int) source.getX() * this.zoom + this.draggedX, (int) source.getY() * this.zoom + this.draggedY, (int) d.getX() * this.zoom + this.draggedX, (int) d.getY() * this.zoom + this.draggedY);
+            g.drawLine(this.getDrawedX(source), this.getDrawedY(source), this.getDrawedX(d), this.getDrawedY(d));
             code += 20;
         }
         this.drawEmplacement(g, d);
@@ -186,6 +187,26 @@ public class MyCanvas extends Canvas {
      */
     public int getZoom() {
         return this.zoom;
+    }
+
+    /**
+     * Get X coordinate for the Canvas.
+     *
+     * @param p Point to draw
+     * @return The X coordinate with scaling and drag
+     */
+    private int getDrawedX(Point p) {
+        return (int) (p.getX() * this.zoom + this.draggedX);
+    }
+
+    /**
+     * Get Y coordinate for the Canvas.
+     *
+     * @param p Point to draw
+     * @return The Y coordinate with scaling and drag
+     */
+    private int getDrawedY(Point p) {
+        return (int) (p.getY() * this.zoom + this.draggedY);
     }
 
 }
