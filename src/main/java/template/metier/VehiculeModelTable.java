@@ -65,9 +65,9 @@ public class VehiculeModelTable extends AbstractTableModel {
         this.entetes[1] = "Color";
         this.entetes[2] = "Vehicule";
         this.data = data;
-        
-        this.vehicules = new HashMap<>(); 
-        for (Vehicule v : data){
+
+        this.vehicules = new HashMap<>();
+        for (Vehicule v : data) {
             this.vehicules.put(v, false);
         }
     }
@@ -105,7 +105,7 @@ public class VehiculeModelTable extends AbstractTableModel {
             case 0:
                 return this.vehicules.get(this.data.get(rowIndex)).booleanValue();
             case 1:
-                return Color.getHSBColor(this.data.get(rowIndex).getId() * 10 / 360.0f, 1, 0.8f);
+                return Color.getHSBColor(this.data.get(rowIndex).getId() * 10 / 360.0f, 1, 0.8f).toString();
             case 2:
                 return this.data.get(rowIndex).getId();
             default:
@@ -153,12 +153,26 @@ public class VehiculeModelTable extends AbstractTableModel {
      */
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        this.vehicules.put(data.get(rowIndex), (Boolean) aValue);
+        if (0 == columnIndex) {
+            this.vehicules.put(data.get(rowIndex), (Boolean) aValue);
+        }
     }
-    
-    
     /**
-     *  display true vehicules.
+     *  Allow Editable cellule.
+     * @param rowIndex
+     * @param columnIndex
+     * @return  boolean
+     */
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+       if(columnIndex == 0) 
+        return true;
+       else return false;
+    }
+
+    /**
+     * display true vehicules.
+     *
      * @param rowIndex value
      * @param columnIndex value.
      * @return vehicules to display
@@ -166,9 +180,9 @@ public class VehiculeModelTable extends AbstractTableModel {
     public List<Vehicule> getDisplayVehicules(int rowIndex, int columnIndex) {
         List<Vehicule> vehicules = new ArrayList<Vehicule>();
         for (int i = 0; i < this.getRowCount(); i++) {
-            if (this.vehicules.get(i).booleanValue()){
+            if (this.vehicules.get(i).booleanValue()) {
                 vehicules.add(data.get(rowIndex));
-            } 
+            }
         }
         return vehicules;
     }
