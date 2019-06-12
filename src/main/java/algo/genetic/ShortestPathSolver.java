@@ -71,7 +71,7 @@ public class ShortestPathSolver implements ISolver {
 
     @Override
     public Instance getInstance() {
-        return instance;
+        return this.instance;
     }
 
     @Override

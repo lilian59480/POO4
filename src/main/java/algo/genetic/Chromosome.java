@@ -107,7 +107,7 @@ public class Chromosome {
      * @return the clients
      */
     public List<Client> getClients() {
-        return clients;
+        return this.clients;
     }
 
     /**
@@ -122,7 +122,7 @@ public class Chromosome {
         if (this.tournee == null) {
             this.generateTournee();
         }
-        return tournee;
+        return this.tournee;
     }
 
     /**
@@ -131,7 +131,7 @@ public class Chromosome {
      * @return the instance
      */
     public Instance getInstance() {
-        return instance;
+        return this.instance;
     }
 
     /**
@@ -158,11 +158,11 @@ public class Chromosome {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Chromosome that = (Chromosome) o;
-        return clients.equals(that.clients);
+        return this.clients.equals(that.clients);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(clients);
+        return Objects.hash(this.clients);
     }
 }

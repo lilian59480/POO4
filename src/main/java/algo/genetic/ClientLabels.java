@@ -44,8 +44,8 @@ public class ClientLabels {
      * @param cnb the client's number
      */
     public ClientLabels(int cnb) {
-        clientNb = cnb;
-        labels = new ArrayList<>();
+        this.clientNb = cnb;
+        this.labels = new ArrayList<>();
     }
 
     /**
@@ -54,7 +54,7 @@ public class ClientLabels {
      * @return The em2Labels.
      */
     public List<Label> getLabels() {
-        return labels;
+        return this.labels;
     }
 
     /**
@@ -63,7 +63,7 @@ public class ClientLabels {
      * @return the clientNb
      */
     public int getClientNb() {
-        return clientNb;
+        return this.clientNb;
     }
 
     /**

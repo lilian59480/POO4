@@ -87,7 +87,7 @@ public class Label {
      */
     public Label(int load, double cost, int time, Emplacement emplacement, Emplacement firstEmplacement) {
         this(load, cost, time, emplacement);
-        precedents.add(firstEmplacement);
+        this.precedents.add(firstEmplacement);
     }
 
     /**
@@ -114,7 +114,7 @@ public class Label {
      * @return the load
      */
     public int getLoad() {
-        return load;
+        return this.load;
     }
 
     /**
@@ -123,7 +123,7 @@ public class Label {
      * @return the cost
      */
     public double getCost() {
-        return cost;
+        return this.cost;
     }
 
     /**
@@ -132,7 +132,7 @@ public class Label {
      * @return the time
      */
     public int getTime() {
-        return time;
+        return this.time;
     }
 
     /**
@@ -141,7 +141,7 @@ public class Label {
      * @return the emplacement
      */
     public Emplacement getEmplacement() {
-        return emplacement;
+        return this.emplacement;
     }
 
     /**
@@ -150,7 +150,7 @@ public class Label {
      * @return the precedent emplacements
      */
     public List<Emplacement> getPrecedents() {
-        return precedents;
+        return this.precedents;
     }
 
     /**
