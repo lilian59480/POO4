@@ -18,9 +18,9 @@
  */
 package model;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -56,7 +56,7 @@ public class Client implements Serializable {
      */
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
     @CascadeOnDelete
-    private List<Emplacement> emplacements;
+    private Set<Emplacement> emplacements;
 
     /**
      * Current position.
@@ -83,7 +83,7 @@ public class Client implements Serializable {
      */
     public Client(int demande) {
         this.position = -1;
-        this.emplacements = new LinkedList<>();
+        this.emplacements = new HashSet<>();
         this.demande = demande;
         this.vehicule = null;
     }
@@ -134,8 +134,17 @@ public class Client implements Serializable {
      *
      * @return The list of emplacements.
      */
-    public List<Emplacement> getEmplacements() {
+    public Set<Emplacement> getEmplacements() {
         return this.emplacements;
+    }
+
+    /**
+     * Get current vehicule.
+     *
+     * @return The vehicule.
+     */
+    public Vehicule getVehicule() {
+        return this.vehicule;
     }
 
     /**

@@ -19,7 +19,9 @@
 package model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -31,22 +33,77 @@ import org.junit.jupiter.api.Test;
 @DisplayName("Route")
 public class RouteTest {
 
-    @Test
-    @DisplayName("2 Roads are equals even if costs are different")
+    private static final double DEFAULT_X = -2;
+    private static final double DEFAULT_Y = 7;
+    private static final int DEFAULT_HEURE_DEBUT = 0;
+    private static final int DEFAULT_HEURE_FIN = 10;
+    private static final double DEFAULT_COST = 4;
+    private static final int DEFAULT_TIME = 9;
+
+    private Point pointInstance;
+    private Point point2;
+    private Route routeInstance;
+
+    @BeforeEach
+    void createNewRoute() {
+        this.pointInstance = new Emplacement(DEFAULT_HEURE_DEBUT, DEFAULT_HEURE_FIN, DEFAULT_X, DEFAULT_Y);
+        this.point2 = new Emplacement(DEFAULT_HEURE_DEBUT, DEFAULT_HEURE_FIN, DEFAULT_Y, DEFAULT_X);
+        this.routeInstance = new Route(this.pointInstance, this.point2, DEFAULT_COST, DEFAULT_TIME);
+        this.pointInstance.addRouteTo(this.routeInstance);
+    }
+
     /**
-     * @todo Create a proper test.
+     * Test of getFrom method, of class Route.
      */
-    public void roadEquality() {
+    @Test
+    @DisplayName("Get From")
+    public void testGetFrom() {
+        Point expectedPoint = this.pointInstance;
+        Point resultPoint = this.routeInstance.getFrom();
+        assertEquals(expectedPoint, resultPoint, "From set in constructor should be returned");
+    }
 
-        Emplacement e1 = new Emplacement(0, 0, 0, 0);
-        Emplacement e2 = new Emplacement(0, 0, 5, 5);
+    /**
+     * Test of getTo method, of class Route.
+     */
+    @Test
+    @DisplayName("Get To")
+    public void testGetTo() {
+        Point expectedPoint = this.point2;
+        Point resultPoint = this.routeInstance.getTo();
+        assertEquals(expectedPoint, resultPoint, "To set in constructor should be returned");
+    }
 
-        Route r1 = new Route(e1, e2, 100, 10);
-        Route r1b = new Route(e1, e2, 100, 10);
-        Route r2 = new Route(e1, e2, 10, 1);
+    /**
+     * Test of getCout method, of class Route.
+     */
+    @Test
+    @DisplayName("Get Cost")
+    public void testGetCout() {
+        double expectedCost = RouteTest.DEFAULT_COST;
+        double resultCost = this.routeInstance.getCout();
+        assertEquals(expectedCost, resultCost, "Cost set in constructor should be returned");
+    }
 
-        assertEquals(r1, r1b, "the 2 similar roads are equals");
-        assertNotEquals(r1, r2, "the 2 roads should not be equals");
+    /**
+     * Test of getTemps method, of class Route.
+     */
+    @Test
+    @DisplayName("Get Temps")
+    public void testGetTemps() {
+        int expectedTime = RouteTest.DEFAULT_TIME;
+        int resultTime = this.routeInstance.getTemps();
+        assertEquals(expectedTime, resultTime, "Time set in constructor should be returned");
+    }
+
+    /**
+     * Test of toString method, of class Route.
+     */
+    @Test
+    public void testToString() {
+        String result = this.routeInstance.toString();
+        assertNotNull(result, "toString must be defined and return a value");
+        assertFalse(result.isEmpty(), "toString must be defined and return a value");
     }
 
 }
