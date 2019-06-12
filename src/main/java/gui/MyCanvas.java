@@ -16,9 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package template;
+package gui;
 
 import algo.iterative.NaiveSolver;
+import gui.metier.VehiculeModelTable;
 import java.awt.BasicStroke;
 import java.awt.Canvas;
 import java.awt.Color;
@@ -40,14 +41,16 @@ public class MyCanvas extends Canvas {
     private int draggedX = 400;
     private int draggedY = 400;
     private int zoom = 4;
-
+    private VehiculeModelTable vModel;
     /**
      * initial constructor
      *
      * @param i Instance
+     * @param vModel vModelTable
      */
-    public MyCanvas(Instance i) {
+    public MyCanvas(Instance i, VehiculeModelTable vModel) {
         this.instance = i;
+        this.vModel = vModel;
         setBackground(Color.WHITE);
     }
 
@@ -108,7 +111,7 @@ public class MyCanvas extends Canvas {
         //Dessin du depot
         Depot d = i.getDepot();
 
-        List<Vehicule> vehicules = i.getVehicules();
+        List<Vehicule> vehicules = this.vModel.getDisplayVehicules();
         int code = 0;
 
         for (Vehicule v : vehicules) {

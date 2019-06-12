@@ -17,11 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * Contains all classes related to the TableModel.
+ * Contains all classes related to the GUI.
  *
  * @author Lilian Petitpas
  * @author Thomas Ternisien
  * @author Thibaut Fenain
  * @author Corentin Apolinario
  */
-package template.metier;
+package gui;

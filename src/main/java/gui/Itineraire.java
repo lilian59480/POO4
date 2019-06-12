@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package template;
+package gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -26,8 +26,8 @@ import javax.swing.JFrame;
 import model.Client;
 import model.Instance;
 import model.Vehicule;
-import template.metier.ClientModelTable;
-import template.metier.VehiculeModelTable;
+import gui.metier.ClientModelTable;
+import gui.metier.VehiculeModelTable;
 
 /**
  * Planning representation.
@@ -47,6 +47,7 @@ public class Itineraire extends JFrame { // NOSONAR
      */
     private static final Logger LOGGER = Logger.getLogger(Itineraire.class.getName());
     private Instance instance;
+    private VehiculeModelTable vehiculeModelTable;
 
     /**
      * Creates new form itineraire with a null Instance.
@@ -58,16 +59,21 @@ public class Itineraire extends JFrame { // NOSONAR
      */
     public Itineraire(Instance i) {
         this.instance = i;
-        this.initComponents();
         List<Client> clients = i.getClients();
         List<Vehicule> vehicules = i.getVehicules();
+        this.vehiculeModelTable = new VehiculeModelTable(vehicules);
+        this.initComponents();
         this.jTableClient.setModel(new ClientModelTable(clients));
-        this.jTableVehicule.setModel(new VehiculeModelTable(vehicules));
+        this.jTableVehicule.setModel(this.vehiculeModelTable);
+        this.jTableVehicule.getModel().addTableModelListener((e) -> {
+            System.out.println("YOLO TEST EVENT TABLE");
+        });
 
         this.initialisationFenetre();
 
         this.costNLabel.setText("" + this.instance.getCoutVehicule());
         this.numberVLabel.setText("" + this.instance.getNbVehicules());
+
     }
 
     /**
@@ -93,7 +99,7 @@ public class Itineraire extends JFrame { // NOSONAR
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        canvas2 = new MyCanvas(this.instance);
+        canvas2 = new MyCanvas(this.instance, this.vehiculeModelTable);
         jLabel1 = new javax.swing.JLabel();
         levelZoomLabel = new javax.swing.JLabel();
         fitInButton = new javax.swing.JButton();
@@ -156,6 +162,11 @@ public class Itineraire extends JFrame { // NOSONAR
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jTableVehicule.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableVehiculeMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(jTableVehicule);
 
         jTableClient.setModel(new javax.swing.table.DefaultTableModel(
@@ -202,9 +213,9 @@ public class Itineraire extends JFrame { // NOSONAR
                         .addGap(247, 247, 247)
                         .addComponent(numberVLabel))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
+                        .addGap(16, 16, 16)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addComponent(canvas2, javax.swing.GroupLayout.PREFERRED_SIZE, 649, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(39, 39, 39))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -222,7 +233,7 @@ public class Itineraire extends JFrame { // NOSONAR
                     .addComponent(levelZoomLabel)
                     .addComponent(fitInButton)
                     .addComponent(zoomButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 111, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(canvas2, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
@@ -236,9 +247,9 @@ public class Itineraire extends JFrame { // NOSONAR
                     .addComponent(numberVLabel))
                 .addGap(40, 40, 40)
                 .addComponent(clientEmplacementLabel)
-                .addGap(200, 200, 200)
+                .addGap(196, 196, 196)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(374, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(175, 175, 175)
@@ -273,13 +284,11 @@ public class Itineraire extends JFrame { // NOSONAR
 
         if (evt.getWheelRotation() > 0) {
             //zoom in (amount)
-            System.out.println("Zoom In/ Scrolled UP" + this.canvas2.getZoom());
             this.canvas2.zoomIn();
             this.canvas2.repaint();
 
         } else {
             //zoom out (amount)
-            System.out.println("Zoom out/ Scrolled Down" + this.canvas2.getZoom());
             this.canvas2.zoomOut();
             this.canvas2.repaint();
 
@@ -300,6 +309,16 @@ public class Itineraire extends JFrame { // NOSONAR
         this.canvas2.repaint();
 
     }//GEN-LAST:event_canvas2MouseDragged
+    /**
+     * OnClick Table.
+     *
+     * @param evt event
+     */
+    private void jTableVehiculeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableVehiculeMouseClicked
+        // TODO add your handling code here:
+        this.canvas2.repaint();
+
+    }//GEN-LAST:event_jTableVehiculeMouseClicked
 
     //CHECKSTYLE:OFF
     // Variables declaration - do not modify//GEN-BEGIN:variables

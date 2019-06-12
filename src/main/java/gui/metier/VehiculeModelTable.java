@@ -16,18 +16,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package template.metier;
+/**
+ * Contains all classes related to the TableModel.
+ *
+ * @author Lilian Petitpas
+ * @author Thomas Ternisien
+ * @author Thibaut Fenain
+ * @author Corentin Apolinario
+ */
+package gui.metier;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import static javax.swing.UIManager.get;
 import javax.swing.table.AbstractTableModel;
 import model.Client;
+import model.Route;
+import model.Vehicule;
 
 /**
  *
  * @author thibaut
  */
-public class ClientModelTable extends AbstractTableModel {
+public class VehiculeModelTable extends AbstractTableModel {
 
     /**
      * Représente les entêtes des colonnes du jTable
@@ -35,21 +49,27 @@ public class ClientModelTable extends AbstractTableModel {
     private final String[] entetes;
 
     /**
-     * Représente les données du jTable
+     * Représente les données du jTable.
      */
-    private final List<Client> data;
+    private final List<Vehicule> data;
+    private final Map<Vehicule, Boolean> vehicules;
 
     /**
-     * Constructor.
+     * constructeur.
      *
-     * @param data Client List.
+     * @param data list of vehicules
      */
-    public ClientModelTable(List<Client> data) {
+    public VehiculeModelTable(List<Vehicule> data) {
         this.entetes = new String[3];
         this.entetes[0] = "Display / Hide";
         this.entetes[1] = "Color";
-        this.entetes[2] = "Client";
+        this.entetes[2] = "Vehicule";
         this.data = data;
+
+        this.vehicules = new HashMap<>();
+        for (Vehicule v : data) {
+            this.vehicules.put(v, false);
+        }
     }
 
     /**
@@ -81,12 +101,11 @@ public class ClientModelTable extends AbstractTableModel {
      */
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        System.out.println("test ID : " + this.data.get(rowIndex).getId());
         switch (columnIndex) {
             case 0:
-                return true;
+                return this.vehicules.get(this.data.get(rowIndex)).booleanValue();
             case 1:
-                return  Color.getHSBColor(this.data.get(rowIndex).getId() * 10 / 360.0f, 1, 0.8f);
+                return Color.getHSBColor(this.data.get(rowIndex).getId() * 10 / 360.0f, 1, 0.8f).toString();
             case 2:
                 return this.data.get(rowIndex).getId();
             default:
@@ -124,21 +143,46 @@ public class ClientModelTable extends AbstractTableModel {
                 return Object.class;
         }
     }
-  /**
-   * Allow to set a value to a 
-   * @param aValue
-   * @param rowIndex
-   * @param columnIndex 
-   */
-  @Override
-   public void setValueAt(Object aValue, int rowIndex, int columnIndex)
-   {
-       Client row = data.get(rowIndex);
-/*
-        if(0 == columnIndex) {
-                 row[rowIndex][columnIndex] = aValue; 
 
-       }
-*/
-   }
+    /**
+     * Allow to set a value to a
+     *
+     * @param aValue
+     * @param rowIndex
+     * @param columnIndex
+     */
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        if (0 == columnIndex) {
+            this.vehicules.put(data.get(rowIndex), (Boolean) aValue);
+        }
+    }
+    /**
+     *  Allow Editable cellule.
+     * @param rowIndex
+     * @param columnIndex
+     * @return  boolean
+     */
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+       if(columnIndex == 0) 
+        return true;
+       else return false;
+    }
+    
+    /**
+     * display true vehicules.
+     *
+     * @return vehicules to display
+     */
+    public List<Vehicule> getDisplayVehicules() {
+        List<Vehicule> vehicules = new ArrayList<Vehicule>();
+        for (Vehicule v : this.data) {
+            if (this.vehicules.get(v).booleanValue()) {
+                vehicules.add(v);
+            }
+        }
+        return vehicules;
+    }
+
 }

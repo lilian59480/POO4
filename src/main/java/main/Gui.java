@@ -20,7 +20,7 @@ package main;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import template.ListeInstance;
+import gui.ListeInstance;
 
 /**
  * Gui entry point for this project
