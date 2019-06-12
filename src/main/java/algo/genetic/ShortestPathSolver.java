@@ -127,37 +127,4 @@ public class ShortestPathSolver implements ISolver {
         return this.instance.check();
     }
 
-    /**
-     * Main funtion (for dev purposes only)
-     *
-     * @param args the args
-     */
-    public static void main(String[] args) {
-        Instance i = null;
-        for (int j = 0; j < 40; j++) {
-            int id = j;
-            System.out.println(id);
-            try {
-                InstanceFileParser ifp = new InstanceFileParser();
-                i = ifp.parse(new File("src/main/resources/instances/instance_" + id + "-triangle.txt"));
-            } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
-                return;
-            }
-            NaiveSolver ds = new NaiveSolver(i);
-            ds.solve();
-            double cns = i.getPlanningCurrent().getCout();
-            System.out.println("---Cout ns: " + cns);
-            ShortestPathSolver sp = new ShortestPathSolver(i);
-            sp.solve();
-            double csp = i.getPlanningCurrent().getCout();
-            System.out.println("---Cout sp: " + csp + " ( " + (csp - cns) + " )");
-            /*try {
-                SolutionWriter sw = new SolutionWriter();
-                sw.write(i, "target/instance_" + id + "-triangle_sol_sp.txt");
-            } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, "Exception while writing a solution", ex);
-            }*/
-        }
-    }
 }

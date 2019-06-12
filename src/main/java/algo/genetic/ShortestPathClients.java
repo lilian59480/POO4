@@ -84,25 +84,24 @@ public class ShortestPathClients {
      *                         or inconsistant values.
      */
     public Tournee findBestTournee() throws SolverException {
-        Tournee bestTournee = findShortestPath(1);
-        Tournee bestTourneeTemp = findShortestPath(1.5);
-        if (bestTourneeTemp.getCost() < bestTournee.getCost()) {
-            bestTournee = bestTourneeTemp;
-        }
-        bestTourneeTemp = findShortestPath(2);
-        if (bestTourneeTemp.getCost() < bestTournee.getCost()) {
-            bestTournee = bestTourneeTemp;
-        }
-        bestTourneeTemp = findShortestPath(2.5);
-        if (bestTourneeTemp.getCost() < bestTournee.getCost()) {
-            bestTournee = bestTourneeTemp;
-        }
-        bestTourneeTemp = findShortestPath(10);
-        if (bestTourneeTemp.getCost() < bestTournee.getCost()) {
-            bestTournee = bestTourneeTemp;
-        }
+        Tournee bestTournee = getBestTournee(findShortestPath(1), findShortestPath(1.5));
+        bestTournee = getBestTournee(bestTournee, findShortestPath(2));
+        bestTournee = getBestTournee(bestTournee, findShortestPath(2.5));
 
-        return bestTournee;
+        return getBestTournee(bestTournee, findShortestPath(10));
+    }
+    
+    /**
+     * Find the best tournee of the two input tournee
+     * @param tournee1 the first tournee
+     * @param tournee2 the second tournee
+     * @return the best tournee of the two
+     */
+    public Tournee getBestTournee(Tournee tournee1, Tournee tournee2) {
+        if (tournee1.getCost() < tournee2.getCost()) {
+            return tournee1;
+        }
+        return tournee2;
     }
 
     /**
