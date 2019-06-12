@@ -21,6 +21,7 @@ package model;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.CascadeType;
@@ -41,7 +42,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "INSTANCE")
 public class Instance implements Serializable {
+
     private static final long serialVersionUID = 1L;
+    private static final Logger LOGGER = Logger.getLogger(Instance.class.getName());
 
     /**
      * Class logger.
@@ -50,7 +53,6 @@ public class Instance implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private int id;
-    private static final Logger LOGGER = Logger.getLogger(Instance.class.getName());
 
     /**
      * Vehicule capacity.
@@ -96,10 +98,9 @@ public class Instance implements Serializable {
      */
     @OneToMany(mappedBy = "instance", cascade = CascadeType.ALL)
     private List<Planning> plannings;
-    
+
     private String instanceName;
 
-    
     /**
      * Instance constructor.
      */
@@ -111,12 +112,48 @@ public class Instance implements Serializable {
         this.plannings.add(new Planning(this));
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Instance other = (Instance) obj;
+        if (this.capaciteVehicule != other.getCapaciteVehicule()) {
+            return false;
+        }
+        if (this.coutVehicule != other.getCoutVehicule()) {
+            return false;
+        }
+        if (this.nbVehicules != other.getNbVehicules()) {
+            return false;
+        }
+        if (!Objects.equals(this.depot, other.getDepot())) {
+            return false;
+        }
+        if (!Objects.equals(this.clients, other.getClients())) {
+            return false;
+        }
+        if (!Objects.equals(this.vehicules, other.getVehicules())) {
+            return false;
+        }
+        return Objects.equals(this.routes, other.routes);
+    }
+
     /**
      * Set vehicule capacity.
      *
      * @param capaciteVehicule The CapaciteVehicule.
      */
     public void setCapaciteVehicule(int capaciteVehicule) {
+        if (capaciteVehicule < 0) {
+            throw new IllegalArgumentException("capcciteVehicule should not be negative");
+        }
         this.capaciteVehicule = capaciteVehicule;
     }
 
@@ -135,6 +172,9 @@ public class Instance implements Serializable {
      * @param coutVehicule The CoutVehicule.
      */
     public void setCoutVehicule(int coutVehicule) {
+        if (coutVehicule < 0) {
+            throw new IllegalArgumentException("coutVehicule should not be negative");
+        }
         this.coutVehicule = coutVehicule;
     }
 
@@ -153,6 +193,9 @@ public class Instance implements Serializable {
      * @param clients A list of clients.
      */
     public void setClients(List<Client> clients) {
+        if (clients == null) {
+            throw new NullPointerException("List of clients should not be null");
+        }
         this.clients = clients;
     }
 
@@ -277,6 +320,9 @@ public class Instance implements Serializable {
      * @param nbVehicule New number of vehicule.
      */
     public void setNbVehicules(int nbVehicule) {
+        if (nbVehicule < 0) {
+            throw new IllegalArgumentException("nbVehicule should not be negative");
+        }
         this.nbVehicules = nbVehicule;
     }
 
@@ -291,14 +337,17 @@ public class Instance implements Serializable {
 
     /**
      * Get Instance name.
+     *
      * @return The instance Name.
      */
     public String getInstanceName() {
-        return instanceName;
+        return this.instanceName;
     }
+
     /**
      * Set instance Name.
-     * @param instanceName  setted instanceName.
+     *
+     * @param instanceName setted instanceName.
      */
     public void setInstanceName(String instanceName) {
         this.instanceName = instanceName;
@@ -325,10 +374,23 @@ public class Instance implements Serializable {
     }
 
     @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + this.capaciteVehicule;
+        hash = 29 * hash + this.coutVehicule;
+        hash = 29 * hash + this.nbVehicules;
+        hash = 29 * hash + Objects.hashCode(this.depot);
+        hash = 29 * hash + Objects.hashCode(this.clients);
+        hash = 29 * hash + Objects.hashCode(this.vehicules);
+        hash = 29 * hash + Objects.hashCode(this.routes);
+        return hash;
+    }
+
+    @Override
     public String toString() {
         if (this.instanceName != null )
-            return this.instanceName;
-        else return "instance : " + this.id ;
+            return "Instance : " + this.instanceName;
+        return "Instance : " + this.id ;
     }
 
 }

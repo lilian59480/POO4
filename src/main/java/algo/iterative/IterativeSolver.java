@@ -161,4 +161,9 @@ public class IterativeSolver implements ISolver {
         }
     }
 
+    @Override
+    public String toString() {
+        return "IterativeSolver";
+    }
+
 }

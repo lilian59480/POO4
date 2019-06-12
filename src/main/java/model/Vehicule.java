@@ -39,6 +39,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "VEHICULE")
 public class Vehicule implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -149,6 +150,27 @@ public class Vehicule implements Serializable {
             last = destination;
         }
         return valid;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Vehicule other = (Vehicule) obj;
+        if (this.capacite != other.capacite) {
+            return false;
+        }
+        if (!Objects.equals(this.depot, other.depot)) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -357,31 +379,10 @@ public class Vehicule implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 23 * hash + Objects.hashCode(this.instance);
-        hash = 23 * hash + this.capacite;
+        int hash = 3;
+        hash = 17 * hash + Objects.hashCode(this.depot);
+        hash = 17 * hash + this.capacite;
         return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Vehicule other = (Vehicule) obj;
-        if (this.capacite != other.capacite) {
-            return false;
-        }
-        if (!Objects.equals(this.instance, other.instance)) {
-            return false;
-        }
-        return true;
     }
 
     @Override

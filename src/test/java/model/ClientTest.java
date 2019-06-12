@@ -18,12 +18,15 @@
  */
 package model;
 
+import java.util.LinkedList;
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -34,91 +37,157 @@ import org.junit.jupiter.api.Test;
 @DisplayName("Client")
 public class ClientTest {
 
-    /**
-     * Client instance.
-     */
-    private Client client;
+    private static final int DEFAULT_DEMANDE = 200;
 
-    /**
-     * Create a new client before each tests.
-     */
+    private Client clientInstance;
+
     @BeforeEach
     void createNewClient() {
-        this.client = new Client(200);
+        this.clientInstance = new Client(DEFAULT_DEMANDE);
     }
 
     /**
-     * Check for position.
+     * Test of addEmplacement method, of class Client.
      */
-    @Nested
-    @DisplayName("Setting position")
-    class SettingPosition {
+    @Test
+    @DisplayName("Add Emplacement")
+    public void testAddEmplacement() {
+        Emplacement e1 = new Emplacement(0, 10, 0, 0);
 
-        /**
-         * Check if a positive position is working.
-         */
-        @Test
-        @DisplayName("Positive position should work")
-        public void changePositivePosition() {
-            ClientTest.this.client.setPosition(1);
+        boolean expectedAddValid = true;
+        boolean resultAddValid = this.clientInstance.addEmplacement(e1);
+        assertEquals(expectedAddValid, resultAddValid, "Adding a valid emplacement should be true");
 
-            assertEquals(1, ClientTest.this.client.getPosition(), "Both must have the same value");
-        }
+        boolean expectedAddNull = false;
+        boolean resultAddNull = this.clientInstance.addEmplacement(null);
+        assertEquals(expectedAddNull, resultAddNull, "Adding a null emplacement should be false");
 
+        boolean expectedAddDuplicate = false;
+        boolean resultAddDuplicate = this.clientInstance.addEmplacement(e1);
+        assertEquals(expectedAddDuplicate, resultAddDuplicate, "Adding an already added emplacement should be false");
     }
 
     /**
-     * Check for emplacement.
+     * Test of getDemande method, of class Client.
      */
-    @Nested
-    @DisplayName("Setting emplacement")
-    class SettingEmplacement {
-
-        /**
-         * Check if a valid emplacement is working.
-         */
-        @Test
-        @DisplayName("Valid emplacement should work")
-        public void addEmplacement() {
-            Emplacement e = new Emplacement(10, 20, 30, 40);
-            assertTrue(ClientTest.this.client.addEmplacement(e), "addEmplacement must return true here");
-        }
-
-        /**
-         * Check if a null emplacement is not working.
-         */
-        @Test
-        @DisplayName("Null emplacement should not work")
-        public void addNullEmplacement() {
-            Emplacement e = null;
-            assertFalse(ClientTest.this.client.addEmplacement(e), "addEmplacement must return false here");
-        }
-
-        /**
-         * Check if an emplacement have client set.
-         */
-        @Test
-        @DisplayName("Emplacement should have Client information")
-        public void emplacementSetClient() {
-            Emplacement e = new Emplacement(20, 30, 40, 50);
-            assertTrue(ClientTest.this.client.addEmplacement(e), "addEmplacement must return true here");
-            assertEquals(ClientTest.this.client, e.getClient(), "Emplacement.getClient is different from Client");
-        }
-
-        /**
-         * Check if the emplacement list is updated.
-         */
-        @Test
-        @DisplayName("Emplacement list should be updated")
-        public void emplacementList() {
-            int max = 7;
-            for (int i = 0; i < max; i++) {
-                Emplacement e = new Emplacement(i, 5 * i + 1, 2 * i, 2 + i);
-                assertTrue(ClientTest.this.client.addEmplacement(e), "addEmplacement must return true here for i=" + i);
-            }
-
-            assertEquals(max, ClientTest.this.client.getEmplacements().size(), "Emplacement list should contains all emplacements");
-        }
-
+    @Test
+    @DisplayName("Get Demande")
+    public void testGetDemande() {
+        int expected = ClientTest.DEFAULT_DEMANDE;
+        int result = this.clientInstance.getDemande();
+        assertEquals(expected, result, "Demand set in constructor should be returned");
     }
+
+    /**
+     * Test of getPosition, setPosition methods, of class Client.
+     */
+    @Test
+    @DisplayName("Get/Set Position")
+    public void testPosition() {
+        int result = this.clientInstance.getPosition();
+        assertEquals(-1, result, "Default position should be -1");
+
+        int expectedPositionValid = 2;
+        this.clientInstance.setPosition(expectedPositionValid);
+        int resultPositionValid = this.clientInstance.getPosition();
+        assertEquals(expectedPositionValid, resultPositionValid, "A positive position should be valid");
+
+        int expectedPositionNegative = -2;
+        this.clientInstance.setPosition(expectedPositionNegative);
+        int resultPositionNegative = this.clientInstance.getPosition();
+        assertEquals(expectedPositionNegative, resultPositionNegative, "A negative position should be valid");
+    }
+
+    /**
+     * Test of getEmplacements method, of class Client.
+     */
+    @Test
+    @DisplayName("Get Emplacements")
+    public void testGetEmplacements() {
+        List<Emplacement> expected = new LinkedList<>();
+
+        // Add a set of examples
+        for (int i = 0; i < 7; i++) {
+            Emplacement e = new Emplacement(i, i + 1, i, i);
+            this.clientInstance.addEmplacement(e);
+            expected.add(e);
+        }
+
+        List<Emplacement> result = this.clientInstance.getEmplacements();
+        assertIterableEquals(expected, result, "List of emplacements should be identical to those added");
+    }
+
+    /**
+     * Test of getVehicule, setVehicule methods, of class Client.
+     */
+    @Test
+    @DisplayName("Get/Set Vehicule")
+    public void testVehicule() {
+        Vehicule expectedInit = null;
+        Vehicule resultInit = this.clientInstance.getVehicule();
+        assertEquals(expectedInit, resultInit, "Default position should be null");
+
+        Vehicule expectedVehiculeValid = new Vehicule();
+        this.clientInstance.setVehicule(expectedVehiculeValid);
+        Vehicule resultVehiculeValid = this.clientInstance.getVehicule();
+        assertEquals(expectedVehiculeValid, resultVehiculeValid, "A valid vehicule should be valid");
+
+        Vehicule expectedVehiculeNull = null;
+        this.clientInstance.setVehicule(expectedVehiculeNull);
+        Vehicule resultVehiculeNull = this.clientInstance.getVehicule();
+        assertEquals(expectedVehiculeNull, resultVehiculeNull, "A null vehicule should be valid");
+    }
+
+    /**
+     * Test of toString method, of class Client.
+     */
+    @Test
+    @DisplayName("toString")
+    public void testToString() {
+        String result = this.clientInstance.toString();
+        assertNotNull(result, "toString must be defined and return a value");
+        assertFalse(result.isEmpty(), "toString must be defined and return a value");
+    }
+
+    /**
+     * Test of clear method, of class Client.
+     */
+    @Test
+    @DisplayName("Clear")
+    public void testClear() {
+        // Add a set of examples
+        for (int i = 0; i < 7; i++) {
+            Emplacement e = new Emplacement(i, i + 1, i, i);
+            this.clientInstance.addEmplacement(e);
+        }
+        this.clientInstance.setPosition(10);
+        this.clientInstance.setVehicule(new Vehicule());
+
+        this.clientInstance.clear();
+
+        Vehicule expectedVehicule = null;
+        Vehicule resultVehicule = this.clientInstance.getVehicule();
+
+        int expectedPosition = -1;
+        int resultPosition = this.clientInstance.getPosition();
+
+        assertEquals(expectedVehicule, resultVehicule, "Clearing should set the vehicule to null");
+        assertEquals(expectedPosition, resultPosition, "Clearing should set the position to -1");
+    }
+
+    /**
+     * Test of check method, of class Client.
+     */
+    @Test
+    @DisplayName("Check")
+    public void testCheck() {
+        boolean resultNoVehicule = this.clientInstance.check();
+        assertFalse(resultNoVehicule, "A client without a vehicule is not a valid client");
+
+        this.clientInstance.setVehicule(new Vehicule());
+
+        boolean resultVehicule = this.clientInstance.check();
+        assertTrue(resultVehicule, "A client with a vehicule is a valid client");
+    }
+
 }

@@ -30,6 +30,9 @@
     </module>
 
     <module name="TreeWalker">
+        <!-- Disable checkstyle in generated code -->
+        <module name="SuppressionCommentFilter"/>
+
         <!-- Abbreviations should not be CAPITALISED -->
         <module name="AbbreviationAsWordInName">
             <property name="ignoreFinal" value="false"/>

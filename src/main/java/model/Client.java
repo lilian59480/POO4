@@ -21,6 +21,7 @@ package model;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -103,6 +104,24 @@ public class Client implements Serializable {
         return this.emplacements.add(e);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Client other = (Client) obj;
+        if (this.demande != other.getDemande()) {
+            return false;
+        }
+        return Objects.equals(this.emplacements, other.getEmplacements());
+    }
+
     /**
      * Get demand.
      *
@@ -147,12 +166,29 @@ public class Client implements Serializable {
     }
 
     /**
+     * Get current vehicule.
+     *
+     * @return The vehicule.
+     */
+    public Vehicule getVehicule() {
+        return this.vehicule;
+    }
+
+    /**
      * Set new vehicule.
      *
      * @param vehicule The vehicule.
      */
     public void setVehicule(Vehicule vehicule) {
         this.vehicule = vehicule;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 37 * hash + this.demande;
+        hash = 37 * hash + Objects.hashCode(this.emplacements);
+        return hash;
     }
 
     @Override

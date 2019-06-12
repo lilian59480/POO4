@@ -22,21 +22,37 @@ import dao.ClientDao;
 import dao.DaoException;
 import dao.DaoFactory;
 import dao.DepotDao;
+import dao.InstanceDao;
 import dao.PlanningDao;
 import dao.RouteDao;
 import dao.VehiculeDao;
+import io.input.FilenameIterator;
+import io.input.InstanceFileParser;
+import io.input.JarInstanceResourceReader;
+import io.input.ParserException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import main.PopulateDatabase;
 import model.Client;
 import model.Depot;
 import model.Emplacement;
+import model.Instance;
 import model.Planning;
 import model.Route;
 import model.Vehicule;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
 /**
  * Tests for {@link Dao}
@@ -44,14 +60,17 @@ import org.junit.jupiter.api.Test;
  * @author Corentin
  */
 @DisplayName("Dao")
+@TestMethodOrder(OrderAnnotation.class)
+@EnabledIfEnvironmentVariable(named = "ENV", matches = "DB")
 public class TestsDao {
 
     /**
-     * @todo Create test.
+     * Check if DAO is working
      */
     @Test
     @Disabled
     @DisplayName("Is Dao Working")
+    @Order(1)
     public void isDaoWorking() {
         DaoFactory daoFactory;
 
@@ -154,6 +173,51 @@ public class TestsDao {
         planningManager.update(p);
 
         assertNotNull(p, "Planning must exist");
+    }
+
+    /**
+     * Check if Instances are identical
+     */
+    @Test
+    @DisplayName("Is Instances equals")
+    @Order(2)
+    public void isInstancesEquals() {
+        int numberOfInstances = 15;
+        PopulateDatabase pd;
+        DaoFactory daoFactory;
+        JarInstanceResourceReader reader = new JarInstanceResourceReader();
+        InstanceFileParser ifp;
+
+        try {
+            pd = new PopulateDatabase();
+            daoFactory = DaoFactory.getDaoFactory(DaoFactory.PersistenceType.JPA);
+            ifp = new InstanceFileParser();
+        } catch (DaoException | ParserException ex) {
+            fail(ex);
+            return;
+        }
+
+        pd.clean();
+        pd.populate(numberOfInstances);
+
+        InstanceDao instanceManager = daoFactory.getInstanceDao();
+        List<Instance> instancesDb = new ArrayList<>(instanceManager.findAll());
+        List<Instance> instancesFile = new ArrayList<>();
+
+        int i = 0;
+        for (FilenameIterator<InputStream> iterator = reader.iterator(); iterator.hasNext() && i < numberOfInstances; i++) {
+
+            try (InputStream is = iterator.next()) {
+                Instance instance = ifp.parse(is);
+                instancesFile.add(instance);
+            } catch (IOException | ParserException ex) {
+                fail(ex);
+            }
+
+        }
+
+        assertIterableEquals(instancesFile, instancesDb, "Instances must be equals");
+
     }
 
 }

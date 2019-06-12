@@ -31,7 +31,7 @@ import model.Vehicule;
  *
  * @author Corentin
  */
-public class CVCostCapacitySortedSolver extends IterativeSolver {
+public class CvCostCapacitySortedSolver extends IterativeSolver {
 
     /**
      * Client sorted by demand from larger to smaller modifier.
@@ -71,7 +71,7 @@ public class CVCostCapacitySortedSolver extends IterativeSolver {
      * This constructor is recommended as you can solve multiples instances by
      * using the instance setter.
      */
-    public CVCostCapacitySortedSolver() {
+    public CvCostCapacitySortedSolver() {
         this(null);
     }
 
@@ -80,8 +80,13 @@ public class CVCostCapacitySortedSolver extends IterativeSolver {
      *
      * @param i Instance to solve
      */
-    public CVCostCapacitySortedSolver(Instance i) {
+    public CvCostCapacitySortedSolver(Instance i) {
         super(i, CM, VM);
+    }
+
+    @Override
+    public String toString() {
+        return "CvCostCapacitySortedSolver";
     }
 
 }

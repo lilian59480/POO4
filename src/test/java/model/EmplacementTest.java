@@ -19,8 +19,10 @@
 package model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
@@ -33,6 +35,18 @@ import org.junit.jupiter.api.function.Executable;
 @DisplayName("Emplacement")
 public class EmplacementTest {
 
+    private static final int DEFAULT_HEURE_DEBUT = 0;
+    private static final int DEFAULT_HEURE_FIN = 10;
+    private static final double DEFAULT_X = -2;
+    private static final double DEFAULT_Y = 7;
+
+    private Emplacement emplacementInstance;
+
+    @BeforeEach
+    void createNewEmplacement() {
+        this.emplacementInstance = new Emplacement(DEFAULT_HEURE_DEBUT, DEFAULT_HEURE_FIN, DEFAULT_X, DEFAULT_Y);
+    }
+
     /**
      * Check if HeureDebut is less than HeureFin.
      */
@@ -43,13 +57,75 @@ public class EmplacementTest {
         Exception ex = assertThrows(IllegalArgumentException.class, new Executable() {
             @Override
             public void execute() throws Throwable {
-                Emplacement e = new Emplacement(30, 20, 30.20, 40.24);
+                Emplacement e = new Emplacement(DEFAULT_HEURE_FIN, DEFAULT_HEURE_DEBUT, DEFAULT_X, DEFAULT_Y);
             }
         });
 
         assertNotNull(ex, "Exception must not be null");
-        assertEquals("heureFin must be greater or equals than heureDebut", ex.getMessage(), "Exception message is specified");
 
+    }
+
+    /**
+     * Test of getHeureDebut method, of class Emplacement.
+     */
+    @Test
+    @DisplayName("Get/Set HeureDebut")
+    public void testGetHeureDebut() {
+        int expectedHeureDebut = DEFAULT_HEURE_DEBUT;
+        int resultHeureDebut = this.emplacementInstance.getHeureDebut();
+        assertEquals(expectedHeureDebut, resultHeureDebut, "HeureDebut set in constructor should be returned");
+    }
+
+    /**
+     * Test of getHeureFin method, of class Emplacement.
+     */
+    @Test
+    @DisplayName("Get/Set HeureFin")
+    public void testGetHeureFin() {
+        int expectedHeureFin = DEFAULT_HEURE_FIN;
+        int resultHeureFin = this.emplacementInstance.getHeureFin();
+        assertEquals(expectedHeureFin, resultHeureFin, "HeureFin set in constructor should be returned");
+    }
+
+    /**
+     * Test of getClient, setClient method, of class Emplacement.
+     */
+    @Test
+    @DisplayName("Get/Set Client")
+    public void testClient() {
+        Client expectedInit = null;
+        Client resultInit = this.emplacementInstance.getClient();
+        assertEquals(expectedInit, resultInit, "Default position should be null");
+
+        Client expectedClientValid = new Client();
+        this.emplacementInstance.setClient(expectedClientValid);
+        Client resultClientValid = this.emplacementInstance.getClient();
+        assertEquals(expectedClientValid, resultClientValid, "A valid client should be valid");
+
+        Exception ex = assertThrows(NullPointerException.class, new Executable() {
+
+            private final Emplacement emplacementInstance = EmplacementTest.this.emplacementInstance;
+
+            @Override
+            public void execute() throws Throwable {
+                Client expecteClientNull = null;
+                this.emplacementInstance.setClient(expecteClientNull);
+                Client resultClientNull = this.emplacementInstance.getClient();
+            }
+        });
+
+        assertNotNull(ex, "Exception must not be null");
+    }
+
+    /**
+     * Test of toString method, of class Emplacement.
+     */
+    @Test
+    @DisplayName("toString")
+    public void testToString() {
+        String result = this.emplacementInstance.toString();
+        assertNotNull(result, "toString must be defined and return a value");
+        assertFalse(result.isEmpty(), "toString must be defined and return a value");
     }
 
 }

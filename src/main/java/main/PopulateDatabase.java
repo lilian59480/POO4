@@ -87,7 +87,7 @@ public class PopulateDatabase {
     /**
      * Cleaning the database.
      */
-    private void clean() {
+    public void clean() {
         PopulateDatabase.PS.println("Cleaning the database");
 
         boolean success = true;
@@ -130,12 +130,23 @@ public class PopulateDatabase {
     /**
      * Populate the database.
      */
-    private void populate() {
+    public void populate() {
+        this.populate(40);
+    }
+
+    /**
+     * Populate the database.
+     *
+     * @param max Maximum number of instances to load
+     */
+    public void populate(int max) {
         PopulateDatabase.PS.println("Populating the database");
 
         InstanceDao instanceManager = this.daoFactory.getInstanceDao();
 
-        for (FilenameIterator<InputStream> iterator = PopulateDatabase.JAR_INSTANCE_RR.iterator(); iterator.hasNext();) {
+        int i = 0;
+        for (FilenameIterator<InputStream> iterator = PopulateDatabase.JAR_INSTANCE_RR.iterator(); iterator.hasNext() && i < max; i++) {
+
             try (InputStream is = iterator.next()) {
                 LOGGER.log(Level.INFO, "Parsing new file");
                 LOGGER.log(Level.INFO, "Loaded {0}", iterator.getFilename());

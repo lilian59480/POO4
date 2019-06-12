@@ -169,7 +169,7 @@ public class MyCanvas extends Canvas {
      * @return zoom.
      */
     public int getZoom() {
-        return zoom;
+        return this.zoom;
     }
     
     
