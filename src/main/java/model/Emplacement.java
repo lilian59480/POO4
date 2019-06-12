@@ -33,7 +33,6 @@ import javax.persistence.Table;
 @Table(name = "EMPLACEMENT")
 @DiscriminatorValue("1")
 public class Emplacement extends Point implements Serializable {
-    
 
     /**
      * Client liked to this adress.
@@ -58,7 +57,7 @@ public class Emplacement extends Point implements Serializable {
     public Emplacement() {
         this(0, 0, 0, 0);
     }
-    
+
     /**
      * Emplacement constructor.
      *
@@ -74,6 +73,30 @@ public class Emplacement extends Point implements Serializable {
         }
         this.heureDebut = heureDebut;
         this.heureFin = heureFin;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Emplacement other = (Emplacement) obj;
+        if (this.heureDebut != other.getHeureDebut()) {
+            return false;
+        }
+        if (this.heureFin != other.getHeureFin()) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.x) != Double.doubleToLongBits(other.getX())) {
+            return false;
+        }
+        return Double.doubleToLongBits(this.y) == Double.doubleToLongBits(other.getY());
     }
 
     /**
@@ -113,6 +136,16 @@ public class Emplacement extends Point implements Serializable {
             throw new NullPointerException("");
         }
         this.client = client;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 97 * hash + this.heureDebut;
+        hash = 97 * hash + this.heureFin;
+        hash = 97 * hash + (int) (Double.doubleToLongBits(this.x) ^ (Double.doubleToLongBits(this.x) >>> 32));
+        hash = 97 * hash + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y) >>> 32));
+        return hash;
     }
 
     @Override

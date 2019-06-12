@@ -21,6 +21,7 @@ package model;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.CascadeType;
@@ -109,6 +110,39 @@ public class Instance implements Serializable {
         this.vehicules = new LinkedList<>();
         this.plannings = new LinkedList<>();
         this.plannings.add(new Planning(this));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Instance other = (Instance) obj;
+        if (this.capaciteVehicule != other.getCapaciteVehicule()) {
+            return false;
+        }
+        if (this.coutVehicule != other.getCoutVehicule()) {
+            return false;
+        }
+        if (this.nbVehicules != other.getNbVehicules()) {
+            return false;
+        }
+        if (!Objects.equals(this.depot, other.getDepot())) {
+            return false;
+        }
+        if (!Objects.equals(this.clients, other.getClients())) {
+            return false;
+        }
+        if (!Objects.equals(this.vehicules, other.getVehicules())) {
+            return false;
+        }
+        return Objects.equals(this.routes, other.routes);
     }
 
     /**
@@ -337,6 +371,19 @@ public class Instance implements Serializable {
             LOGGER.log(Level.WARNING, "Invalid instance solution");
         }
         return valid;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + this.capaciteVehicule;
+        hash = 29 * hash + this.coutVehicule;
+        hash = 29 * hash + this.nbVehicules;
+        hash = 29 * hash + Objects.hashCode(this.depot);
+        hash = 29 * hash + Objects.hashCode(this.clients);
+        hash = 29 * hash + Objects.hashCode(this.vehicules);
+        hash = 29 * hash + Objects.hashCode(this.routes);
+        return hash;
     }
 
     @Override

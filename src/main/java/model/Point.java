@@ -69,12 +69,12 @@ public abstract class Point implements Serializable {
     /**
      * X coordiante.
      */
-    private double x;
+    protected double x;
 
     /**
      * Y coordinate.
      */
-    private double y;
+    protected double y;
 
     /**
      * Map of route to a specific Point.
@@ -100,6 +100,24 @@ public abstract class Point implements Serializable {
         this.x = x;
         this.y = y;
         this.routeTo = new HashMap<>();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Point other = (Point) obj;
+        if (Double.doubleToLongBits(this.x) != Double.doubleToLongBits(other.getX())) {
+            return false;
+        }
+        return Double.doubleToLongBits(this.y) == Double.doubleToLongBits(other.getY());
     }
 
     /**
@@ -197,6 +215,14 @@ public abstract class Point implements Serializable {
         }
         this.routeTo.put(r.getTo(), r);
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 13 * hash + (int) (Double.doubleToLongBits(this.x) ^ (Double.doubleToLongBits(this.x) >>> 32));
+        hash = 13 * hash + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y) >>> 32));
+        return hash;
     }
 
     @Override

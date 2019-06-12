@@ -40,7 +40,7 @@ public class Depot extends Emplacement implements Serializable {
     public Depot() {
         this(0, 0, 0, 0);
     }
-    
+
     /**
      * Depot constructor.
      *
