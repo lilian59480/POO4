@@ -19,7 +19,7 @@
 package main;
 
 import algo.ISolver;
-import algo.iterative.CVCostCapacitySortedSolver;
+import algo.iterative.CvCostCapacitySortedSolver;
 import algo.iterative.NaiveSolver;
 import algo.iterative.RandomSolver;
 import io.input.FilenameIterator;
@@ -36,9 +36,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import utils.CliUtils;
 import model.Instance;
 import model.Planning;
+import utils.CliUtils;
 
 /**
  * CLI function, used as an entry point for this project
@@ -60,7 +60,7 @@ public class Cli {
     private static final List<ISolver> SOLVERS = Arrays.asList(
             new NaiveSolver(),
             new RandomSolver(),
-            new CVCostCapacitySortedSolver()
+            new CvCostCapacitySortedSolver()
     );
 
     /**

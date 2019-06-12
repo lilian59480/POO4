@@ -18,9 +18,10 @@
  */
 package model;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -40,6 +41,7 @@ import org.eclipse.persistence.annotations.CascadeOnDelete;
 @Entity
 @Table(name = "CLIENT")
 public class Client implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -102,6 +104,24 @@ public class Client implements Serializable {
         return this.emplacements.add(e);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Client other = (Client) obj;
+        if (this.demande != other.getDemande()) {
+            return false;
+        }
+        return Objects.equals(this.emplacements, other.getEmplacements());
+    }
+
     /**
      * Get demand.
      *
@@ -154,6 +174,14 @@ public class Client implements Serializable {
      */
     public void setVehicule(Vehicule vehicule) {
         this.vehicule = vehicule;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 37 * hash + this.demande;
+        hash = 37 * hash + Objects.hashCode(this.emplacements);
+        return hash;
     }
 
     @Override
