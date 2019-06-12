@@ -28,6 +28,9 @@ import model.Instance;
 import model.Vehicule;
 import gui.metier.ClientModelTable;
 import gui.metier.VehiculeModelTable;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
 
 /**
  * Planning representation.
@@ -63,11 +66,17 @@ public class Itineraire extends JFrame { // NOSONAR
         List<Vehicule> vehicules = i.getVehicules();
         this.vehiculeModelTable = new VehiculeModelTable(vehicules);
         this.initComponents();
+
         this.jTableClient.setModel(new ClientModelTable(clients));
         this.jTableVehicule.setModel(this.vehiculeModelTable);
-        this.jTableVehicule.getModel().addTableModelListener((e) -> {
-            System.out.println("YOLO TEST EVENT TABLE");
+        this.jTableVehicule.getModel().addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                System.out.println("I am in Table listener");
+                Itineraire.this.canvas2.repaint();
+            }
         });
+
 
         this.initialisationFenetre();
 
@@ -316,8 +325,6 @@ public class Itineraire extends JFrame { // NOSONAR
      */
     private void jTableVehiculeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableVehiculeMouseClicked
         // TODO add your handling code here:
-        this.canvas2.repaint();
-
     }//GEN-LAST:event_jTableVehiculeMouseClicked
 
     //CHECKSTYLE:OFF

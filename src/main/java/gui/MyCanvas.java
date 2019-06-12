@@ -26,6 +26,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.List;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import model.Depot;
 import model.Emplacement;
 import model.Instance;
@@ -42,6 +45,7 @@ public class MyCanvas extends Canvas {
     private int draggedY = 400;
     private int zoom = 4;
     private VehiculeModelTable vModel;
+
     /**
      * initial constructor
      *
@@ -51,7 +55,7 @@ public class MyCanvas extends Canvas {
     public MyCanvas(Instance i, VehiculeModelTable vModel) {
         this.instance = i;
         this.vModel = vModel;
-        setBackground(Color.WHITE);
+        this.setBackground(Color.WHITE);
     }
 
     /**
@@ -73,9 +77,30 @@ public class MyCanvas extends Canvas {
         if (i == null) {
             return;
         }
-
+        this.drawBorder(g);
         this.drawInstance(g, i);
         g.setColor(c);
+    }
+
+    /**
+     * Draw Canva Border
+     *
+     * @param g graphic
+     */
+    public void drawBorder(Graphics g) {
+        super.paint(g);
+       
+        Graphics2D g2d = (Graphics2D) g.create();
+
+        int width = getWidth();
+        int height = getHeight();
+        g2d.setStroke(new BasicStroke(1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        g2d.drawLine(10, 10, width - 10, 10);
+        g2d.drawLine(width - 10, 10, width - 10, height - 10);
+        g2d.drawLine(width - 10, height - 10, 10, height - 10);
+        g2d.drawLine(10, height - 10, 10, 10);
+       
+  
     }
 
     /**
@@ -112,6 +137,7 @@ public class MyCanvas extends Canvas {
         Depot d = i.getDepot();
 
         List<Vehicule> vehicules = this.vModel.getDisplayVehicules();
+        System.out.println("test vehicule Canvas" + vehicules.toString());
         int code = 0;
 
         for (Vehicule v : vehicules) {
@@ -151,29 +177,32 @@ public class MyCanvas extends Canvas {
             this.zoom--;
         }
     }
+
     /**
      * Center canvas.
      */
     public void center() {
         this.zoom = 1;
     }
-    
+
     /**
-     *  Set dragged X-Y to the canvas.
-     *  @param x abscisse
-     *  @param y ordonne
+     * Set dragged X-Y to the canvas.
+     *
+     * @param x abscisse
+     * @param y ordonne
      */
-    public void draggedCanvas(int x, int y){
+    public void draggedCanvas(int x, int y) {
         this.draggedX = x;
         this.draggedY = y;
     }
+
     /**
      * Get zoom
+     *
      * @return zoom.
      */
     public int getZoom() {
         return this.zoom;
     }
-    
-    
+
 }
