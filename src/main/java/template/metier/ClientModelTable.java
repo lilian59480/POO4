@@ -132,12 +132,13 @@ public class ClientModelTable extends AbstractTableModel {
    */
   @Override
    public void setValueAt(Object aValue, int rowIndex, int columnIndex)
-   {/*
+   {
        Client row = data.get(rowIndex);
-
+/*
         if(0 == columnIndex) {
-         //  row.set(aValue);
+                 row[rowIndex][columnIndex] = aValue; 
+
        }
-     */
+*/
    }
 }

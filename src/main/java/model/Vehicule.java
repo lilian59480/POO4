@@ -187,7 +187,14 @@ public class Vehicule implements Serializable {
     public double getCout() {
         return this.cout;
     }
-
+    /**
+     * Get Id.
+     * @return The id. 
+     */
+    public int getId() {
+        return id;
+    }
+    
     /**
      * Clear this vehicule.
      */

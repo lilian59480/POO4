@@ -45,6 +45,7 @@ import model.Emplacement;
 import model.Instance;
 import model.Vehicule;
 import template.metier.ClientModelTable;
+import template.metier.VehiculeModelTable;
 
 /**
  * Planning representation.
@@ -77,8 +78,10 @@ public class Itineraire extends JFrame { // NOSONAR
         this.instance = i;
         this.initComponents();
         List<Client> clients = i.getClients();
-
-        this.jTable1.setModel(new ClientModelTable(clients));
+        List<Vehicule> vehicules  = i.getVehicules();
+        this.jTableClient.setModel(new ClientModelTable(clients));
+        this.jTableVehicule.setModel(new VehiculeModelTable(vehicules));
+        
         this.initialisationFenetre();
 
         this.costNLabel.setText("" + this.instance.getCoutVehicule());
@@ -118,7 +121,9 @@ public class Itineraire extends JFrame { // NOSONAR
         numberVLabel = new javax.swing.JLabel();
         clientEmplacementLabel = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTableVehicule = new javax.swing.JTable();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTableClient = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(186, 186, 186));
@@ -157,7 +162,7 @@ public class Itineraire extends JFrame { // NOSONAR
 
         clientEmplacementLabel.setText("Clients and Emplacements ");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTableVehicule.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -168,7 +173,20 @@ public class Itineraire extends JFrame { // NOSONAR
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane2.setViewportView(jTable1);
+        jScrollPane2.setViewportView(jTableVehicule);
+
+        jTableClient.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane3.setViewportView(jTableClient);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -201,11 +219,16 @@ public class Itineraire extends JFrame { // NOSONAR
                         .addGap(247, 247, 247)
                         .addComponent(numberVLabel))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
+                        .addGap(20, 20, 20)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
                 .addComponent(canvas2, javax.swing.GroupLayout.PREFERRED_SIZE, 649, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(39, 39, 39))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(16, 16, 16)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(714, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -230,9 +253,14 @@ public class Itineraire extends JFrame { // NOSONAR
                     .addComponent(numberVLabel))
                 .addGap(40, 40, 40)
                 .addComponent(clientEmplacementLabel)
-                .addGap(18, 18, 18)
+                .addGap(200, 200, 200)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(175, 175, 175)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(542, Short.MAX_VALUE)))
         );
 
         fitInButton.getAccessibleContext().setAccessibleName("fitIn");
@@ -299,7 +327,9 @@ public class Itineraire extends JFrame { // NOSONAR
     private javax.swing.JButton fitInButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTable jTableClient;
+    private javax.swing.JTable jTableVehicule;
     private javax.swing.JLabel levelZoomLabel;
     private javax.swing.JLabel numberVLabel;
     private javax.swing.JButton zoomButton;

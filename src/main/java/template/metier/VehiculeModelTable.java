@@ -26,15 +26,22 @@
  */
 package template.metier;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import static javax.swing.UIManager.get;
 import javax.swing.table.AbstractTableModel;
+import model.Client;
 import model.Route;
+import model.Vehicule;
 
 /**
  *
  * @author thibaut
  */
-public class RouteModelTable extends AbstractTableModel {
+public class VehiculeModelTable extends AbstractTableModel {
 
     /**
      * Représente les entêtes des colonnes du jTable
@@ -44,17 +51,25 @@ public class RouteModelTable extends AbstractTableModel {
     /**
      * Représente les données du jTable.
      */
-    private final List<Route> data;
+    private final List<Vehicule> data;
+    private final Map<Vehicule, Boolean> vehicules;
+
     /**
-     * Construsctor.
-     * @param data 
+     * constructeur.
+     *
+     * @param data list of vehicules
      */
-    public RouteModelTable(List<Route> data) {
+    public VehiculeModelTable(List<Vehicule> data) {
         this.entetes = new String[3];
         this.entetes[0] = "Display / Hide";
         this.entetes[1] = "Color";
-        this.entetes[2] = "Road";
+        this.entetes[2] = "Vehicule";
         this.data = data;
+        
+        this.vehicules = new HashMap<>(); 
+        for (Vehicule v : data){
+            this.vehicules.put(v, false);
+        }
     }
 
     /**
@@ -88,21 +103,32 @@ public class RouteModelTable extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         switch (columnIndex) {
             case 0:
-                return true;
+                return this.vehicules.get(this.data.get(rowIndex)).booleanValue();
             case 1:
-                return this.data.get(rowIndex).toString();
+                return Color.getHSBColor(this.data.get(rowIndex).getId() * 10 / 360.0f, 1, 0.8f);
             case 2:
-                return this.data.get(rowIndex).toString();
+                return this.data.get(rowIndex).getId();
             default:
                 throw new IllegalArgumentException();
         }
     }
 
     /**
-     * Peremt de retourner le type de chaque colonne.
+     * return the name of a column
+     *
+     * @param columnIndex
+     * @return string.
+     */
+    @Override
+    public String getColumnName(int columnIndex) {
+        return this.entetes[columnIndex];
+    }
+
+    /**
+     * Return the type of each column.
      *
      * @param columnIndex index of the column
-     * @return
+     * @return type
      */
     @Override
     public Class<?> getColumnClass(int columnIndex) {
@@ -110,12 +136,41 @@ public class RouteModelTable extends AbstractTableModel {
             case 0:
                 return Boolean.class;
             case 1:
-                return int.class;
+                return Color.class;
             case 2:
-                return int.class;
+                return Integer.class;
             default:
                 return Object.class;
         }
+    }
+
+    /**
+     * Allow to set a value to a
+     *
+     * @param aValue
+     * @param rowIndex
+     * @param columnIndex
+     */
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        this.vehicules.put(data.get(rowIndex), (Boolean) aValue);
+    }
+    
+    
+    /**
+     *  display true vehicules.
+     * @param rowIndex value
+     * @param columnIndex value.
+     * @return vehicules to display
+     */
+    public List<Vehicule> getDisplayVehicules(int rowIndex, int columnIndex) {
+        List<Vehicule> vehicules = new ArrayList<Vehicule>();
+        for (int i = 0; i < this.getRowCount(); i++) {
+            if (this.vehicules.get(i).booleanValue()){
+                vehicules.add(data.get(rowIndex));
+            } 
+        }
+        return vehicules;
     }
 
 }

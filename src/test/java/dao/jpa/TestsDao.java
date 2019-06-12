@@ -34,6 +34,7 @@ import model.Vehicule;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -49,6 +50,7 @@ public class TestsDao {
      * @todo Create test.
      */
     @Test
+    @Disabled
     @DisplayName("Is Dao Working")
     public void isDaoWorking() {
         DaoFactory daoFactory;
