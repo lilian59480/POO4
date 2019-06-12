@@ -18,7 +18,6 @@
  */
 package gui;
 
-import algo.iterative.NaiveSolver;
 import gui.metier.VehiculeModelTable;
 import java.awt.BasicStroke;
 import java.awt.Canvas;
@@ -32,16 +31,20 @@ import model.Instance;
 import model.Vehicule;
 
 /**
+ * Itineraire drawing canvas
  *
  * @author thibaut
  */
 public class MyCanvas extends Canvas {
 
-    private Instance instance;
+    private static final long serialVersionUID = 20190612230051L;
+
+    private final Instance instance;
     private int draggedX = 400;
     private int draggedY = 400;
     private int zoom = 4;
     private VehiculeModelTable vModel;
+
     /**
      * initial constructor
      *
@@ -51,7 +54,7 @@ public class MyCanvas extends Canvas {
     public MyCanvas(Instance i, VehiculeModelTable vModel) {
         this.instance = i;
         this.vModel = vModel;
-        setBackground(Color.WHITE);
+        this.setBackground(Color.WHITE);
     }
 
     /**
@@ -59,32 +62,19 @@ public class MyCanvas extends Canvas {
      *
      * @param g graphic
      */
+    @Override
     public void paint(Graphics g) {
         super.paint(g);
-        Color c = g.getColor();
-        // DESSIN D'une Instance
-        NaiveSolver ds = new NaiveSolver(this.instance);
-        ds.solve();
-        if (ds == null) {
-            return;
-        }
-
-        Instance i = ds.getInstance();
-        if (i == null) {
-            return;
-        }
-
-        this.drawInstance(g, i);
-        g.setColor(c);
+        this.drawInstance((Graphics2D) g, this.instance);
     }
 
     /**
      * Draw an Emplacement
      *
-     * @param g Graphics zone.
+     * @param g Graphics2D zone.
      * @param e Emplacement to draw.
      */
-    private void drawEmplacement(Graphics g, Emplacement e) {
+    private void drawEmplacement(Graphics2D g, Emplacement e) {
         if (e == null) {
             return;
         }
@@ -101,10 +91,10 @@ public class MyCanvas extends Canvas {
     /**
      * Draw an instance.
      *
-     * @param g Graphics zone.
+     * @param g Graphics2D zone.
      * @param i Instance to draw.
      */
-    private void drawInstance(Graphics g, Instance i) {
+    private void drawInstance(Graphics2D g, Instance i) {
         if (i == null) {
             return;
         }
@@ -121,9 +111,8 @@ public class MyCanvas extends Canvas {
                  * Between 360 -> getHSBColor(X, 1, 0.8)
                  */
                 g.setColor(Color.getHSBColor(code / 360.0f, 1, 0.8f));
-                Graphics2D g2 = (Graphics2D) g;
-                g2.setStroke(new BasicStroke(3));
-                g2.drawLine((int) source.getX() * this.zoom + this.draggedX, (int) source.getY() * this.zoom + this.draggedY, (int) destination.getX() * this.zoom + this.draggedX, (int) destination.getY() * this.zoom + this.draggedY);
+                g.setStroke(new BasicStroke(3));
+                g.drawLine((int) source.getX() * this.zoom + this.draggedX, (int) source.getY() * this.zoom + this.draggedY, (int) destination.getX() * this.zoom + this.draggedX, (int) destination.getY() * this.zoom + this.draggedY);
                 source = destination;
                 this.drawEmplacement(g, destination);
 
@@ -151,29 +140,32 @@ public class MyCanvas extends Canvas {
             this.zoom--;
         }
     }
+
     /**
      * Center canvas.
      */
     public void center() {
         this.zoom = 1;
     }
-    
+
     /**
-     *  Set dragged X-Y to the canvas.
-     *  @param x abscisse
-     *  @param y ordonne
+     * Set dragged X-Y to the canvas.
+     *
+     * @param x abscisse
+     * @param y ordonne
      */
-    public void draggedCanvas(int x, int y){
+    public void draggedCanvas(int x, int y) {
         this.draggedX = x;
         this.draggedY = y;
     }
+
     /**
      * Get zoom
+     *
      * @return zoom.
      */
     public int getZoom() {
         return this.zoom;
     }
-    
-    
+
 }
