@@ -18,29 +18,25 @@
  */
 package gui;
 
+import algo.genetic.GeneticSolver;
 import algo.iterative.NaiveSolver;
 import dao.DaoException;
 import dao.DaoFactory;
 import dao.InstanceDao;
-import io.input.FilenameIterator;
+import gui.metier.InstanceModelList;
 import io.input.InstanceFileParser;
-import io.input.JarInstanceResourceReader;
 import io.input.ParserException;
 import java.awt.Color;
 import java.io.File;
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
-import javax.swing.ListModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import model.Instance;
-import gui.metier.ModelList;
 
 /**
  * List instances.
@@ -63,35 +59,22 @@ public class ListeInstance extends JFrame { // NOSONAR
     /**
      * List of Instances.
      */
-    private final DefaultListModel<Instance> dlm;
     private DaoFactory daoFactory;
     private final Collection<Instance> instances;
+
+    private final InstanceModelList model;
 
     /**
      * Creates new form List.
      */
     public ListeInstance() {
         this.initConnexion();
-        JarInstanceResourceReader instanceReader = new JarInstanceResourceReader();
-        this.dlm = new DefaultListModel<>();
 
-        for (FilenameIterator<InputStream> iterator = instanceReader.iterator(); iterator.hasNext();) {
-            try {
-                InputStream next = iterator.next();
-                InstanceFileParser ifp = new InstanceFileParser();
-                Instance instance = ifp.parse(next);
-                instance.setInstanceName(iterator.getFilename());
-                this.dlm.addElement(instance);
-            } catch (ParserException ex) {
-                LOGGER.log(Level.SEVERE, "Exception while reading Instances!", ex);
-            }
-        }
-
-        this.initComponents();
         InstanceDao instanceDao = this.daoFactory.getInstanceDao();
         instances = instanceDao.findAll();
-        ModelList model = new ModelList(this.instances);
-        this.jListInstanceDb.setModel(model);
+        this.model = new InstanceModelList(this.instances);
+
+        this.initComponents();
         this.initialisationFenetre();
     }
 
@@ -99,13 +82,11 @@ public class ListeInstance extends JFrame { // NOSONAR
      * Initialise this window.
      */
     private void initialisationFenetre() {
-
         this.setVisible(true);
         this.setTitle("Gestion des clients by Thibaut Fenain");
         this.getContentPane().setBackground(Color.white);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-
     }
 
     /**
@@ -116,17 +97,15 @@ public class ListeInstance extends JFrame { // NOSONAR
     private void initConnexion() {
         try {
             this.daoFactory = DaoFactory.getDaoFactory(DaoFactory.PersistenceType.JPA);
-            InstanceDao instanceManager = daoFactory.getInstanceDao();
-            
         } catch (DaoException ex) {
-            Logger.getLogger(Itineraire.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, "Impossible to load database", ex);
             JOptionPane errorPane = new JOptionPane();
             JOptionPane.showMessageDialog(errorPane, "ERROR CONNEXION DATABASE",
                     "Erreur Connection", ERROR_MESSAGE);
             this.dispose();
-
         }
     }
+
     //CHECKSTYLE:OFF
     /**
      * This method is called from within the constructor to initialize the form.
@@ -136,50 +115,31 @@ public class ListeInstance extends JFrame { // NOSONAR
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jListInstance = new javax.swing.JList<>();
-        jButtonSolveInstance = new javax.swing.JButton();
-        jButtonDisplayInstance = new javax.swing.JButton();
         jTitle = new javax.swing.JLabel();
-        jSelectectLabel = new javax.swing.JLabel();
-        jSelectedInstance = new javax.swing.JLabel();
-        uploadButton = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jListInstanceDb = new javax.swing.JList<>();
+        jLabelSolveExternal = new javax.swing.JLabel();
+        uploadButton = new javax.swing.JButton();
+        jSelectectLabel = new javax.swing.JLabel();
+        jSelectedInstance = new javax.swing.JLabel();
+        jButtonGeneticSolver = new javax.swing.JButton();
+        jButtonNaiveSolver = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setBackground(new java.awt.Color(255, 255, 51));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setForeground(new java.awt.Color(204, 204, 255));
-
-        jListInstance.setModel(dlm);
-        jListInstance.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                jListInstanceValueChanged(evt);
-            }
-        });
-        jScrollPane1.setViewportView(jListInstance);
-
-        jButtonSolveInstance.setText("Touver une solution");
-        jButtonSolveInstance.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonSolveInstanceActionPerformed(evt);
-            }
-        });
-
-        jButtonDisplayInstance.setText("Afficher une solution");
-        jButtonDisplayInstance.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonDisplayInstanceActionPerformed(evt);
-            }
-        });
+        setMaximumSize(new java.awt.Dimension(1280, 720));
+        setPreferredSize(new java.awt.Dimension(1280, 720));
+        setResizable(false);
+        setSize(new java.awt.Dimension(1280, 720));
 
         jTitle.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         jTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jTitle.setText("Deliver2I");
 
-        jSelectectLabel.setText("File selected :");
+        jListInstanceDb.setModel(this.model);
+        jScrollPane2.setViewportView(jListInstanceDb);
+
+        jLabelSolveExternal.setText("Solve an external instance");
 
         uploadButton.setText("Select a file");
         uploadButton.addActionListener(new java.awt.event.ActionListener() {
@@ -188,158 +148,163 @@ public class ListeInstance extends JFrame { // NOSONAR
             }
         });
 
-        jLabel1.setText("Solve an external instance");
+        jSelectectLabel.setText("File selected :");
 
-        jScrollPane2.setViewportView(jListInstanceDb);
+        jButtonGeneticSolver.setText("Use GeneticSolver (Δ=2, α=5000, β=2500)");
+        jButtonGeneticSolver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonGeneticSolverActionPerformed(evt);
+            }
+        });
+
+        jButtonNaiveSolver.setText("Use NativeSolver");
+        jButtonNaiveSolver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonNaiveSolverActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(183, 183, 183)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 669, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(295, 295, 295)
-                        .addComponent(jSelectedInstance, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(260, 260, 260)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(281, 281, 281)
-                                .addComponent(jButtonSolveInstance)
-                                .addGap(43, 43, 43))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jSelectectLabel)
-                                .addGap(366, 366, 366))
-                            .addComponent(jButtonDisplayInstance)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabelSolveExternal)
+                                    .addComponent(jSelectectLabel))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jSelectedInstance, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(uploadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(67, 67, 67)
-                                .addComponent(uploadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(123, 123, 123)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 811, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(356, 356, 356)
-                        .addComponent(jTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(31, Short.MAX_VALUE))
+                                .addComponent(jButtonNaiveSolver)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButtonGeneticSolver)))
+                        .addGap(0, 773, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(49, 49, 49)
+                .addContainerGap()
                 .addComponent(jTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(41, 41, 41)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 758, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(uploadButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabelSolveExternal, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSelectectLabel)
+                    .addComponent(jSelectedInstance, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(uploadButton)
-                    .addComponent(jLabel1))
-                .addGap(57, 57, 57)
-                .addComponent(jSelectectLabel)
-                .addGap(15, 15, 15)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonSolveInstance)
-                    .addComponent(jButtonDisplayInstance))
-                .addGap(43, 43, 43)
-                .addComponent(jSelectedInstance, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(86, 86, 86))
+                    .addComponent(jButtonNaiveSolver)
+                    .addComponent(jButtonGeneticSolver))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
     //CHECKSTYLE:ON
-    
-    /**
-     * @todo Write Code and Javadoc
-     * @param evt Event
-     */
-    private void jButtonSolveInstanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSolveInstanceActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonSolveInstanceActionPerformed
 
     /**
      * @todo Write Code and Javadoc
      * @param evt Event
      */
-    private void jListInstanceValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListInstanceValueChanged
-        // TODO add your handling code here:
-        String selected = this.jListInstance.getSelectedValue().toString();
-        this.jSelectedInstance.setText(selected);
+    private void jButtonGeneticSolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGeneticSolverActionPerformed
+        Instance i = this.jListInstanceDb.getSelectedValue();
 
-    }//GEN-LAST:event_jListInstanceValueChanged
+        GeneticSolver geneticSolver = new GeneticSolver(i, 2, 5000, 2500, 0.0);
 
-    /**
-     * @todo Write Code and Javadoc
-     * @param evt Event
-     */
-    private void jButtonDisplayInstanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDisplayInstanceActionPerformed
-        // TODO add your handling code here:
-        if (this.jListInstanceDb.getSelectedValue() instanceof Instance) {
-            Instance i = this.jListInstanceDb.getSelectedValue();
-            Itineraire itineraire = new Itineraire(i);
-        } else if (this.jSelectedInstance != null) {
-
-            String fileName = this.jSelectedInstance.getText();
-
-            NaiveSolver ds = this.createInstance(fileName);
-            ds.solve();
-            Itineraire itineraire = new Itineraire(ds.getInstance());
+        if (!geneticSolver.solve()) {
+            LOGGER.log(Level.WARNING, "Impossible to solve this instance");
         }
-    }//GEN-LAST:event_jButtonDisplayInstanceActionPerformed
+
+        Itineraire itineraire = new Itineraire(geneticSolver.getInstance());
+        itineraire.setVisible(true);
+    }//GEN-LAST:event_jButtonGeneticSolverActionPerformed
+
+    /**
+     * @todo Write Code and Javadoc
+     * @param evt Event
+     */
+    private void jButtonNaiveSolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNaiveSolverActionPerformed
+        Instance i = this.jListInstanceDb.getSelectedValue();
+
+        NaiveSolver naiveSolver = new NaiveSolver(i);
+
+        if (!naiveSolver.solve()) {
+            LOGGER.log(Level.WARNING, "Impossible to solve this instance");
+        }
+
+        Itineraire itineraire = new Itineraire(naiveSolver.getInstance());
+        itineraire.setVisible(true);
+    }//GEN-LAST:event_jButtonNaiveSolverActionPerformed
+
     /**
      * Upload Instance.
      *
      * @param evt event.
      */
     private void uploadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadButtonActionPerformed
-        // TODO add your handling code here:
+
         JFileChooser chooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                "Instance", "txt");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Instance", "txt");
         chooser.setFileFilter(filter);
-        int returnVal = chooser.showOpenDialog(this.getParent());
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            InstanceDao instanceManager = daoFactory.getInstanceDao();
-            Instance i2 = new Instance();
-            instanceManager.create(i2);
-            this.jSelectedInstance.setText(chooser.getSelectedFile().getAbsolutePath());
+
+        InstanceFileParser ifp;
+
+        try {
+            ifp = new InstanceFileParser();
+        } catch (ParserException ex) {
+            LOGGER.log(Level.SEVERE, "Error while loading", ex);
+            return;
         }
+
+        int returnVal = chooser.showOpenDialog(this.getParent());
+
+        if (returnVal != JFileChooser.APPROVE_OPTION) {
+            LOGGER.log(Level.INFO, "Cancelled");
+            return;
+        }
+
+        File instanceFile = chooser.getSelectedFile();
+
+        if (instanceFile == null) {
+            LOGGER.log(Level.INFO, "File null");
+            return;
+        }
+
+        try {
+            Instance instance = ifp.parse(instanceFile);
+            InstanceDao instanceManager = daoFactory.getInstanceDao();
+            instanceManager.create(instance);
+            JOptionPane.showMessageDialog(this, "Instance added");
+
+            InstanceDao instanceDao = this.daoFactory.getInstanceDao();
+            Collection<Instance> newInstances = instanceDao.findAll();
+            this.jListInstanceDb.setModel(new InstanceModelList(newInstances));
+        } catch (ParserException ex) {
+            LOGGER.log(Level.SEVERE, "Error while loading", ex);
+        }
+
     }//GEN-LAST:event_uploadButtonActionPerformed
 
-    /**
-     * Create Instance.
-     *
-     * @todo What! Please refactor.
-     * @param fileName file Name.
-     * @return A solver.
-     */
-    private NaiveSolver createInstance(String fileName) {
-        Instance i;
-        try {
-            InstanceFileParser ifp = new InstanceFileParser();
-            i = ifp.parse(new File(fileName));
-        } catch (ParserException ex) {
-            LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
-            return null;
-        }
-        NaiveSolver ds = new NaiveSolver(i);
-        ds.solve();
-        return ds;
-    }
     //CHECKSTYLE:OFF
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonDisplayInstance;
-    private javax.swing.JButton jButtonSolveInstance;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JList<Instance> jListInstance;
+    private javax.swing.JButton jButtonGeneticSolver;
+    private javax.swing.JButton jButtonNaiveSolver;
+    private javax.swing.JLabel jLabelSolveExternal;
     private javax.swing.JList<Instance> jListInstanceDb;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel jSelectectLabel;
     private javax.swing.JLabel jSelectedInstance;
