@@ -90,8 +90,8 @@ public class ListeInstance extends JFrame { // NOSONAR
         this.initComponents();
         InstanceDao instanceDao = this.daoFactory.getInstanceDao();
         instances = instanceDao.findAll();
-        ModelList vv = new ModelList(this.instances);
-        this.jListInstanceDb.setModel(vv);
+        ModelList model = new ModelList(this.instances);
+        this.jListInstanceDb.setModel(model);
         this.initialisationFenetre();
     }
 
@@ -117,10 +117,7 @@ public class ListeInstance extends JFrame { // NOSONAR
         try {
             this.daoFactory = DaoFactory.getDaoFactory(DaoFactory.PersistenceType.JPA);
             InstanceDao instanceManager = daoFactory.getInstanceDao();
-            Instance i1 = new Instance();
-            Instance i2 = new Instance();
-            instanceManager.create(i1);
-            instanceManager.create(i2);
+            
         } catch (DaoException ex) {
             Logger.getLogger(Itineraire.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane errorPane = new JOptionPane();
@@ -277,8 +274,8 @@ public class ListeInstance extends JFrame { // NOSONAR
      */
     private void jButtonDisplayInstanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDisplayInstanceActionPerformed
         // TODO add your handling code here:
-        if (this.jListInstance.getSelectedValue() instanceof Instance) {
-            Instance i = this.jListInstance.getSelectedValue();
+        if (this.jListInstanceDb.getSelectedValue() instanceof Instance) {
+            Instance i = this.jListInstanceDb.getSelectedValue();
             Itineraire itineraire = new Itineraire(i);
         } else if (this.jSelectedInstance != null) {
 

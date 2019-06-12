@@ -39,10 +39,12 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import model.Client;
 import model.Depot;
 import model.Emplacement;
 import model.Instance;
 import model.Vehicule;
+import template.metier.ClientModelTable;
 
 /**
  * Planning representation.
@@ -74,11 +76,13 @@ public class Itineraire extends JFrame { // NOSONAR
     public Itineraire(Instance i) {
         this.instance = i;
         this.initComponents();
+        List<Client> clients = i.getClients();
+
+        this.jTable1.setModel(new ClientModelTable(clients));
         this.initialisationFenetre();
-        
+
         this.costNLabel.setText("" + this.instance.getCoutVehicule());
         this.numberVLabel.setText("" + this.instance.getNbVehicules());
-        LOGGER.log(Level.INFO, "Instance :", this.instance.toString());
     }
 
     /**
@@ -95,7 +99,6 @@ public class Itineraire extends JFrame { // NOSONAR
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
