@@ -51,7 +51,7 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
 /**
  * Tests for {@link Dao}
@@ -60,7 +60,7 @@ import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
  */
 @DisplayName("Dao")
 @TestMethodOrder(OrderAnnotation.class)
-@DisabledIfEnvironmentVariable(named = "ENV", matches = "CI")
+@EnabledIfEnvironmentVariable(named = "ENV", matches = "DB")
 public class TestsDao {
 
     /**
