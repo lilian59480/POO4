@@ -38,6 +38,11 @@ manifest.mf
 ### VS Code ###
 .settings/
 .vscode/
+.classpath
+.project
+
+### IntelliJ ###
+.idea/
 
 /target/
 

@@ -18,8 +18,8 @@
  */
 package model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
@@ -104,7 +104,7 @@ public class ClientTest {
     @Test
     @DisplayName("Get Emplacements")
     public void testGetEmplacements() {
-        Set<Emplacement> expected = new HashSet<>();
+        List<Emplacement> expected = new LinkedList<>();
 
         // Add a set of examples
         for (int i = 0; i < 7; i++) {
@@ -113,7 +113,7 @@ public class ClientTest {
             expected.add(e);
         }
 
-        Set<Emplacement> result = this.clientInstance.getEmplacements();
+        List<Emplacement> result = this.clientInstance.getEmplacements();
         assertIterableEquals(expected, result, "List of emplacements should be identical to those added");
     }
 

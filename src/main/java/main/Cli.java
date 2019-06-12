@@ -19,6 +19,7 @@
 package main;
 
 import algo.ISolver;
+import algo.genetic.GeneticSolver;
 import algo.iterative.CVCostCapacitySortedSolver;
 import algo.iterative.NaiveSolver;
 import algo.iterative.RandomSolver;
@@ -60,7 +61,8 @@ public class Cli {
     private static final List<ISolver> SOLVERS = Arrays.asList(
             new NaiveSolver(),
             new RandomSolver(),
-            new CVCostCapacitySortedSolver()
+            new CVCostCapacitySortedSolver(),
+            new GeneticSolver(2, 5000, 2500, 0.0)
     );
 
     /**
