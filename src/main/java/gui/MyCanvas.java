@@ -80,12 +80,12 @@ public class MyCanvas extends Canvas {
     public void drawBorder(Graphics2D g) {
         int width = this.getWidth();
         int height = this.getHeight();
+        int borderSize = 10;
         g.setStroke(new BasicStroke(1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-        g.drawLine(10, 10, width - 10, 10);
-        g.drawLine(width - 10, 10, width - 10, height - 10);
-        g.drawLine(width - 10, height - 10, 10, height - 10);
-        g.drawLine(10, height - 10, 10, 10);
-
+        g.drawLine(borderSize, borderSize, width - borderSize, borderSize);
+        g.drawLine(width - borderSize, borderSize, width - borderSize, height - borderSize);
+        g.drawLine(width - borderSize, height - borderSize, borderSize, height - borderSize);
+        g.drawLine(borderSize, height - borderSize, borderSize, borderSize);
     }
 
     /**
