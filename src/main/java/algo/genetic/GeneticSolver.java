@@ -10,11 +10,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package algo.genetic;
 
@@ -266,12 +266,25 @@ public class GeneticSolver implements ISolver {
                 bestC = tempC;
             }
         }
+        //Move 2 & 3
+        if (trips.get(uTrip).get(uNode).getClass() == Client.class && trips.get(uTrip).get((uNode + 1) % trips.get(uTrip).size()).getClass() == Client.class) {
+            //Move 2
+            Chromosome tempC = mutationMove23(true, trips, uTrip, uNode, vTrip, vNode);
+            if (tempC != null && tempC.getTournee().getCost() < bestC.getTournee().getCost()) {
+                bestC = tempC;
+            }
+            //Move 3
+            mutationMove23(false, trips, uTrip, uNode, vTrip, vNode);
+            if (tempC != null && tempC.getTournee().getCost() < bestC.getTournee().getCost()) {
+                bestC = tempC;
+            }
+        }
 
         return bestC;
     }
 
     /**
-     * Move one of the mutation process: if u is a client node, move u after v
+     * Move 1 of the mutation process: if u is a client node, move u after v
      *
      * @param trips the list of trips
      * @param uTrip the trip number of u
@@ -291,6 +304,52 @@ public class GeneticSolver implements ISolver {
         } else if (uNode < vNode) {
             Client u = (Client) tripsTemps.get(uTrip).get(uNode);
             tripsTemps.get(vTrip).add((vNode + 1) % tripsTemps.get(vTrip).size(), u);
+            tripsTemps.get(uTrip).remove(uNode);
+        } else {
+            return null;
+        }
+        //System.out.println("trip      " + trips);
+        //System.out.println("tripTemps " + tripsTemps);
+
+        return tripsToChromosome(tripsTemps);
+    }
+
+    /**
+     * Move 2 of the mutation process: if u and x are client nodes, move (u, x) after v
+     * Move 3 of the mutation process: if u and x are client nodes, move (x, u) after v
+     *
+     * @param is2   whether you want to do move 2 or 3 (because move 2 and 3 are similar)
+     * @param trips the list of trips
+     * @param uTrip the trip number of u
+     * @param uNode the node number of u
+     * @param vTrip the trip number of v
+     * @param vNode the node number of v
+     * @return the chromosome corresponding to the mutation if it occurred, null otherwise
+     */
+    private Chromosome mutationMove23(boolean is2, List<List<Object>> trips, int uTrip, int uNode, int vTrip, int vNode) {
+        List<List<Object>> tripsTemps = new ArrayList<>();
+        for (List<Object> lo : trips) {
+            tripsTemps.add(new ArrayList<>(lo));
+        }
+        if (uTrip != vTrip || uNode > vNode) {
+            List<Client> ux = new ArrayList<>();
+            ux.add((Client) tripsTemps.get(uTrip).remove(uNode + 1));
+            if (is2) {
+                ux.add(0, (Client) tripsTemps.get(uTrip).remove(uNode));
+            } else {
+                ux.add((Client) tripsTemps.get(uTrip).remove(uNode));
+            }
+            tripsTemps.get(vTrip).addAll((vNode + 1) % tripsTemps.get(vTrip).size(), ux);
+        } else if (uNode < vNode && uNode+1!=vNode) {
+            List<Client> ux = new ArrayList<>();
+            ux.add((Client) tripsTemps.get(uTrip).get(uNode + 1));
+            if (is2) {
+                ux.add(0, (Client) tripsTemps.get(uTrip).get(uNode));
+            } else {
+                ux.add((Client) tripsTemps.get(uTrip).get(uNode));
+            }
+            tripsTemps.get(vTrip).addAll((vNode + 1) % tripsTemps.get(vTrip).size(), ux);
+            tripsTemps.get(uTrip).remove(uNode + 1);
             tripsTemps.get(uTrip).remove(uNode);
         } else {
             return null;
@@ -466,7 +525,7 @@ public class GeneticSolver implements ISolver {
     public static void main(String[] args) {
         Instance i = null;
         //for (int j = 0; j < 40; j++) {
-        int id = 30;
+        int id = 1;
         System.out.println(id);
         try {
             InstanceFileParser ifp = new InstanceFileParser();
