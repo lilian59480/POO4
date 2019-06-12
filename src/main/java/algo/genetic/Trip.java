@@ -115,7 +115,7 @@ public class Trip {
 
     @Override
     public String toString() {
-        return "Label{" +
+        return "Trip{" +
                 "load=" + load +
                 ", cost=" + cost +
                 ", time=" + time +
