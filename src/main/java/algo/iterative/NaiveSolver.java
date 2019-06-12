@@ -73,4 +73,9 @@ public class NaiveSolver extends IterativeSolver {
         super(i, CM, VM);
     }
 
+    @Override
+    public String toString() {
+        return "NaiveSolver";
+    }
+
 }

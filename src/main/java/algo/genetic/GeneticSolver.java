@@ -406,4 +406,10 @@ public class GeneticSolver implements ISolver {
         }*/
         //}
     }
+
+    @Override
+    public String toString() {
+        return "GeneticSolver{Δ=" + minCostSpace + ", α=" + maxIterations + ", β=" + maxIterationsWithoutImproving + ", r=" + mutationRate + '}';
+    }
+
 }

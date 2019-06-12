@@ -73,4 +73,10 @@ public class RandomSolver extends IterativeSolver {
     public RandomSolver(Instance i) {
         super(i, CM, VM);
     }
+
+    @Override
+    public String toString() {
+        return "RandomSolver";
+    }
+
 }
