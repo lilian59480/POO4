@@ -35,15 +35,39 @@ import org.junit.jupiter.api.Test;
 @DisplayName("Vehicule")
 public class VehiculeTest {
 
+    /**
+     * Default values for Heure Debut.
+     */
     private static final int DEFAULT_HEURE_DEBUT = 0;
+    /**
+     * Default values for Heure Fin.
+     */
     private static final int DEFAULT_HEURE_FIN = 10;
+    /**
+     * Default values for X.
+     */
     private static final double DEFAULT_X = -2;
+    /**
+     * Default values for Y.
+     */
     private static final double DEFAULT_Y = 7;
+    /**
+     * Default capacity.
+     */
     private static final int DEFAULT_CAPACITY = 70;
 
+    /**
+     * Vehicule instance.
+     */
     private Vehicule vehiculeInstance;
+    /**
+     * Depot instance.
+     */
     private Depot depot;
 
+    /**
+     * Create new instances after each test.
+     */
     @BeforeEach
     void createNewPoint() {
         this.depot = new Depot(DEFAULT_HEURE_DEBUT, DEFAULT_HEURE_FIN, DEFAULT_X, DEFAULT_Y);

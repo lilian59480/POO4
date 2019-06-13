@@ -60,8 +60,15 @@ public class ListeInstance extends JFrame { // NOSONAR
      * List of Instances.
      */
     private DaoFactory daoFactory;
+
+    /**
+     * List of instances.
+     */
     private final Collection<Instance> instances;
 
+    /**
+     * Instance Model.
+     */
     private final InstanceModelList model;
 
     /**

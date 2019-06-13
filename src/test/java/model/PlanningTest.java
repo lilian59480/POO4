@@ -35,8 +35,14 @@ import org.junit.jupiter.api.Test;
 @DisplayName("Planning")
 public class PlanningTest {
 
+    /**
+     * Planning instance.
+     */
     private Planning planningInstance;
 
+    /**
+     * Create new instances after each test.
+     */
     @BeforeEach
     void createNewInstance() {
         this.planningInstance = new Planning();

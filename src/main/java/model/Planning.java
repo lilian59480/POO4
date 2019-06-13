@@ -39,8 +39,15 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "PLANNING")
 public class Planning implements Serializable {
+
+    /**
+     * Serial UID, for serialisation.
+     */
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Database id.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")

@@ -24,21 +24,10 @@
  * @author Thibaut Fenain
  * @author Corentin Apolinario
  */
-/**
- * Contains all classes related to the TableModel.
- *
- * @author Lilian Petitpas
- * @author Thomas Ternisien
- * @author Thibaut Fenain
- * @author Corentin Apolinario
- */
 package gui.metier;
 
-import java.awt.Color;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.swing.table.AbstractTableModel;
 import model.Vehicule;
 
@@ -46,7 +35,7 @@ import model.Vehicule;
  *
  * @author thibaut
  */
-public class VehiculeModelTable extends AbstractTableModel {
+public class GenericModelTable<T> extends AbstractTableModel{
 
     /**
      * Représente les entêtes des colonnes du jTable
@@ -56,32 +45,23 @@ public class VehiculeModelTable extends AbstractTableModel {
     /**
      * Représente les données du jTable.
      */
-    private final List<Vehicule> data;
-    /**
-     *  List of checkBox
-     */
+    private final List<T> data;
     private final List<Boolean> checkBoxValues;
-
-
+    
     /**
-     * constructeur.
-     *
-     * @param data list of mapDisplayVehicules
+     *  test
+     * @param entetes ent
+     * @param data data
+     * @param checkBoxValues list of checkbox
      */
-    public VehiculeModelTable(List<Vehicule> data) {
-        this.entetes = new String[2];
-        this.entetes[0] = "Display / Hide";
-        this.entetes[1] = "Vehicule";
+    public GenericModelTable(String[] entetes, List<T> data, List<Boolean> checkBoxValues) {
+        this.entetes = entetes;
         this.data = data;
-        this.checkBoxValues = new ArrayList<>();
-
-        for (Vehicule v : data) {
-
-            this.checkBoxValues.add(Boolean.TRUE);
-        }
-
+        this.checkBoxValues = checkBoxValues;
     }
+    
 
+    
     /**
      * Get Row Count.
      *
@@ -115,7 +95,8 @@ public class VehiculeModelTable extends AbstractTableModel {
             case 0:
                 return this.checkBoxValues.get(rowIndex);
             case 1:
-                return this.data.get(rowIndex).getId();
+                // return this.data.get(rowIndex).getId();
+                return 2;
             /*  default:
                 throw new IllegalArgumentException();
              */
@@ -188,14 +169,14 @@ public class VehiculeModelTable extends AbstractTableModel {
      *
      * @return vehicules to display
      */
-    public List<Vehicule> getDisplayVehicules() {
-        List<Vehicule> vehicules = new ArrayList<Vehicule>();
+    public List<T> getDisplayData() {
+        List<T> listes = new ArrayList<T>();
         for (int i = 0; i < this.data.size(); i++) {
             if (this.checkBoxValues.get(i)) {
-                vehicules.add(this.data.get(i));
+                listes.add(this.data.get(i));
             }
         }
-        return vehicules;
+        return listes;
     }
 
     /**
@@ -212,5 +193,7 @@ public class VehiculeModelTable extends AbstractTableModel {
         }
 
     }
+    
 
+    
 }
