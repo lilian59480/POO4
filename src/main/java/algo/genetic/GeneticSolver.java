@@ -253,7 +253,8 @@ public class GeneticSolver implements ISolver {
     }
 
     /**
-     * Do the mutation moves to a list of trips with a given pair of nodes
+     * Do the mutation moves to a list of trips with a given pair of nodes (u,v)
+     * with x the successor of u and y the successor of v
      *
      * @param trips the list of trips
      * @param uTrip the trip number of u
@@ -265,24 +266,34 @@ public class GeneticSolver implements ISolver {
      * values.
      */
     private Chromosome doMutationMoves(List<List<Object>> trips, int uTrip, int uNode, int vTrip, int vNode) throws SolverException {
+        //if u is a client
         if (trips.get(uTrip).get(uNode).getClass() == Client.class) {
             //Move 1
             Chromosome bestC = mutationMove1(trips, uTrip, uNode, vTrip, vNode);
+            //if x is a client
             if (trips.get(uTrip).get((uNode + 1) % trips.get(uTrip).size()).getClass() == Client.class) {
                 //Move 2
                 bestC = getBestChromosome(bestC, mutationMove23(true, trips, uTrip, uNode, vTrip, vNode));
                 //Move 3
                 bestC = getBestChromosome(bestC, mutationMove23(false, trips, uTrip, uNode, vTrip, vNode));
             }
+            //if v is a client
             if (trips.get(vTrip).get(vNode).getClass() == Client.class) {
                 //Move 4  
                 bestC = getBestChromosome(bestC, mutationMovePermuteTwoClient(trips, uTrip, uNode, vTrip, vNode));
+                //if x is a client
                 if (trips.get(uTrip).get((uNode + 1) % trips.get(uTrip).size()).getClass() == Client.class) {
                     //Move 5
                     bestC = getBestChromosome(bestC, mutationMove5(trips, uTrip, uNode, vTrip, vNode));
+                    //if y is a client
                     if (trips.get(vTrip).get((vNode + 1) % trips.get(vTrip).size()).getClass() == Client.class) {
                         //Move 6
                         bestC = getBestChromosome(bestC, mutationMove6(trips, uTrip, uNode, vTrip, vNode));
+                        //if (u, x) and (v, y) are non adjacent in the same trip
+                        if (uTrip == vTrip && Math.abs(uNode - vNode) > 3) {
+                            //Move 7
+                            bestC = getBestChromosome(bestC, mutationMovePermuteTwoClient(trips, uTrip, uNode + 1, vTrip, vNode));
+                        }
                     }
                 }
 
@@ -454,9 +465,9 @@ public class GeneticSolver implements ISolver {
         tripsTemps.get(uTrip).set(uNode, tripsTemps.get(vTrip).get(vNode));
         tripsTemps.get(vTrip).set(vNode, temp);
         //Swap x & y
-        temp = (Client) tripsTemps.get(uTrip).get(uNode+1);
-        tripsTemps.get(uTrip).set(uNode+1, tripsTemps.get(vTrip).get(vNode+1));
-        tripsTemps.get(vTrip).set(vNode+1, temp);
+        temp = (Client) tripsTemps.get(uTrip).get(uNode + 1);
+        tripsTemps.get(uTrip).set(uNode + 1, tripsTemps.get(vTrip).get(vNode + 1));
+        tripsTemps.get(vTrip).set(vNode + 1, temp);
 
         return tripsToChromosome(tripsTemps);
     }
