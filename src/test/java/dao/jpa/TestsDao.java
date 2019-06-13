@@ -54,7 +54,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
 /**
- * Tests for {@link Dao}
+ * Tests for {@link JpaDao}
  *
  * @author Corentin
  */

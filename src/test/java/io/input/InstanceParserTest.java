@@ -26,7 +26,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for {@link TSVParser}
+ * Tests for {@link TsvParser}
  *
  * @author Lilian Petitpas
  */
