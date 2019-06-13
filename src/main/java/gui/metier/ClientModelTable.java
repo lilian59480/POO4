@@ -29,18 +29,12 @@ import model.Vehicule;
  *
  * @author thibaut
  */
-public class ClientModelTable extends AbstractTableModel {
+public class ClientModelTable extends GenericModelTable<Client> {
 
     /**
-     * Représente les entêtes des colonnes du jTable
+     * entetes
      */
-    private final String[] entetes;
-
-    /**
-     * Représente les données du jTable
-     */
-    private final List<Client> data;
-    private final List<Boolean> checkBoxValues;
+    private static final String[] entetes = {"Display / Hide", "Vehicule"};
 
     /**
      * Constructor.
@@ -48,36 +42,9 @@ public class ClientModelTable extends AbstractTableModel {
      * @param data Client List.
      */
     public ClientModelTable(List<Client> data) {
-        this.entetes = new String[2];
-        this.entetes[0] = "Display / Hide";
-        this.entetes[1] = "Client";
-        this.data = data;
-        this.checkBoxValues = new ArrayList<>();
 
-        for (Client c : data) {
+        super(ClientModelTable.entetes, data);
 
-            this.checkBoxValues.add(Boolean.TRUE);
-        }
-    }
-
-    /**
-     * Get Row Count.
-     *
-     * @return int
-     */
-    @Override
-    public int getRowCount() {
-        return this.data.size();
-    }
-
-    /**
-     * Get column count.
-     *
-     * @return int
-     */
-    @Override
-    public int getColumnCount() {
-        return this.entetes.length;
     }
 
     /**
@@ -102,66 +69,6 @@ public class ClientModelTable extends AbstractTableModel {
     }
 
     /**
-     * return the name of a column
-     *
-     * @param columnIndex
-     * @return string.
-     */
-    @Override
-    public String getColumnName(int columnIndex) {
-        return this.entetes[columnIndex];
-    }
-
-    /**
-     * Return the type of each column.
-     *
-     * @param columnIndex index of the column
-     * @return type
-     */
-    @Override
-    public Class<?> getColumnClass(int columnIndex) {
-        switch (columnIndex) {
-            case 0:
-                return Boolean.class;
-            case 1:
-                return Integer.class;
-            default:
-                return Object.class;
-        }
-    }
-
-    /**
-     * Allow to set a value to a
-     *
-     * @param aValue
-     * @param rowIndex
-     * @param columnIndex
-     */
-    @Override
-    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        System.out.println("on click cellule :" + aValue.toString());
-        if (aValue instanceof Boolean) {
-            if (columnIndex == 0) {
-                this.checkBoxValues.set(rowIndex, (Boolean) aValue);
-            }
-        }
-        fireTableCellUpdated(rowIndex, columnIndex);// notify listeners
-    }
-
-    /**
-     * Allow Editable cellule.
-     *
-     * @param rowIndex
-     * @param columnIndex
-     * @return boolean
-     */
-    @Override
-    public boolean isCellEditable(int rowIndex, int columnIndex) {
-
-        return columnIndex == 0;
-    }
-
-    /**
      * display true vehicules.
      *
      * @return vehicules to display
@@ -176,18 +83,4 @@ public class ClientModelTable extends AbstractTableModel {
         return clients;
     }
 
-    /**
-     * set All False or True
-     *
-     * @param b boolean
-     */
-    public void setAll(Boolean b) {
-        for (int i = 0; i < this.data.size(); i++) {
-
-            this.checkBoxValues.set(i, b);
-            fireTableCellUpdated(i, 0);// notify listeners
-
-        }
-
-    }
 }

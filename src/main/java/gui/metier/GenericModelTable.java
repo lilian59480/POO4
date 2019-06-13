@@ -35,33 +35,34 @@ import model.Vehicule;
  *
  * @author thibaut
  */
-public class GenericModelTable<T> extends AbstractTableModel{
+public abstract class GenericModelTable<T> extends AbstractTableModel {
 
     /**
      * Représente les entêtes des colonnes du jTable
      */
-    private final String[] entetes;
+    protected final String[] entetes;
 
     /**
      * Représente les données du jTable.
      */
-    private final List<T> data;
-    private final List<Boolean> checkBoxValues;
-    
+    protected final List<T> data;
+    protected List<Boolean> checkBoxValues;
+
     /**
-     *  test
+     * test
+     *
      * @param entetes ent
      * @param data data
-     * @param checkBoxValues list of checkbox
      */
-    public GenericModelTable(String[] entetes, List<T> data, List<Boolean> checkBoxValues) {
+    public GenericModelTable(String[] entetes, List<T> data) {
         this.entetes = entetes;
         this.data = data;
-        this.checkBoxValues = checkBoxValues;
+        this.checkBoxValues = new ArrayList<>();
+        for (T t : data) {
+            this.checkBoxValues.add(Boolean.TRUE);
+        }
     }
-    
 
-    
     /**
      * Get Row Count.
      *
@@ -80,28 +81,6 @@ public class GenericModelTable<T> extends AbstractTableModel{
     @Override
     public int getColumnCount() {
         return this.entetes.length;
-    }
-
-    /**
-     * Allow to return the value of a cellule.
-     *
-     * @param rowIndex
-     * @param columnIndex
-     * @return value of a cellule
-     */
-    @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
-        switch (columnIndex) {
-            case 0:
-                return this.checkBoxValues.get(rowIndex);
-            case 1:
-                // return this.data.get(rowIndex).getId();
-                return 2;
-            /*  default:
-                throw new IllegalArgumentException();
-             */
-        }
-        return null;
     }
 
     /**
@@ -142,7 +121,6 @@ public class GenericModelTable<T> extends AbstractTableModel{
      */
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        System.out.println("on click cellule :" + aValue.toString());
         if (aValue instanceof Boolean) {
             if (columnIndex == 0) {
                 this.checkBoxValues.set(rowIndex, (Boolean) aValue);
@@ -193,7 +171,5 @@ public class GenericModelTable<T> extends AbstractTableModel{
         }
 
     }
-    
 
-    
 }
