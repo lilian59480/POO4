@@ -228,7 +228,7 @@ public class ListeInstance extends JFrame { // NOSONAR
     private void jButtonGeneticSolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGeneticSolverActionPerformed
         Instance i = this.jListInstanceDb.getSelectedValue();
 
-        GeneticSolver geneticSolver = new GeneticSolver(i, 2, 5000, 2500, 0.0);
+        GeneticSolver geneticSolver = new GeneticSolver(i, 2, 5000, 2500, 4.0);
 
         if (!geneticSolver.solve()) {
             LOGGER.log(Level.WARNING, "Impossible to solve this instance");
