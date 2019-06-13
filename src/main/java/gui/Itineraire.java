@@ -77,7 +77,6 @@ public class Itineraire extends JFrame { // NOSONAR
         this.ClientTable.getModel().addTableModelListener(new TableModelListener() {
             @Override
             public void tableChanged(TableModelEvent e) {
-                System.out.println("I am in Table listener");
                 Itineraire.this.canvas2.repaint();
             }
         });
@@ -85,7 +84,6 @@ public class Itineraire extends JFrame { // NOSONAR
         this.jTableVehicule.getModel().addTableModelListener(new TableModelListener() {
             @Override
             public void tableChanged(TableModelEvent e) {
-                System.out.println("I am in Table listener");
                 Itineraire.this.canvas2.repaint();
             }
         });
@@ -109,7 +107,7 @@ public class Itineraire extends JFrame { // NOSONAR
         this.setPreferredSize(new Dimension(400, 200));
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
+        this.canvas2.center();
     }
 
     //CHECKSTYLE:OFF
@@ -123,7 +121,6 @@ public class Itineraire extends JFrame { // NOSONAR
         canvas2 = new MyCanvas(this.instance, this.vehiculeModelTable, this.clientModelTable);
         jLabel1 = new javax.swing.JLabel();
         levelZoomLabel = new javax.swing.JLabel();
-        fitInButton = new javax.swing.JButton();
         zoomButton = new javax.swing.JButton();
         costLabel = new javax.swing.JLabel();
         costNLabel = new javax.swing.JLabel();
@@ -155,18 +152,16 @@ public class Itineraire extends JFrame { // NOSONAR
             }
         });
 
-        jLabel1.setText("Zoom : ");
+        jLabel1.setText("Zoom level : ");
 
-        levelZoomLabel.setText("100%");
-
-        fitInButton.setText("Fit In Window");
-        fitInButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                fitInButtonActionPerformed(evt);
-            }
-        });
+        levelZoomLabel.setText("4");
 
         zoomButton.setText("Center");
+        zoomButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                zoomButtonActionPerformed(evt);
+            }
+        });
 
         costLabel.setText("Cost of this instance :");
 
@@ -260,9 +255,7 @@ public class Itineraire extends JFrame { // NOSONAR
                                 .addComponent(levelZoomLabel)
                                 .addGap(41, 41, 41)
                                 .addComponent(zoomButton)
-                                .addGap(50, 50, 50)
-                                .addComponent(fitInButton)
-                                .addGap(277, 277, 277))
+                                .addGap(426, 426, 426))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(costNLabel)
                                 .addGap(0, 0, Short.MAX_VALUE))))
@@ -321,29 +314,15 @@ public class Itineraire extends JFrame { // NOSONAR
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
                             .addComponent(levelZoomLabel)
-                            .addComponent(fitInButton)
                             .addComponent(zoomButton))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 132, Short.MAX_VALUE)
                         .addComponent(canvas2, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
-        fitInButton.getAccessibleContext().setAccessibleName("fitIn");
-
         pack();
     }// </editor-fold>//GEN-END:initComponents
     //CHECKSTYLE:ON
-
-    /**
-     * Action Perfomed.
-     *
-     * @param evt Action evt
-     */
-    private void fitInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fitInButtonActionPerformed
-        // TODO add your handling code here:
-        this.canvas2.center();
-        this.canvas2.repaint();
-    }//GEN-LAST:event_fitInButtonActionPerformed
 
     /**
      * Mo
@@ -353,7 +332,7 @@ public class Itineraire extends JFrame { // NOSONAR
     private void canvas2MouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_canvas2MouseWheelMoved
         // TODO add your handling code here:
 
-        if (evt.getWheelRotation() > 0) {
+        if (evt.getWheelRotation() < 0) {
             //zoom in (amount)
             this.canvas2.zoomIn();
             this.canvas2.repaint();
@@ -365,7 +344,7 @@ public class Itineraire extends JFrame { // NOSONAR
 
         }
 
-        this.levelZoomLabel.setText(this.canvas2.getZoom() * 10 + "%");
+        this.levelZoomLabel.setText(Integer.toString(this.canvas2.getZoom()));
 
     }//GEN-LAST:event_canvas2MouseWheelMoved
 
@@ -427,6 +406,10 @@ public class Itineraire extends JFrame { // NOSONAR
 
     }//GEN-LAST:event_hideVehiculeButtonActionPerformed
 
+    private void zoomButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomButtonActionPerformed
+        this.canvas2.center();
+    }//GEN-LAST:event_zoomButtonActionPerformed
+
     //CHECKSTYLE:OFF
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable ClientTable;
@@ -438,7 +421,6 @@ public class Itineraire extends JFrame { // NOSONAR
     private javax.swing.JLabel costLabel;
     private javax.swing.JLabel costNLabel;
     private javax.swing.JLabel externalVlabel;
-    private javax.swing.JButton fitInButton;
     private javax.swing.JButton hideClientButton;
     private javax.swing.JButton hideVehiculeButton;
     private javax.swing.JLabel jLabel1;

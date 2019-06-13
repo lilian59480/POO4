@@ -53,7 +53,6 @@ public class ClientModelTable extends GenericModelTable<Client> {
      */
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        System.out.println("test ID : " + this.data.get(rowIndex).getId());
         switch (columnIndex) {
             case 0:
                 return this.checkBoxValues.get(rowIndex);

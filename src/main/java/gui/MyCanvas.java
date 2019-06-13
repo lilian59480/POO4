@@ -54,13 +54,13 @@ public class MyCanvas extends Canvas {
     /**
      * X origin.
      */
-    private int draggedX = 400;
+    private int draggedX;
     /**
      * Y origin.
      */
-    private int draggedY = 400;
+    private int draggedY;
     /**
-     * Zoom factor.
+     * Current Zoom.
      */
     private int zoom = 4;
     /**
@@ -94,6 +94,7 @@ public class MyCanvas extends Canvas {
      * @param cModel cModelTable
      */
     public MyCanvas(Instance i, VehiculeModelTable vModel, ClientModelTable cModel) {
+        super();
         this.instance = i;
         this.vModel = vModel;
         this.cModel = cModel;
@@ -182,7 +183,6 @@ public class MyCanvas extends Canvas {
         Depot d = i.getDepot();
 
         List<Vehicule> vehicules = this.vModel.getDisplayVehicules();
-        System.out.println("test vehicule Canvas" + vehicules.toString());
 
         for (Vehicule v : vehicules) {
             Emplacement source = d;
@@ -244,7 +244,10 @@ public class MyCanvas extends Canvas {
      * Center canvas.
      */
     public void center() {
-        this.zoom = 1;
+        int centerX = this.getHeight() / 2;
+        int centerY = this.getWidth() / 2;
+        this.draggedCanvas(centerX, centerY);
+        this.repaint();
     }
 
     /**

@@ -44,7 +44,6 @@ public class ModelList extends AbstractListModel {
      */
     public ModelList(Collection<Instance> instances) {
         this.data = new ArrayList<>(instances);
-        System.out.println("test data : " + data.toString());
     }
 
 

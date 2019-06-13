@@ -43,7 +43,6 @@ public class InstanceModelList extends AbstractListModel<Instance> {
      */
     public InstanceModelList(Collection<Instance> instances) {
         this.data = new ArrayList<>(instances);
-        System.out.println("test data : " + data.toString());
     }
 
     /**
