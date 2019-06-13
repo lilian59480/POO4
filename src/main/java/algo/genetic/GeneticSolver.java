@@ -270,22 +270,13 @@ public class GeneticSolver implements ISolver {
             Chromosome bestC = mutationMove1(trips, uTrip, uNode, vTrip, vNode);
             if (trips.get(uTrip).get((uNode + 1) % trips.get(uTrip).size()).getClass() == Client.class) {
                 //Move 2
-                Chromosome tempC = mutationMove23(true, trips, uTrip, uNode, vTrip, vNode);
-                if (tempC != null && (bestC == null || tempC.getTournee().getCost() < bestC.getTournee().getCost())) {
-                    bestC = tempC;
-                }
+                bestC = getBestChromosome(bestC, mutationMove23(true, trips, uTrip, uNode, vTrip, vNode));
                 //Move 3
-                tempC = mutationMove23(false, trips, uTrip, uNode, vTrip, vNode);
-                if (tempC != null && (bestC == null || tempC.getTournee().getCost() < bestC.getTournee().getCost())) {
-                    bestC = tempC;
-                }
+                bestC = getBestChromosome(bestC, mutationMove23(false, trips, uTrip, uNode, vTrip, vNode));
             }
             if (trips.get(vTrip).get(vNode).getClass() == Client.class) {
                 //Move 4  
-                Chromosome tempC = mutationMove4(trips, uTrip, uNode, vTrip, vNode);
-                if (tempC != null && (bestC == null || tempC.getTournee().getCost() < bestC.getTournee().getCost())) {
-                    bestC = tempC;
-                }
+                bestC = getBestChromosome(bestC, mutationMove4(trips, uTrip, uNode, vTrip, vNode));
             }
             return bestC;
         }
@@ -399,6 +390,22 @@ public class GeneticSolver implements ISolver {
         //System.out.println("tripTemps " + tripsTemps);
 
         return tripsToChromosome(tripsTemps);
+    }
+
+    /**
+     * Compare two Chromosome and return the best
+     *
+     * @param c1 the first Chromosome
+     * @param c2 the second Chromosome
+     * @return the best Chromosome
+     * @throws SolverException SolverException If there is an internal exception
+     * or inconsistant values.
+     */
+    private Chromosome getBestChromosome(Chromosome c1, Chromosome c2) throws SolverException {
+        if (c2 != null && (c1 == null || c2.getTournee().getCost() < c1.getTournee().getCost())) {
+            return c2;
+        }
+        return c1;
     }
 
     /**
@@ -556,14 +563,14 @@ public class GeneticSolver implements ISolver {
         //Make of the copy of the randomly selected range
         List<Client> p1Range = p1.getClients().subList(Math.min(i, j), Math.max(i, j) + 1);
         //Fill the chromosome with the remaining clients
-        int l = ((Math.max(i, j) + 1) % childCli.size());
+        int l = (Math.max(i, j) + 1) % p2Cli.size();
         for (int k = ((Math.max(i, j) + 1) % childCli.size()); k != (Math.min(i, j) % childCli.size()); k = (k + 1) % childCli.size()) {
             while (p1Range.contains(p2Cli.get(l))) {
-                l = (l + 1) % childCli.size();
+                l = (l + 1) % p2Cli.size();
             }
             //System.out.println("---> k=" + k + " l=" + l);
             childCli.set(k, p2Cli.get(l));
-            l = (l + 1) % childCli.size();
+            l = (l + 1) % p2Cli.size();
         }
         /*System.out.println("-----------");
         System.out.println(p1.getClients());
