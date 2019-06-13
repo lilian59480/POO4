@@ -20,7 +20,6 @@ package algo.genetic;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import model.Emplacement;
 
 /**

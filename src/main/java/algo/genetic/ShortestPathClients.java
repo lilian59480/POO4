@@ -19,14 +19,13 @@
 package algo.genetic;
 
 import algo.SolverException;
+import java.util.ArrayList;
+import java.util.List;
 import model.Client;
 import model.Depot;
 import model.Emplacement;
 import model.Instance;
 import model.Route;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * ShortestPathClients class

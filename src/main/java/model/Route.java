@@ -36,15 +36,23 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "ROUTE")
 public class Route implements Serializable {
+
+    /**
+     * Serial UID, for serialisation.
+     */
     private static final long serialVersionUID = 1L;
 
     /**
-     * Origin point.
+     * Database id.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private int id;
+
+    /**
+     * Origin point.
+     */
     @ManyToOne
     private Point from;
 
@@ -71,7 +79,7 @@ public class Route implements Serializable {
     public Route() {
         this(null, null, 0, 0);
     }
-    
+
     /**
      * Route constructor.
      *
@@ -159,8 +167,6 @@ public class Route implements Serializable {
         }
         return true;
     }
-
-
 
     @Override
     public String toString() {

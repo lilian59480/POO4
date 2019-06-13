@@ -16,40 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package main;
-
-import gui.ListeInstance;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
- * Gui entry point for this project
+ * Contains all classes related to the TableModel.
  *
  * @author Lilian Petitpas
+ * @author Thomas Ternisien
+ * @author Thibaut Fenain
+ * @author Corentin Apolinario
  */
-public class Gui {
-
-    /**
-     * Class logger.
-     */
-    private static final Logger LOGGER = Logger.getLogger(Gui.class.getName());
-
-    /**
-     * Cli Entry point.
-     *
-     * @param args Arguments, 1st can be "help" or "usage"
-     */
-    public static void main(String[] args) {
-        Gui self = new Gui();
-        self.show();
-    }
-
-    /**
-     * Display the window.
-     */
-    public void show() {
-        LOGGER.log(Level.INFO, "Starting application");
-        ListeInstance li = new ListeInstance();
-        li.setVisible(true);
-    }
-}
+package gui.metier;

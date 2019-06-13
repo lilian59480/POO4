@@ -33,17 +33,47 @@ import org.junit.jupiter.api.Test;
 @DisplayName("Route")
 public class RouteTest {
 
-    private static final double DEFAULT_X = -2;
-    private static final double DEFAULT_Y = 7;
+    /**
+     * Default values for Heure Debut.
+     */
     private static final int DEFAULT_HEURE_DEBUT = 0;
+    /**
+     * Default values for Heure Fin.
+     */
     private static final int DEFAULT_HEURE_FIN = 10;
+    /**
+     * Default values for X.
+     */
+    private static final double DEFAULT_X = -2;
+    /**
+     * Default values for Y.
+     */
+    private static final double DEFAULT_Y = 7;
+    /**
+     * Default cost.
+     */
     private static final double DEFAULT_COST = 4;
+    /**
+     * Default time.
+     */
     private static final int DEFAULT_TIME = 9;
 
+    /**
+     * Primary point required as a Route is between two points.
+     */
     private Point pointInstance;
+    /**
+     * Secondary point required as a Route is between two points.
+     */
     private Point point2;
+    /**
+     * Route instance.
+     */
     private Route routeInstance;
 
+    /**
+     * Create new instances after each test.
+     */
     @BeforeEach
     void createNewRoute() {
         this.pointInstance = new Emplacement(DEFAULT_HEURE_DEBUT, DEFAULT_HEURE_FIN, DEFAULT_X, DEFAULT_Y);

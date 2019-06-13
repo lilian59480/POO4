@@ -24,4 +24,4 @@
  * @author Thibaut Fenain
  * @author Corentin Apolinario
  */
-package template;
+package gui;

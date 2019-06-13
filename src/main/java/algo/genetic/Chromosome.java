@@ -19,16 +19,14 @@
 package algo.genetic;
 
 import algo.SolverException;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import model.Client;
 import model.Emplacement;
 import model.Instance;
 import model.Planning;
 import model.Vehicule;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Chromosome class
@@ -47,6 +45,9 @@ public class Chromosome {
      */
     private Tournee tournee;
 
+    /**
+     * Instance solved.
+     */
     private Instance instance;
 
     /**
@@ -82,7 +83,7 @@ public class Chromosome {
      *
      * @param chromosome the chromosome to copy
      * @throws SolverException If there is an internal exception or inconsistant
-     *                         values.
+     * values.
      */
     public Chromosome(Chromosome chromosome) throws SolverException {
         this.instance = chromosome.getInstance();
@@ -93,7 +94,7 @@ public class Chromosome {
     /**
      * Chromosome constructor using a list of clients
      *
-     * @param i       The instance to convert
+     * @param i The instance to convert
      * @param clients The list of client
      */
     Chromosome(Instance i, List<Client> clients) {
@@ -111,12 +112,11 @@ public class Chromosome {
     }
 
     /**
-     * Get the tournee of the chromosome
-     * and generate it if it doesn't exist
+     * Get the tournee of the chromosome and generate it if it doesn't exist
      *
      * @return the tournee
      * @throws SolverException If there is an internal exception or inconsistant
-     *                         values.
+     * values.
      */
     public Tournee getTournee() throws SolverException {
         if (this.tournee == null) {
@@ -135,10 +135,11 @@ public class Chromosome {
     }
 
     /**
-     * Functions that generate the chromosome's tournee using the shortest path algo
+     * Functions that generate the chromosome's tournee using the shortest path
+     * algo
      *
      * @throws SolverException If there is an internal exception or inconsistant
-     *                         values.
+     * values.
      */
     public void generateTournee() throws SolverException {
         ShortestPathClients sp = new ShortestPathClients(this.instance, this);
@@ -147,16 +148,20 @@ public class Chromosome {
 
     @Override
     public String toString() {
-        return "Chromosome{" +
-                "clients=" + clients +
-                ", tournee=" + tournee +
-                '}';
+        return "Chromosome{"
+                + "clients=" + clients
+                + ", tournee=" + tournee
+                + '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Chromosome that = (Chromosome) o;
         return this.clients.equals(that.clients);
     }

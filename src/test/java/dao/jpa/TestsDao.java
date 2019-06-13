@@ -46,6 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -67,6 +68,7 @@ public class TestsDao {
      * Check if DAO is working
      */
     @Test
+    @Disabled
     @DisplayName("Is Dao Working")
     @Order(1)
     public void isDaoWorking() {
