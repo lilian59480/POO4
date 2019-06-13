@@ -40,13 +40,31 @@ import org.junit.jupiter.api.function.Executable;
 @DisplayName("Instance")
 public class InstanceTest {
 
+    /**
+     * Default values for Heure Debut.
+     */
     private static final int DEFAULT_HEURE_DEBUT = 0;
+    /**
+     * Default values for Heure Fin.
+     */
     private static final int DEFAULT_HEURE_FIN = 10;
+    /**
+     * Default values for X.
+     */
     private static final double DEFAULT_X = -2;
+    /**
+     * Default values for Y.
+     */
     private static final double DEFAULT_Y = 7;
 
+    /**
+     * Instance instance.
+     */
     private Instance instanceInstance;
 
+    /**
+     * Create new instances after each test.
+     */
     @BeforeEach
     void createNewInstance() {
         this.instanceInstance = new Instance();

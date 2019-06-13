@@ -40,15 +40,22 @@ import javax.persistence.Table;
 @Table(name = "VEHICULE")
 public class Vehicule implements Serializable {
 
+    /**
+     * Serial UID, for serialisation.
+     */
     private static final long serialVersionUID = 1L;
 
     /**
-     * Depot.
+     * Database id.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private int id;
+
+    /**
+     * Depot.
+     */
     @ManyToOne
     private Depot depot;
 
@@ -209,14 +216,16 @@ public class Vehicule implements Serializable {
     public double getCout() {
         return this.cout;
     }
+
     /**
      * Get Id.
-     * @return The id. 
+     *
+     * @return The id.
      */
     public int getId() {
         return id;
     }
-    
+
     /**
      * Clear this vehicule.
      */

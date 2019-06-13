@@ -18,19 +18,18 @@
  */
 package gui;
 
+import gui.metier.ClientModelTable;
+import gui.metier.VehiculeModelTable;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import model.Client;
 import model.Instance;
 import model.Vehicule;
-import gui.metier.ClientModelTable;
-import gui.metier.VehiculeModelTable;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
 
 /**
  * Planning representation.
@@ -49,7 +48,13 @@ public class Itineraire extends JFrame { // NOSONAR
      * Class logger.
      */
     private static final Logger LOGGER = Logger.getLogger(Itineraire.class.getName());
+    /**
+     * Instance to draw.
+     */
     private Instance instance;
+    /**
+     * Model table used for Vehicules.
+     */
     private VehiculeModelTable vehiculeModelTable;
 
     /**
@@ -76,7 +81,6 @@ public class Itineraire extends JFrame { // NOSONAR
                 Itineraire.this.canvas2.repaint();
             }
         });
-
 
         this.initialisationFenetre();
 
@@ -318,6 +322,7 @@ public class Itineraire extends JFrame { // NOSONAR
         this.canvas2.repaint();
 
     }//GEN-LAST:event_canvas2MouseDragged
+
     /**
      * OnClick Table.
      *

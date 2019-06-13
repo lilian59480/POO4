@@ -37,10 +37,19 @@ import org.junit.jupiter.api.Test;
 @DisplayName("Client")
 public class ClientTest {
 
+    /**
+     * Default demand.
+     */
     private static final int DEFAULT_DEMANDE = 200;
 
+    /**
+     * Client instance.
+     */
     private Client clientInstance;
 
+    /**
+     * Create new instances after each test.
+     */
     @BeforeEach
     void createNewClient() {
         this.clientInstance = new Client(DEFAULT_DEMANDE);

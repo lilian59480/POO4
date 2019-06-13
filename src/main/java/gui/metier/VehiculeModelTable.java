@@ -31,12 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static javax.swing.UIManager.get;
-import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
-import model.Client;
-import model.Route;
 import model.Vehicule;
 
 /**
@@ -54,6 +49,11 @@ public class VehiculeModelTable extends AbstractTableModel {
      * Représente les données du jTable.
      */
     private final List<Vehicule> data;
+    /**
+     * Map of vehicules.
+     *
+     * Value represents if we draw that element or not.
+     */
     private final Map<Vehicule, Boolean> vehicules;
 
     /**

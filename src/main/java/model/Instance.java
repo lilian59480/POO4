@@ -43,11 +43,17 @@ import javax.persistence.Table;
 @Table(name = "INSTANCE")
 public class Instance implements Serializable {
 
+    /**
+     * Serial UID, for serialisation.
+     */
     private static final long serialVersionUID = 1L;
+    /**
+     * Class logger.
+     */
     private static final Logger LOGGER = Logger.getLogger(Instance.class.getName());
 
     /**
-     * Class logger.
+     * Database Id.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -99,6 +105,9 @@ public class Instance implements Serializable {
     @OneToMany(mappedBy = "instance", cascade = CascadeType.ALL)
     private List<Planning> plannings;
 
+    /**
+     * Name of the instance.
+     */
     private String instanceName;
 
     /**
@@ -388,9 +397,10 @@ public class Instance implements Serializable {
 
     @Override
     public String toString() {
-        if (this.instanceName != null )
+        if (this.instanceName != null) {
             return "Instance : " + this.instanceName;
-        return "Instance : " + this.id ;
+        }
+        return "Instance : " + this.id;
     }
 
 }

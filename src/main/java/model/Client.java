@@ -42,15 +42,22 @@ import org.eclipse.persistence.annotations.CascadeOnDelete;
 @Table(name = "CLIENT")
 public class Client implements Serializable {
 
+    /**
+     * Serial UID, for serialisation.
+     */
     private static final long serialVersionUID = 1L;
 
     /**
-     * Demand of the client.
+     * Database id.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     protected Integer id;
+
+    /**
+     * Demand of the client.
+     */
     private int demande;
 
     /**
@@ -157,9 +164,11 @@ public class Client implements Serializable {
     public List<Emplacement> getEmplacements() {
         return this.emplacements;
     }
+
     /**
      * Get id Client.
-     * @return  id Client
+     *
+     * @return id Client
      */
     public Integer getId() {
         return id;

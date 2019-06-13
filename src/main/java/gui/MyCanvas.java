@@ -38,12 +38,30 @@ import model.Vehicule;
  */
 public class MyCanvas extends Canvas {
 
+    /**
+     * Serial UID, for serialisation.
+     */
     private static final long serialVersionUID = 20190612230051L;
 
+    /**
+     * Instance to draw.
+     */
     private final Instance instance;
+    /**
+     * X origin.
+     */
     private int draggedX = 400;
+    /**
+     * Y origin.
+     */
     private int draggedY = 400;
+    /**
+     * Zoom factor.
+     */
     private int zoom = 4;
+    /**
+     * Vehicule table model.
+     */
     private VehiculeModelTable vModel;
 
     /**
