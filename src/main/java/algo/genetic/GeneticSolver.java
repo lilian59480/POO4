@@ -271,19 +271,19 @@ public class GeneticSolver implements ISolver {
             if (trips.get(uTrip).get((uNode + 1) % trips.get(uTrip).size()).getClass() == Client.class) {
                 //Move 2
                 Chromosome tempC = mutationMove23(true, trips, uTrip, uNode, vTrip, vNode);
-                if (tempC != null && tempC.getTournee().getCost() < bestC.getTournee().getCost()) {
+                if (tempC != null && (bestC == null || tempC.getTournee().getCost() < bestC.getTournee().getCost())) {
                     bestC = tempC;
                 }
                 //Move 3
                 tempC = mutationMove23(false, trips, uTrip, uNode, vTrip, vNode);
-                if (tempC != null && tempC.getTournee().getCost() < bestC.getTournee().getCost()) {
+                if (tempC != null && (bestC == null || tempC.getTournee().getCost() < bestC.getTournee().getCost())) {
                     bestC = tempC;
                 }
             }
             if (trips.get(vTrip).get(vNode).getClass() == Client.class) {
                 //Move 4  
                 Chromosome tempC = mutationMove4(trips, uTrip, uNode, vTrip, vNode);
-                if (tempC != null && tempC.getTournee().getCost() < bestC.getTournee().getCost()) {
+                if (tempC != null && (bestC == null || tempC.getTournee().getCost() < bestC.getTournee().getCost())) {
                     bestC = tempC;
                 }
             }
