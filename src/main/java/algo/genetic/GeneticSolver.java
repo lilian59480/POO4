@@ -89,12 +89,12 @@ public class GeneticSolver implements ISolver {
      * This constructor is recommended as you can solve multiples instances by
      * using the instance setter.
      *
-     * @param minCostSpace                  the minimum delta for the cost to consider two
-     *                                      chromosome equal
-     * @param maxIterations                 the maximum of iterations
+     * @param minCostSpace the minimum delta for the cost to consider two
+     * chromosome equal
+     * @param maxIterations the maximum of iterations
      * @param maxIterationsWithoutImproving the maximum of iterations without
-     *                                      improvement of the best solution
-     * @param mutationRate                  the mutation rate
+     * improvement of the best solution
+     * @param mutationRate the mutation rate
      */
     public GeneticSolver(int minCostSpace, int maxIterations, int maxIterationsWithoutImproving, double mutationRate) {
         this(null, minCostSpace, maxIterations, maxIterationsWithoutImproving, mutationRate);
@@ -103,13 +103,13 @@ public class GeneticSolver implements ISolver {
     /**
      * ShortestPathSolver constructor with an Instance and a minCostSpace
      *
-     * @param i                             Instance to solve
-     * @param minCostSpace                  the minimum delta for the cost to consider two
-     *                                      chromosome equal
-     * @param maxIterations                 the maximum of iterations
+     * @param i Instance to solve
+     * @param minCostSpace the minimum delta for the cost to consider two
+     * chromosome equal
+     * @param maxIterations the maximum of iterations
      * @param maxIterationsWithoutImproving the maximum of iterations without
-     *                                      improvement of the best solution
-     * @param mutationRate                  the mutation rate
+     * improvement of the best solution
+     * @param mutationRate the mutation rate
      */
     public GeneticSolver(Instance i, int minCostSpace, int maxIterations, int maxIterationsWithoutImproving, double mutationRate) {
         this.instance = i;
@@ -122,11 +122,11 @@ public class GeneticSolver implements ISolver {
     /**
      * ShortestPathSolver constructor, with an Instance.
      *
-     * @param i                             Instance to solve
-     * @param maxIterations                 the maximum of iterations
+     * @param i Instance to solve
+     * @param maxIterations the maximum of iterations
      * @param maxIterationsWithoutImproving the maximum of iterations without
-     *                                      improvement of the best solution
-     * @param mutationRate                  the mutation rate
+     * improvement of the best solution
+     * @param mutationRate the mutation rate
      */
     public GeneticSolver(Instance i, int maxIterations, int maxIterationsWithoutImproving, double mutationRate) {
         this(i, 1, maxIterations, maxIterationsWithoutImproving, mutationRate);
@@ -188,7 +188,7 @@ public class GeneticSolver implements ISolver {
      * Solve the current instance using a genetic algorithm.
      *
      * @throws SolverException If there is an internal exception or inconsistant
-     *                         values.
+     * values.
      */
     private void geneticSolve() throws SolverException {
         int iterations = 0;
@@ -232,33 +232,45 @@ public class GeneticSolver implements ISolver {
      * @param c the chromosome to mutate
      * @return the mutated chromosome
      * @throws SolverException If there is an internal exception or inconsistant
-     *                         values.
+     * values.
      */
     private Chromosome mutateChromosome(Chromosome c) throws SolverException {
-        Chromosome bestC = c;
         List<List<Object>> trips = chromosomeToTrips(c);
-
         Random r = new Random();
         //Take a random pair of vertexes (u, v) instead of every possible distinct pair
         int uTrip = r.nextInt(trips.size());
         int uNode = r.nextInt(trips.get(uTrip).size());
         int vTrip = r.nextInt(trips.size());
         int vNode = r.nextInt(trips.get(vTrip).size());
-        //System.out.println("-------");
         //System.out.println("C " + c);
         //System.out.println("U " + trips.get(uTrip).get(uNode));
         //System.out.println("V " + trips.get(vTrip).get(vNode));
+        Chromosome mutatedC = doMutationMoves(trips, uTrip, uNode, vTrip, vNode);
+        if (mutatedC == null) {
+            return c;
+        }
+        return mutatedC;
+    }
 
-        //Do mutation moves
+    /**
+     * Do the mutation moves to a list of trips with a given pair of nodes
+     *
+     * @param trips the list of trips
+     * @param uTrip the trip number of u
+     * @param uNode the node number of u
+     * @param vTrip the trip number of v
+     * @param vNode the node number of v
+     * @return The mutated chromosome
+     * @throws SolverException If there is an internal exception or inconsistant
+     * values.
+     */
+    private Chromosome doMutationMoves(List<List<Object>> trips, int uTrip, int uNode, int vTrip, int vNode) throws SolverException {
         if (trips.get(uTrip).get(uNode).getClass() == Client.class) {
             //Move 1
-            Chromosome tempC = mutationMove1(trips, uTrip, uNode, vTrip, vNode);
-            if (tempC != null && tempC.getTournee().getCost() < bestC.getTournee().getCost()) {
-                bestC = tempC;
-            }
+            Chromosome bestC = mutationMove1(trips, uTrip, uNode, vTrip, vNode);
             if (trips.get(uTrip).get((uNode + 1) % trips.get(uTrip).size()).getClass() == Client.class) {
                 //Move 2
-                tempC = mutationMove23(true, trips, uTrip, uNode, vTrip, vNode);
+                Chromosome tempC = mutationMove23(true, trips, uTrip, uNode, vTrip, vNode);
                 if (tempC != null && tempC.getTournee().getCost() < bestC.getTournee().getCost()) {
                     bestC = tempC;
                 }
@@ -268,15 +280,16 @@ public class GeneticSolver implements ISolver {
                     bestC = tempC;
                 }
             }
-            if(trips.get(vTrip).get(vNode).getClass() == Client.class) {
-                tempC = mutationMove4(trips, uTrip, uNode, vTrip, vNode);
+            if (trips.get(vTrip).get(vNode).getClass() == Client.class) {
+                //Move 4  
+                Chromosome tempC = mutationMove4(trips, uTrip, uNode, vTrip, vNode);
                 if (tempC != null && tempC.getTournee().getCost() < bestC.getTournee().getCost()) {
                     bestC = tempC;
                 }
             }
+            return bestC;
         }
-
-        return bestC;
+        return null;
     }
 
     /**
@@ -287,7 +300,8 @@ public class GeneticSolver implements ISolver {
      * @param uNode the node number of u
      * @param vTrip the trip number of v
      * @param vNode the node number of v
-     * @return the chromosome corresponding to the mutation if it occurred, null otherwise
+     * @return the chromosome corresponding to the mutation if it occurred, null
+     * otherwise
      */
     private Chromosome mutationMove1(List<List<Object>> trips, int uTrip, int uNode, int vTrip, int vNode) {
         List<List<Object>> tripsTemps = new ArrayList<>();
@@ -311,16 +325,19 @@ public class GeneticSolver implements ISolver {
     }
 
     /**
-     * Move 2 of the mutation process: if u and x are client nodes, move (u, x) after v
-     * Move 3 of the mutation process: if u and x are client nodes, move (x, u) after v
+     * Move 2 of the mutation process: if u and x are client nodes, move (u, x)
+     * after v Move 3 of the mutation process: if u and x are client nodes, move
+     * (x, u) after v
      *
-     * @param is2   whether you want to do move 2 or 3 (because move 2 and 3 are similar)
+     * @param is2 whether you want to do move 2 or 3 (because move 2 and 3 are
+     * similar)
      * @param trips the list of trips
      * @param uTrip the trip number of u
      * @param uNode the node number of u
      * @param vTrip the trip number of v
      * @param vNode the node number of v
-     * @return the chromosome corresponding to the mutation if it occurred, null otherwise
+     * @return the chromosome corresponding to the mutation if it occurred, null
+     * otherwise
      */
     private Chromosome mutationMove23(boolean is2, List<List<Object>> trips, int uTrip, int uNode, int vTrip, int vNode) {
         List<List<Object>> tripsTemps = new ArrayList<>();
@@ -355,16 +372,18 @@ public class GeneticSolver implements ISolver {
 
         return tripsToChromosome(tripsTemps);
     }
-    
+
     /**
-     * Move 4 of the mutation process: if u and v are client nodes, permute u and v
+     * Move 4 of the mutation process: if u and v are client nodes, permute u
+     * and v
      *
      * @param trips the list of trips
      * @param uTrip the trip number of u
      * @param uNode the node number of u
      * @param vTrip the trip number of v
      * @param vNode the node number of v
-     * @return the chromosome corresponding to the mutation if it occurred, null otherwise
+     * @return the chromosome corresponding to the mutation if it occurred, null
+     * otherwise
      */
     private Chromosome mutationMove4(List<List<Object>> trips, int uTrip, int uNode, int vTrip, int vNode) {
         List<List<Object>> tripsTemps = new ArrayList<>();
@@ -408,7 +427,7 @@ public class GeneticSolver implements ISolver {
      * @param c the Chromosome to convert
      * @return the trips
      * @throws SolverException If there is an internal exception or inconsistant
-     *                         values.
+     * values.
      */
     private List<List<Object>> chromosomeToTrips(Chromosome c) throws SolverException {
         List<List<Object>> trips = new ArrayList<>();
@@ -431,7 +450,7 @@ public class GeneticSolver implements ISolver {
      * Function that generates a pool of chromosome using the other solvers
      *
      * @throws SolverException If there is an internal exception or inconsistant
-     *                         values.
+     * values.
      */
     private void generateChromosomePool() throws SolverException {
         this.chromosomePool = new ArrayList<>();
@@ -504,7 +523,7 @@ public class GeneticSolver implements ISolver {
      * @param c the Chromosome to test
      * @return whether the Chromosome exists in the pool
      * @throws SolverException If there is an internal exception or inconsistant
-     *                         values.
+     * values.
      */
     private boolean isChromosomePoolDuplicates(Chromosome c) throws SolverException {
         for (Chromosome ch : this.chromosomePool) {
