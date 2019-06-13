@@ -167,7 +167,7 @@ public class Itineraire extends JFrame { // NOSONAR
 
         costNLabel.setText("000000000");
 
-        externalVlabel.setText("Number of external vehicules:");
+        externalVlabel.setText("Number of vehicules:");
 
         numberVLabel.setText("00");
 

@@ -78,7 +78,7 @@ public class ListeInstance extends JFrame { // NOSONAR
         this.initConnexion();
 
         InstanceDao instanceDao = this.daoFactory.getInstanceDao();
-        instances = instanceDao.findAll();
+        this.instances = instanceDao.findAll();
         this.model = new InstanceModelList(this.instances);
 
         this.initComponents();
@@ -291,7 +291,7 @@ public class ListeInstance extends JFrame { // NOSONAR
 
         try {
             Instance instance = ifp.parse(instanceFile);
-            InstanceDao instanceManager = daoFactory.getInstanceDao();
+            InstanceDao instanceManager = this.daoFactory.getInstanceDao();
             instanceManager.create(instance);
             JOptionPane.showMessageDialog(this, "Instance added");
 

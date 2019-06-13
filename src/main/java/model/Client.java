@@ -171,7 +171,7 @@ public class Client implements Serializable {
      * @return id Client
      */
     public Integer getId() {
-        return id;
+        return this.id;
     }
 
     /**
