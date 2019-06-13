@@ -276,10 +276,14 @@ public class GeneticSolver implements ISolver {
             }
             if (trips.get(vTrip).get(vNode).getClass() == Client.class) {
                 //Move 4  
-                bestC = getBestChromosome(bestC, mutationMove4(trips, uTrip, uNode, vTrip, vNode));
-                //Move 5
+                bestC = getBestChromosome(bestC, mutationMovePermuteTwoClient(trips, uTrip, uNode, vTrip, vNode));
                 if (trips.get(uTrip).get((uNode + 1) % trips.get(uTrip).size()).getClass() == Client.class) {
+                    //Move 5
                     bestC = getBestChromosome(bestC, mutationMove5(trips, uTrip, uNode, vTrip, vNode));
+                    if (trips.get(vTrip).get((vNode + 1) % trips.get(vTrip).size()).getClass() == Client.class) {
+                        //Move 6
+                        bestC = getBestChromosome(bestC, mutationMove6(trips, uTrip, uNode, vTrip, vNode));
+                    }
                 }
 
             }
@@ -366,25 +370,30 @@ public class GeneticSolver implements ISolver {
     }
 
     /**
-     * Move 4 of the mutation process: if u and v are client nodes, permute u
-     * and v
+     * Move of the mutation process to permute two clients (used in moves 4, 7,
+     * 8, 9). Move 4: if u and v are client nodes, permute u and v. Move 7: if
+     * (u, x) and (v, y) are non adjacent in the same trip, replace them by (u,
+     * v) and (x, y). Move 8: if (u, x) and (v, y) are in distinct trips,
+     * replace them by (u, v) and (x, y). Move 9: if (u, x) and (v, y) are in
+     * distinct trips, replace them by (u, y) and (x, v)
+     *
      *
      * @param trips the list of trips
-     * @param uTrip the trip number of u
-     * @param uNode the node number of u
-     * @param vTrip the trip number of v
-     * @param vNode the node number of v
+     * @param cli1Trip the trip number of cli1
+     * @param cli1Node the node number of cli1
+     * @param cli2Trip the trip number of cli2
+     * @param cli2Node the node number of cli2
      * @return the chromosome corresponding to the mutation if it occurred, null
      * otherwise
      */
-    private Chromosome mutationMove4(List<List<Object>> trips, int uTrip, int uNode, int vTrip, int vNode) {
+    private Chromosome mutationMovePermuteTwoClient(List<List<Object>> trips, int cli1Trip, int cli1Node, int cli2Trip, int cli2Node) {
         List<List<Object>> tripsTemps = new ArrayList<>();
         for (List<Object> lo : trips) {
             tripsTemps.add(new ArrayList<>(lo));
         }
-        Client u = (Client) tripsTemps.get(uTrip).get(uNode);
-        tripsTemps.get(uTrip).set(uNode, tripsTemps.get(vTrip).get(vNode));
-        tripsTemps.get(vTrip).set(vNode, u);
+        Client temp = (Client) tripsTemps.get(cli1Trip).get(cli1Node);
+        tripsTemps.get(cli1Trip).set(cli1Node, tripsTemps.get(cli2Trip).get(cli2Node));
+        tripsTemps.get(cli2Trip).set(cli2Node, temp);
 
         return tripsToChromosome(tripsTemps);
     }
@@ -419,6 +428,35 @@ public class GeneticSolver implements ISolver {
         } else {
             return null;
         }
+
+        return tripsToChromosome(tripsTemps);
+    }
+
+    /**
+     * Move 6 of the mutation process: if (u, x) and (v, y) are client nodes,
+     * permute (u, x) and (v, y)
+     *
+     * @param trips the list of trips
+     * @param uTrip the trip number of u
+     * @param uNode the node number of u
+     * @param vTrip the trip number of v
+     * @param vNode the node number of v
+     * @return the chromosome corresponding to the mutation if it occurred, null
+     * otherwise
+     */
+    private Chromosome mutationMove6(List<List<Object>> trips, int uTrip, int uNode, int vTrip, int vNode) {
+        List<List<Object>> tripsTemps = new ArrayList<>();
+        for (List<Object> lo : trips) {
+            tripsTemps.add(new ArrayList<>(lo));
+        }
+        //Swap u & v
+        Client temp = (Client) tripsTemps.get(uTrip).get(uNode);
+        tripsTemps.get(uTrip).set(uNode, tripsTemps.get(vTrip).get(vNode));
+        tripsTemps.get(vTrip).set(vNode, temp);
+        //Swap x & y
+        temp = (Client) tripsTemps.get(uTrip).get(uNode+1);
+        tripsTemps.get(uTrip).set(uNode+1, tripsTemps.get(vTrip).get(vNode+1));
+        tripsTemps.get(vTrip).set(vNode+1, temp);
 
         return tripsToChromosome(tripsTemps);
     }
