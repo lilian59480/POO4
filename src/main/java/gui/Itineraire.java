@@ -51,6 +51,7 @@ public class Itineraire extends JFrame { // NOSONAR
     private static final Logger LOGGER = Logger.getLogger(Itineraire.class.getName());
     private Instance instance;
     private VehiculeModelTable vehiculeModelTable;
+    private ClientModelTable clientModelTable;
 
     /**
      * Creates new form itineraire with a null Instance.
@@ -62,12 +63,19 @@ public class Itineraire extends JFrame { // NOSONAR
      */
     public Itineraire(Instance i) {
         this.instance = i;
-        List<Client> clients = i.getClients();
         List<Vehicule> vehicules = i.getVehicules();
+        List<Client> clients = i.getClients();
         this.vehiculeModelTable = new VehiculeModelTable(vehicules);
+        this.clientModelTable = new ClientModelTable(clients);
         this.initComponents();
-
-        this.jTableClient.setModel(new ClientModelTable(clients));
+        this.ClientTable.setModel(this.clientModelTable);
+        this.ClientTable.getModel().addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                System.out.println("I am in Table listener");
+                Itineraire.this.canvas2.repaint();
+            }
+        });
         this.jTableVehicule.setModel(this.vehiculeModelTable);
         this.jTableVehicule.getModel().addTableModelListener(new TableModelListener() {
             @Override
@@ -76,7 +84,6 @@ public class Itineraire extends JFrame { // NOSONAR
                 Itineraire.this.canvas2.repaint();
             }
         });
-
 
         this.initialisationFenetre();
 
@@ -96,7 +103,7 @@ public class Itineraire extends JFrame { // NOSONAR
         this.setBackground(Color.WHITE);
         this.setPreferredSize(new Dimension(400, 200));
         this.setLocationRelativeTo(null);
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
     }
 
@@ -108,7 +115,7 @@ public class Itineraire extends JFrame { // NOSONAR
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        canvas2 = new MyCanvas(this.instance, this.vehiculeModelTable);
+        canvas2 = new MyCanvas(this.instance, this.vehiculeModelTable, this.clientModelTable);
         jLabel1 = new javax.swing.JLabel();
         levelZoomLabel = new javax.swing.JLabel();
         fitInButton = new javax.swing.JButton();
@@ -120,10 +127,16 @@ public class Itineraire extends JFrame { // NOSONAR
         clientEmplacementLabel = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTableVehicule = new javax.swing.JTable();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTableClient = new javax.swing.JTable();
+        vehiculeLabel = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        ClientTable = new javax.swing.JTable();
+        showClientButton = new javax.swing.JButton();
+        hideClientButton = new javax.swing.JButton();
+        showVehiculeButton = new javax.swing.JButton();
+        hideVehiculeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Itineraire");
         setBackground(new java.awt.Color(186, 186, 186));
 
         canvas2.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
@@ -158,7 +171,7 @@ public class Itineraire extends JFrame { // NOSONAR
 
         numberVLabel.setText("00");
 
-        clientEmplacementLabel.setText("Clients and Emplacements ");
+        clientEmplacementLabel.setText("Vehicules");
 
         jTableVehicule.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -171,6 +184,7 @@ public class Itineraire extends JFrame { // NOSONAR
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jTableVehicule.setCellSelectionEnabled(true);
         jTableVehicule.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTableVehiculeMouseClicked(evt);
@@ -178,7 +192,9 @@ public class Itineraire extends JFrame { // NOSONAR
         });
         jScrollPane2.setViewportView(jTableVehicule);
 
-        jTableClient.setModel(new javax.swing.table.DefaultTableModel(
+        vehiculeLabel.setText("Clients");
+
+        ClientTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -189,7 +205,35 @@ public class Itineraire extends JFrame { // NOSONAR
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane3.setViewportView(jTableClient);
+        jScrollPane1.setViewportView(ClientTable);
+
+        showClientButton.setText("Display All");
+        showClientButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showClientButtonActionPerformed(evt);
+            }
+        });
+
+        hideClientButton.setText("Hide All");
+        hideClientButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hideClientButtonActionPerformed(evt);
+            }
+        });
+
+        showVehiculeButton.setText("Display All");
+        showVehiculeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showVehiculeButtonActionPerformed(evt);
+            }
+        });
+
+        hideVehiculeButton.setText("Hide All");
+        hideVehiculeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hideVehiculeButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -198,72 +242,85 @@ public class Itineraire extends JFrame { // NOSONAR
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(costLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(externalVlabel, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(clientEmplacementLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(levelZoomLabel)
-                        .addGap(41, 41, 41)
-                        .addComponent(zoomButton)
-                        .addGap(50, 50, 50)
-                        .addComponent(fitInButton)
-                        .addGap(277, 277, 277))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(costLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(externalVlabel, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(levelZoomLabel)
+                                .addGap(41, 41, 41)
+                                .addComponent(zoomButton)
+                                .addGap(50, 50, 50)
+                                .addComponent(fitInButton)
+                                .addGap(277, 277, 277))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(costNLabel)
+                                .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(costNLabel)
-                        .addGap(0, 0, Short.MAX_VALUE))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(247, 247, 247)
-                        .addComponent(numberVLabel))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(16, 16, 16)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                .addComponent(canvas2, javax.swing.GroupLayout.PREFERRED_SIZE, 649, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(39, 39, 39))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(16, 16, 16)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(714, Short.MAX_VALUE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(clientEmplacementLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(showVehiculeButton)
+                                .addGap(34, 34, 34)
+                                .addComponent(hideVehiculeButton))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(vehiculeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(showClientButton)
+                                .addGap(34, 34, 34)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(hideClientButton)
+                                    .addComponent(numberVLabel))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 245, Short.MAX_VALUE)
+                        .addComponent(canvas2, javax.swing.GroupLayout.PREFERRED_SIZE, 649, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(39, 39, 39))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(levelZoomLabel)
-                    .addComponent(fitInButton)
-                    .addComponent(zoomButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(canvas2, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(33, 33, 33)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(costLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(costNLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(externalVlabel)
+                            .addComponent(numberVLabel))
+                        .addGap(46, 46, 46)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(vehiculeLabel)
+                            .addComponent(showClientButton)
+                            .addComponent(hideClientButton))
+                        .addGap(14, 14, 14)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(34, 34, 34)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(clientEmplacementLabel)
+                            .addComponent(showVehiculeButton)
+                            .addComponent(hideVehiculeButton))
+                        .addGap(27, 27, 27)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(levelZoomLabel)
+                            .addComponent(fitInButton)
+                            .addComponent(zoomButton))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 132, Short.MAX_VALUE)
+                        .addComponent(canvas2, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(33, 33, 33)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(costLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(costNLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(externalVlabel)
-                    .addComponent(numberVLabel))
-                .addGap(40, 40, 40)
-                .addComponent(clientEmplacementLabel)
-                .addGap(196, 196, 196)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(374, Short.MAX_VALUE))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(175, 175, 175)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(542, Short.MAX_VALUE)))
         );
 
         fitInButton.getAccessibleContext().setAccessibleName("fitIn");
@@ -324,11 +381,49 @@ public class Itineraire extends JFrame { // NOSONAR
      * @param evt event
      */
     private void jTableVehiculeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableVehiculeMouseClicked
-        // TODO add your handling code here:
     }//GEN-LAST:event_jTableVehiculeMouseClicked
+    /**
+     * Enable all Client.
+     *
+     * @param evt test
+     */
+    private void showClientButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showClientButtonActionPerformed
+        // TODO add your handling code here:
+
+        this.clientModelTable.setAll(Boolean.TRUE);
+    }//GEN-LAST:event_showClientButtonActionPerformed
+    /**
+     * isable Table.
+     *
+     * @param evt event
+     */
+    private void hideClientButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hideClientButtonActionPerformed
+        // TODO add your handling code here:
+        this.clientModelTable.setAll(Boolean.FALSE);
+    }//GEN-LAST:event_hideClientButtonActionPerformed
+    /**
+     * Enable all Client.
+     *
+     * @param evt test
+     */
+    private void showVehiculeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showVehiculeButtonActionPerformed
+        // TODO add your handling code here:
+        this.vehiculeModelTable.setAll(Boolean.TRUE);
+    }//GEN-LAST:event_showVehiculeButtonActionPerformed
+    /**
+     * Disable all Client.
+     *
+     * @param evt test
+     */
+    private void hideVehiculeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hideVehiculeButtonActionPerformed
+        // TODO add your handling code here:
+        this.vehiculeModelTable.setAll(Boolean.FALSE);
+
+    }//GEN-LAST:event_hideVehiculeButtonActionPerformed
 
     //CHECKSTYLE:OFF
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable ClientTable;
     /*
     private java.awt.Canvas canvas2;
     */
@@ -338,13 +433,17 @@ public class Itineraire extends JFrame { // NOSONAR
     private javax.swing.JLabel costNLabel;
     private javax.swing.JLabel externalVlabel;
     private javax.swing.JButton fitInButton;
+    private javax.swing.JButton hideClientButton;
+    private javax.swing.JButton hideVehiculeButton;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTableClient;
     private javax.swing.JTable jTableVehicule;
     private javax.swing.JLabel levelZoomLabel;
     private javax.swing.JLabel numberVLabel;
+    private javax.swing.JButton showClientButton;
+    private javax.swing.JButton showVehiculeButton;
+    private javax.swing.JLabel vehiculeLabel;
     private javax.swing.JButton zoomButton;
     // End of variables declaration//GEN-END:variables
     //CHECKSTYLE:ON

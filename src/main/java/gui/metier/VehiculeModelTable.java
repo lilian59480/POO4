@@ -54,24 +54,25 @@ public class VehiculeModelTable extends AbstractTableModel {
      * Représente les données du jTable.
      */
     private final List<Vehicule> data;
-    private final Map<Vehicule, Boolean> vehicules;
+    private final List<Boolean> checkBoxValues;
 
     /**
      * constructeur.
      *
-     * @param data list of vehicules
+     * @param data list of mapDisplayVehicules
      */
     public VehiculeModelTable(List<Vehicule> data) {
-        this.entetes = new String[3];
+        this.entetes = new String[2];
         this.entetes[0] = "Display / Hide";
-        this.entetes[1] = "Color";
-        this.entetes[2] = "Vehicule";
+        this.entetes[1] = "Vehicule";
         this.data = data;
+        this.checkBoxValues = new ArrayList<>();
 
-        this.vehicules = new HashMap<>();
         for (Vehicule v : data) {
-            this.vehicules.put(v, true);
+
+            this.checkBoxValues.add(Boolean.TRUE);
         }
+
     }
 
     /**
@@ -105,14 +106,14 @@ public class VehiculeModelTable extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         switch (columnIndex) {
             case 0:
-                return this.vehicules.get(this.data.get(rowIndex)).booleanValue();
+                return this.checkBoxValues.get(rowIndex);
             case 1:
-                return Color.getHSBColor(this.data.get(rowIndex).getId() * 10 / 360.0f, 1, 0.8f).toString();
-            case 2:
                 return this.data.get(rowIndex).getId();
-            default:
+            /*  default:
                 throw new IllegalArgumentException();
+             */
         }
+        return null;
     }
 
     /**
@@ -137,8 +138,6 @@ public class VehiculeModelTable extends AbstractTableModel {
         switch (columnIndex) {
             case 0:
                 return Boolean.class;
-            case 1:
-                return Color.class;
             case 2:
                 return Integer.class;
             default:
@@ -158,7 +157,7 @@ public class VehiculeModelTable extends AbstractTableModel {
         System.out.println("on click cellule :" + aValue.toString());
         if (aValue instanceof Boolean) {
             if (columnIndex == 0) {
-                this.vehicules.put(data.get(rowIndex), (Boolean) aValue);
+                this.checkBoxValues.set(rowIndex, (Boolean) aValue);
             }
         }
         fireTableCellUpdated(rowIndex, columnIndex);// notify listeners
@@ -184,13 +183,27 @@ public class VehiculeModelTable extends AbstractTableModel {
      */
     public List<Vehicule> getDisplayVehicules() {
         List<Vehicule> vehicules = new ArrayList<Vehicule>();
-        for (Vehicule v : this.data) {
-            if (this.vehicules.get(v).booleanValue()) {
-                System.out.println(v.toString());
-                vehicules.add(v);
+        for (int i = 0; i < this.data.size(); i++) {
+            if (this.checkBoxValues.get(i)) {
+                vehicules.add(this.data.get(i));
             }
         }
         return vehicules;
+    }
+
+    /**
+     * set All False or True
+     *
+     * @param b boolean
+     */
+    public void setAll(Boolean b) {
+        for (int i = 0; i < this.data.size(); i++) {
+
+            this.checkBoxValues.set(i, b);
+            fireTableCellUpdated(i, 0);// notify listeners
+
+        }
+
     }
 
 }

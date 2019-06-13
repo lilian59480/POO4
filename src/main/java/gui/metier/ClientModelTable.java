@@ -19,9 +19,11 @@
 package gui.metier;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 import model.Client;
+import model.Vehicule;
 
 /**
  *
@@ -38,6 +40,7 @@ public class ClientModelTable extends AbstractTableModel {
      * Représente les données du jTable
      */
     private final List<Client> data;
+    private final List<Boolean> checkBoxValues;
 
     /**
      * Constructor.
@@ -45,11 +48,16 @@ public class ClientModelTable extends AbstractTableModel {
      * @param data Client List.
      */
     public ClientModelTable(List<Client> data) {
-        this.entetes = new String[3];
+        this.entetes = new String[2];
         this.entetes[0] = "Display / Hide";
-        this.entetes[1] = "Color";
-        this.entetes[2] = "Client";
+        this.entetes[1] = "Client";
         this.data = data;
+        this.checkBoxValues = new ArrayList<>();
+
+        for (Client c : data) {
+
+            this.checkBoxValues.add(Boolean.TRUE);
+        }
     }
 
     /**
@@ -84,11 +92,10 @@ public class ClientModelTable extends AbstractTableModel {
         System.out.println("test ID : " + this.data.get(rowIndex).getId());
         switch (columnIndex) {
             case 0:
-                return true;
+                return this.checkBoxValues.get(rowIndex);
             case 1:
-                return  Color.getHSBColor(this.data.get(rowIndex).getId() * 10 / 360.0f, 1, 0.8f);
-            case 2:
                 return this.data.get(rowIndex).getId();
+
             default:
                 throw new IllegalArgumentException();
         }
@@ -117,28 +124,70 @@ public class ClientModelTable extends AbstractTableModel {
             case 0:
                 return Boolean.class;
             case 1:
-                return Color.class;
-            case 2:
                 return Integer.class;
             default:
                 return Object.class;
         }
     }
-  /**
-   * Allow to set a value to a 
-   * @param aValue
-   * @param rowIndex
-   * @param columnIndex 
-   */
-  @Override
-   public void setValueAt(Object aValue, int rowIndex, int columnIndex)
-   {
-       Client row = data.get(rowIndex);
-/*
-        if(0 == columnIndex) {
-                 row[rowIndex][columnIndex] = aValue; 
 
-       }
-*/
-   }
+    /**
+     * Allow to set a value to a
+     *
+     * @param aValue
+     * @param rowIndex
+     * @param columnIndex
+     */
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        System.out.println("on click cellule :" + aValue.toString());
+        if (aValue instanceof Boolean) {
+            if (columnIndex == 0) {
+                this.checkBoxValues.set(rowIndex, (Boolean) aValue);
+            }
+        }
+        fireTableCellUpdated(rowIndex, columnIndex);// notify listeners
+    }
+
+    /**
+     * Allow Editable cellule.
+     *
+     * @param rowIndex
+     * @param columnIndex
+     * @return boolean
+     */
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+
+        return columnIndex == 0;
+    }
+
+    /**
+     * display true vehicules.
+     *
+     * @return vehicules to display
+     */
+    public List<Client> getDisplayClients() {
+        List<Client> clients = new ArrayList<Client>();
+        for (int i = 0; i < this.data.size(); i++) {
+            if (this.checkBoxValues.get(i)) {
+                clients.add(this.data.get(i));
+            }
+        }
+        return clients;
+    }
+
+    /**
+     * set All False or True
+     *
+     * @param b boolean
+     */
+    public void setAll(Boolean b) {
+        for (int i = 0; i < this.data.size(); i++) {
+
+            this.checkBoxValues.set(i, b);
+            fireTableCellUpdated(i, 0);// notify listeners
+
+        }
+
+    }
 }

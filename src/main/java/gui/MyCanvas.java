@@ -18,6 +18,7 @@
  */
 package gui;
 
+import gui.metier.ClientModelTable;
 import gui.metier.VehiculeModelTable;
 import java.awt.BasicStroke;
 import java.awt.Canvas;
@@ -25,6 +26,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.List;
+import model.Client;
 import model.Depot;
 import model.Emplacement;
 import model.Instance;
@@ -45,17 +47,21 @@ public class MyCanvas extends Canvas {
     private int draggedY = 400;
     private int zoom = 4;
     private VehiculeModelTable vModel;
+    private ClientModelTable cModel;
 
     /**
      * initial constructor
      *
      * @param i Instance
      * @param vModel vModelTable
+     * @param cModel cModelTable
      */
-    public MyCanvas(Instance i, VehiculeModelTable vModel) {
+    public MyCanvas(Instance i, VehiculeModelTable vModel, ClientModelTable cModel) {
         this.instance = i;
         this.vModel = vModel;
+        this.cModel = cModel;
         this.setBackground(Color.WHITE);
+
     }
 
     /**
@@ -92,8 +98,9 @@ public class MyCanvas extends Canvas {
      *
      * @param g Graphics2D zone.
      * @param e Emplacement to draw.
+     * @param code int
      */
-    private void drawEmplacement(Graphics2D g, Emplacement e) {
+    private void drawEmplacement(Graphics2D g, Emplacement e, int code) {
         if (e == null) {
             return;
         }
@@ -101,7 +108,7 @@ public class MyCanvas extends Canvas {
         if (e instanceof Depot) {
             g.setColor(Color.RED);
         } else {
-            g.setColor(Color.BLUE);
+            g.setColor(Color.getHSBColor(code / 360.0f, 1, 0.8f));
         }
         g.fillRect(this.getDrawedX(e) - 3, this.getDrawedY(e) - 3, 6, 6);
 
@@ -117,6 +124,23 @@ public class MyCanvas extends Canvas {
         if (i == null) {
             return;
         }
+        this.drawRoute(g, i);
+        this.drawClient(g, i);
+        Point origin = new Emplacement();
+        g.setColor(Color.BLACK);
+        g.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0));
+        g.drawLine(this.getDrawedX(origin), 0, this.getDrawedX(origin), this.getHeight());
+        g.drawLine(0, this.getDrawedY(origin), this.getWidth(), this.getDrawedY(origin));
+
+    }
+
+    /**
+     * Draw Route.
+     *
+     * @param g graphic
+     * @param i instance
+     */
+    private void drawRoute(Graphics2D g, Instance i) {
         //Dessin du depot
         Depot d = i.getDepot();
 
@@ -134,13 +158,35 @@ public class MyCanvas extends Canvas {
                 g.setStroke(new BasicStroke(3));
                 g.drawLine(this.getDrawedX(source), this.getDrawedY(source), this.getDrawedX(destination), this.getDrawedY(destination));
                 source = destination;
-                this.drawEmplacement(g, destination);
 
             }
             g.drawLine(this.getDrawedX(source), this.getDrawedY(source), this.getDrawedX(d), this.getDrawedY(d));
             code += 20;
         }
-        this.drawEmplacement(g, d);
+        this.drawEmplacement(g, d, 0);
+    }
+
+    /**
+     *  draw Client.
+     * @param g graphic
+     * @param i instance
+     */
+    private void drawClient(Graphics2D g, Instance i) {
+
+        List<Client> clients = this.cModel.getDisplayClients();
+        //Dessin du depot
+        Depot d = i.getDepot();
+        int code = 0;
+        for (Client c : clients) {
+            for (Emplacement e : c.getEmplacements()) {
+                /*
+                 * Between 360 -> getHSBColor(X, 1, 0.8)
+                 */
+                drawEmplacement(g, e, code);
+                code += 20;
+            }
+        }
+
     }
 
     /**
