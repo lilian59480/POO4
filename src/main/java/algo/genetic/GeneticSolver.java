@@ -294,6 +294,12 @@ public class GeneticSolver implements ISolver {
                             //Move 7
                             bestC = getBestChromosome(bestC, mutationMovePermuteTwoClient(trips, uTrip, uNode + 1, vTrip, vNode));
                         }
+                        if (uTrip != vTrip) {
+                            //Move 8
+                            bestC = getBestChromosome(bestC, mutationMovePermuteTwoClient(trips, uTrip, uNode + 1, vTrip, vNode));
+                            //Move 9
+                            bestC = getBestChromosome(bestC, mutationMove9(trips, uTrip, uNode, vTrip, vNode));
+                        }
                     }
                 }
 
@@ -382,12 +388,10 @@ public class GeneticSolver implements ISolver {
 
     /**
      * Move of the mutation process to permute two clients (used in moves 4, 7,
-     * 8, 9). Move 4: if u and v are client nodes, permute u and v. Move 7: if
-     * (u, x) and (v, y) are non adjacent in the same trip, replace them by (u,
-     * v) and (x, y). Move 8: if (u, x) and (v, y) are in distinct trips,
-     * replace them by (u, v) and (x, y). Move 9: if (u, x) and (v, y) are in
-     * distinct trips, replace them by (u, y) and (x, v)
-     *
+     * 8). Move 4: if u and v are client nodes, permute u and v. Move 7: if (u,
+     * x) and (v, y) are non adjacent in the same trip, replace them by (u, v)
+     * and (x, y). Move 8: if (u, x) and (v, y) are in distinct trips, replace
+     * them by (u, v) and (x, y)
      *
      * @param trips the list of trips
      * @param cli1Trip the trip number of cli1
@@ -468,6 +472,32 @@ public class GeneticSolver implements ISolver {
         temp = (Client) tripsTemps.get(uTrip).get(uNode + 1);
         tripsTemps.get(uTrip).set(uNode + 1, tripsTemps.get(vTrip).get(vNode + 1));
         tripsTemps.get(vTrip).set(vNode + 1, temp);
+
+        return tripsToChromosome(tripsTemps);
+    }
+
+    /**
+     * Move 9 of the mutation process: if (u, x) and (v, y) are in distinct
+     * trips, replace them by (u, y) and (x, v)
+     *
+     * @param trips the list of trips
+     * @param uTrip the trip number of u
+     * @param uNode the node number of u
+     * @param vTrip the trip number of v
+     * @param vNode the node number of v
+     * @return the chromosome corresponding to the mutation if it occurred, null
+     * otherwise
+     */
+    private Chromosome mutationMove9(List<List<Object>> trips, int uTrip, int uNode, int vTrip, int vNode) {
+        List<List<Object>> tripsTemps = new ArrayList<>();
+        for (List<Object> lo : trips) {
+            tripsTemps.add(new ArrayList<>(lo));
+        }
+        Client x = (Client) tripsTemps.get(uTrip).get(uNode + 1);
+
+        tripsTemps.get(uTrip).set(uNode + 1, tripsTemps.get(vTrip).get(vNode + 1));
+        tripsTemps.get(vTrip).set(vNode + 1, tripsTemps.get(vTrip).get(vNode));
+        tripsTemps.get(vTrip).set(vNode, x);
 
         return tripsToChromosome(tripsTemps);
     }
