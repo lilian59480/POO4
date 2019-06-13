@@ -277,6 +277,11 @@ public class GeneticSolver implements ISolver {
             if (trips.get(vTrip).get(vNode).getClass() == Client.class) {
                 //Move 4  
                 bestC = getBestChromosome(bestC, mutationMove4(trips, uTrip, uNode, vTrip, vNode));
+                //Move 5
+                if (trips.get(uTrip).get((uNode + 1) % trips.get(uTrip).size()).getClass() == Client.class) {
+                    bestC = getBestChromosome(bestC, mutationMove5(trips, uTrip, uNode, vTrip, vNode));
+                }
+
             }
             return bestC;
         }
@@ -309,8 +314,6 @@ public class GeneticSolver implements ISolver {
         } else {
             return null;
         }
-        //System.out.println("trip      " + trips);
-        //System.out.println("tripTemps " + tripsTemps);
 
         return tripsToChromosome(tripsTemps);
     }
@@ -358,8 +361,6 @@ public class GeneticSolver implements ISolver {
         } else {
             return null;
         }
-        //System.out.println("trip      " + trips);
-        //System.out.println("tripTemps " + tripsTemps);
 
         return tripsToChromosome(tripsTemps);
     }
@@ -384,10 +385,40 @@ public class GeneticSolver implements ISolver {
         Client u = (Client) tripsTemps.get(uTrip).get(uNode);
         tripsTemps.get(uTrip).set(uNode, tripsTemps.get(vTrip).get(vNode));
         tripsTemps.get(vTrip).set(vNode, u);
-        //System.out.println("U " + trips.get(uTrip).get(uNode));
-        //System.out.println("V " + trips.get(vTrip).get(vNode));
-        //System.out.println("trip      " + trips);
-        //System.out.println("tripTemps " + tripsTemps);
+
+        return tripsToChromosome(tripsTemps);
+    }
+
+    /**
+     * Move 5 of the mutation process: if u, x and v are clients nodes, permute
+     * (u, x) with v
+     *
+     * @param trips the list of trips
+     * @param uTrip the trip number of u
+     * @param uNode the node number of u
+     * @param vTrip the trip number of v
+     * @param vNode the node number of v
+     * @return the chromosome corresponding to the mutation if it occurred, null
+     * otherwise
+     */
+    private Chromosome mutationMove5(List<List<Object>> trips, int uTrip, int uNode, int vTrip, int vNode) {
+        List<List<Object>> tripsTemps = new ArrayList<>();
+        for (List<Object> lo : trips) {
+            tripsTemps.add(new ArrayList<>(lo));
+        }
+        Client u = (Client) tripsTemps.get(uTrip).get(uNode);
+        tripsTemps.get(uTrip).set(uNode, tripsTemps.get(vTrip).get(vNode));
+        tripsTemps.get(vTrip).set(vNode, u);
+        if (uTrip != vTrip || uNode + 1 > vNode) {
+            Client x = (Client) tripsTemps.get(uTrip).remove(uNode + 1);
+            tripsTemps.get(vTrip).add((vNode + 1) % tripsTemps.get(vTrip).size(), x);
+        } else if (uNode + 1 < vNode) {
+            Client x = (Client) tripsTemps.get(uTrip).get(uNode + 1);
+            tripsTemps.get(vTrip).add((vNode + 1) % tripsTemps.get(vTrip).size(), x);
+            tripsTemps.get(uTrip).remove(uNode + 1);
+        } else {
+            return null;
+        }
 
         return tripsToChromosome(tripsTemps);
     }
