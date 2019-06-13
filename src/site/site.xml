@@ -9,10 +9,12 @@
         <name>Formation IG2I - Centrale Lille</name>
         <src>images/IG2I.jpg</src>
         <href>http://ig2i.centralelille.fr/</href>
+        <height>100</height>
+        <width>200</width>
     </bannerRight>
 
     <publishDate position="none"/>
-    <version position="right"/>
+    <version/>
 
     <poweredBy>
         <logo name="Maven"
@@ -26,8 +28,8 @@
     <body>
         <menu name="Overview">
             <item name="Introduction" href="index.html"/>
-            <item name="Subject" href="subject.html"/>
-            <item name="Download" href="download.html"/>
+            <item name="Subject" href="pdf/subject.pdf"/>
+            <item name="Readme" href="readme.html"/>
         </menu>
 
         <menu ref="modules"/>

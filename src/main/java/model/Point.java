@@ -56,6 +56,9 @@ import javax.persistence.Table;
 @DiscriminatorColumn(name = "POINTTYPE", discriminatorType = DiscriminatorType.INTEGER)
 public abstract class Point implements Serializable {
 
+    /**
+     * Serial UID, for serialisation.
+     */
     private static final long serialVersionUID = 1L;
 
     /**

@@ -718,6 +718,12 @@ public class GeneticSolver implements ISolver {
         } catch (Exception ex) {
         LOGGER.log(Level.SEVERE, "Exception while writing a solution", ex);
         }*/
-    //    }
+        //}
     //}
+
+    @Override
+    public String toString() {
+        return "GeneticSolver{Δ=" + minCostSpace + ", α=" + maxIterations + ", β=" + maxIterationsWithoutImproving + ", r=" + mutationRate + '}';
+    }
+
 }

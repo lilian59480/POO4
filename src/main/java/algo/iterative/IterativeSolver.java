@@ -131,7 +131,6 @@ public class IterativeSolver implements ISolver {
         List<Client> clients = this.instance.getClients();
 
         this.clientModifier.modifyList(clients);
-        System.out.println("\n\n\n\n\n\n" + clients + "\n\n\n\n\n\n\n");
 
         for (Client c : clients) {
             boolean affecte = false;
@@ -159,6 +158,11 @@ public class IterativeSolver implements ISolver {
                 }
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "IterativeSolver";
     }
 
 }

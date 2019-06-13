@@ -20,18 +20,13 @@ package algo.genetic;
 
 import algo.ISolver;
 import algo.SolverException;
-import algo.iterative.NaiveSolver;
-import io.input.InstanceFileParser;
-
-import model.Instance;
-import model.Vehicule;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Instance;
+import model.Vehicule;
 
 /**
  * ShortestPathSolver class
