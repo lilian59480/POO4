@@ -37,6 +37,12 @@
         <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
         <sonar.language>java</sonar.language>
     </properties>
+    <distributionManagement>
+        <site>
+            <id>${project.artifactId}-site</id>
+            <url>https://lilian59480.github.io/POO4/</url>
+        </site>
+    </distributionManagement>
     <build>
         <plugins>
             <plugin>
@@ -135,6 +141,11 @@
                         </reports>
                     </reportSet>
                 </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.22.1</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
