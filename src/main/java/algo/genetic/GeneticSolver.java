@@ -268,6 +268,12 @@ public class GeneticSolver implements ISolver {
                     bestC = tempC;
                 }
             }
+            if(trips.get(vTrip).get(vNode).getClass() == Client.class) {
+                tempC = mutationMove4(trips, uTrip, uNode, vTrip, vNode);
+                if (tempC != null && tempC.getTournee().getCost() < bestC.getTournee().getCost()) {
+                    bestC = tempC;
+                }
+            }
         }
 
         return bestC;
@@ -344,6 +350,32 @@ public class GeneticSolver implements ISolver {
         } else {
             return null;
         }
+        //System.out.println("trip      " + trips);
+        //System.out.println("tripTemps " + tripsTemps);
+
+        return tripsToChromosome(tripsTemps);
+    }
+    
+    /**
+     * Move 4 of the mutation process: if u and v are client nodes, permute u and v
+     *
+     * @param trips the list of trips
+     * @param uTrip the trip number of u
+     * @param uNode the node number of u
+     * @param vTrip the trip number of v
+     * @param vNode the node number of v
+     * @return the chromosome corresponding to the mutation if it occurred, null otherwise
+     */
+    private Chromosome mutationMove4(List<List<Object>> trips, int uTrip, int uNode, int vTrip, int vNode) {
+        List<List<Object>> tripsTemps = new ArrayList<>();
+        for (List<Object> lo : trips) {
+            tripsTemps.add(new ArrayList<>(lo));
+        }
+        Client u = (Client) tripsTemps.get(uTrip).get(uNode);
+        tripsTemps.get(uTrip).set(uNode, tripsTemps.get(vTrip).get(vNode));
+        tripsTemps.get(vTrip).set(vNode, u);
+        //System.out.println("U " + trips.get(uTrip).get(uNode));
+        //System.out.println("V " + trips.get(vTrip).get(vNode));
         //System.out.println("trip      " + trips);
         //System.out.println("tripTemps " + tripsTemps);
 
@@ -540,7 +572,7 @@ public class GeneticSolver implements ISolver {
     public static void main(String[] args) {
         Instance i = null;
         //for (int j = 0; j < 40; j++) {
-        int id = 1;
+        int id = 30;
         System.out.println(id);
         try {
             InstanceFileParser ifp = new InstanceFileParser();
