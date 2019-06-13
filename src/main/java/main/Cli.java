@@ -62,7 +62,7 @@ public class Cli {
             new NaiveSolver(),
             new RandomSolver(),
             new CvCostCapacitySortedSolver(),
-            new GeneticSolver(2, 5000, 2500, 0.0)
+            new GeneticSolver(2, 5000, 2500, 0.4)
     );
 
     /**

@@ -84,32 +84,24 @@ public class ShortestPathSolver implements ISolver {
             List<Vehicule> vehicules = this.instance.getVehicules();
             int nbV = this.instance.getNbVehicules();
 
-            List<Label> tournee = new ArrayList<>(chromosome.getTournee().getTournee());
+            List<Trip> tournee = new ArrayList<>(chromosome.getTournee().getTrips());
             Collections.reverse(tournee);
             Vehicule v;
             for (int i = 0; i < tournee.size(); i++) {
-                Label label = tournee.get(i);
+                Trip trip = tournee.get(i);
                 if (i >= nbV) {
                     LOGGER.log(Level.INFO, "Ajout d'un extra vehicule");
                     v = this.instance.addVehicule();
                 } else {
                     v = vehicules.get(i);
                 }
-                if (label.getPrecedents().size() > 1) {
-                    for (int j = 1; j < label.getPrecedents().size(); j++) {
-                        if (!v.addEmplacement(label.getPrecedents().get(j))) {
+                for(int j = 1; j < trip.getEmplacements().size(); j++) {
+                        if (!v.addEmplacement(trip.getEmplacements().get(j))) {
                             LOGGER.log(Level.WARNING,
                                     "Error while adding emplacement to vehicule during ShortestPathEmplacements calculation");
                             throw new SolverException(
                                     "Error while adding emplacement to vehicule during ShortestPathEmplacements calculation");
                         }
-                    }
-                }
-                if (!v.addEmplacement(label.getEmplacement())) {
-                    LOGGER.log(Level.WARNING,
-                            "Error while adding emplacement to vehicule during ShortestPathEmplacements calculation");
-                    throw new SolverException(
-                            "Error while adding emplacement to vehicule during ShortestPathEmplacements calculation");
                 }
             }
 

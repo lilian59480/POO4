@@ -46,7 +46,7 @@ public class Tournee {
     /**
      * Labels of the tournee
      */
-    private List<Label> tournee;
+    private List<Trip> trips;
 
     /**
      * Tournee constructor
@@ -58,7 +58,7 @@ public class Tournee {
         this.nbVehicule = nbVehicle;
         this.costExtraVehicule = costExtraVehicule;
         this.cost = 0.0;
-        this.tournee = new ArrayList<>();
+        this.trips = new ArrayList<>();
     }
 
     /**
@@ -70,8 +70,8 @@ public class Tournee {
     public Tournee(Label label, Tournee parentTournee) {
         this.nbVehicule = parentTournee.getNbVehicule();
         this.costExtraVehicule = parentTournee.getCostExtraVehicule();
-        this.tournee = new ArrayList<>(parentTournee.getTournee());
-        this.tournee.add(label);
+        this.trips = new ArrayList<>(parentTournee.getTrips());
+        this.addLabel(label);
     }
 
     /**
@@ -83,7 +83,7 @@ public class Tournee {
         this.nbVehicule = tournee.getNbVehicule();
         this.costExtraVehicule = tournee.getCostExtraVehicule();
         this.cost = tournee.getCost();
-        this.tournee = new ArrayList<>(tournee.getTournee());
+        this.trips = new ArrayList<>(tournee.getTrips());
     }
 
     /**
@@ -97,7 +97,8 @@ public class Tournee {
         this.nbVehicule = nbVehicule;
         this.costExtraVehicule = costExtraVehicule;
         this.cost = 0.0;
-        this.tournee = new ArrayList<>(bestLabel.getLabelsPre());
+        this.trips = new ArrayList<>();
+        this.addLabels(bestLabel.getLabelsPre());
         this.addLabel(bestLabel.getLabel());
     }
 
@@ -105,10 +106,10 @@ public class Tournee {
      * Function that updates the cost of the Tournee
      */
     private void updateCost() {
-        int nbExtraVRequired = Math.max(this.tournee.size() - this.nbVehicule, 0);
+        int nbExtraVRequired = Math.max(this.trips.size() - this.nbVehicule, 0);
         double tempCost = 0.0;
-        for (Label label : this.tournee) {
-            tempCost += label.getCost();
+        for (Trip trip : this.trips) {
+            tempCost += trip.getCost();
         }
         this.cost = tempCost + nbExtraVRequired * this.costExtraVehicule;
     }
@@ -123,12 +124,12 @@ public class Tournee {
     }
 
     /**
-     * Get the tournee of the Tournee
+     * Get the trips of the Tournee
      *
      * @return the cost
      */
-    public List<Label> getTournee() {
-        return this.tournee;
+    public List<Trip> getTrips() {
+        return this.trips;
     }
 
     /**
@@ -137,7 +138,7 @@ public class Tournee {
      * @param label the label to add
      */
     public void addLabel(Label label) {
-        this.tournee.add(label);
+        this.trips.add(new Trip(label));
         this.updateCost();
     }
 
@@ -147,7 +148,9 @@ public class Tournee {
      * @param labels labels to add
      */
     public void addLabels(List<Label> labels) {
-        this.tournee.addAll(labels);
+        for(Label label: labels) {
+            this.addLabel(label);
+        }
         this.updateCost();
     }
 
@@ -171,7 +174,7 @@ public class Tournee {
 
     @Override
     public String toString() {
-        return "Tournee{" + "cost=" + cost + ", nbVehicule=" + nbVehicule + ", costExtraVehicule=" + costExtraVehicule + ", tournee=" + tournee + '}';
+        return "Tournee{" + "cost=" + cost + ", nbVehicule=" + nbVehicule + ", costExtraVehicule=" + costExtraVehicule + ", trips=" + trips + '}';
     }
 
 }

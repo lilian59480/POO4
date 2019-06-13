@@ -23,6 +23,7 @@ import algo.SolverException;
 import algo.iterative.CvCostCapacitySortedSolver;
 import algo.iterative.NaiveSolver;
 import io.input.InstanceFileParser;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +32,10 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import model.Client;
+import model.Depot;
+import model.Emplacement;
 import model.Instance;
 import model.Vehicule;
 
@@ -150,32 +154,24 @@ public class GeneticSolver implements ISolver {
             List<Vehicule> vehicules = this.instance.getVehicules();
             int nbV = this.instance.getNbVehicules();
 
-            List<Label> tournee = new ArrayList<>(bestChromosome.getTournee().getTournee());
+            List<Trip> tournee = new ArrayList<>(bestChromosome.getTournee().getTrips());
             Collections.reverse(tournee);
             Vehicule v;
             for (int i = 0; i < tournee.size(); i++) {
-                Label label = tournee.get(i);
+                Trip trip = tournee.get(i);
                 if (i >= nbV) {
                     LOGGER.log(Level.INFO, "Ajout d'un extra vehicule");
                     v = this.instance.addVehicule();
                 } else {
                     v = vehicules.get(i);
                 }
-                if (label.getPrecedents().size() > 1) {
-                    for (int j = 1; j < label.getPrecedents().size(); j++) {
-                        if (!v.addEmplacement(label.getPrecedents().get(j))) {
-                            LOGGER.log(Level.WARNING,
-                                    "Error while adding emplacement to vehicule during ShortestPathEmplacements calculation");
-                            throw new SolverException(
-                                    "Error while adding emplacement to vehicule during ShortestPathEmplacements calculation");
-                        }
+                for (int j = 1; j < trip.getEmplacements().size(); j++) {
+                    if (!v.addEmplacement(trip.getEmplacements().get(j))) {
+                        LOGGER.log(Level.WARNING,
+                                "Error while adding emplacement to vehicule during ShortestPathEmplacements calculation");
+                        throw new SolverException(
+                                "Error while adding emplacement to vehicule during ShortestPathEmplacements calculation");
                     }
-                }
-                if (!v.addEmplacement(label.getEmplacement())) {
-                    LOGGER.log(Level.WARNING,
-                            "Error while adding emplacement to vehicule during ShortestPathEmplacements calculation");
-                    throw new SolverException(
-                            "Error while adding emplacement to vehicule during ShortestPathEmplacements calculation");
                 }
             }
 
@@ -217,7 +213,7 @@ public class GeneticSolver implements ISolver {
             //Will the child mutate?
             if (r.nextFloat() <= this.mutationRate) {
                 //Do mutation
-                System.out.println("Mutation occurs");
+                child = this.mutateChromosome(child);
             }
             if (!this.isChromosomePoolDuplicates(child)) {
                 iterationsWithoutImprovement = 0;
@@ -227,6 +223,340 @@ public class GeneticSolver implements ISolver {
                 iterationsWithoutImprovement++;
             }
         }
+    }
+
+    /**
+     * Functions that mutates a Chromosome
+     *
+     * @param c the chromosome to mutate
+     * @return the mutated chromosome
+     * @throws SolverException If there is an internal exception or inconsistant
+     * values.
+     */
+    private Chromosome mutateChromosome(Chromosome c) throws SolverException {
+        List<List<Object>> trips = this.chromosomeToTrips(c);
+        Random r = new Random();
+        //Take a random pair of vertexes (u, v) instead of every possible distinct pair
+        int uTrip = r.nextInt(trips.size());
+        int uNode = r.nextInt(trips.get(uTrip).size());
+        int vTrip = r.nextInt(trips.size());
+        int vNode = r.nextInt(trips.get(vTrip).size());
+        Chromosome mutatedC = this.doMutationMoves(trips, uTrip, uNode, vTrip, vNode);
+        if (mutatedC == null) {
+            return c;
+        }
+        return mutatedC;
+    }
+
+    /**
+     * Do the mutation moves to a list of trips with a given pair of nodes (u,v)
+     * with x the successor of u and y the successor of v
+     *
+     * @param trips the list of trips
+     * @param uTrip the trip number of u
+     * @param uNode the node number of u
+     * @param vTrip the trip number of v
+     * @param vNode the node number of v
+     * @return The mutated chromosome
+     * @throws SolverException If there is an internal exception or inconsistant
+     * values.
+     */
+    private Chromosome doMutationMoves(List<List<Object>> trips, int uTrip, int uNode, int vTrip, int vNode) throws SolverException {
+        //if u is a client
+        if (trips.get(uTrip).get(uNode).getClass() == Client.class) {
+            //Move 1
+            Chromosome bestC = this.mutationMove1(trips, uTrip, uNode, vTrip, vNode);
+            //if x is a client
+            if (trips.get(uTrip).get((uNode + 1) % trips.get(uTrip).size()).getClass() == Client.class) {
+                //Move 2
+                bestC = this.getBestChromosome(bestC, this.mutationMove23(true, trips, uTrip, uNode, vTrip, vNode));
+                //Move 3
+                bestC = this.getBestChromosome(bestC, this.mutationMove23(false, trips, uTrip, uNode, vTrip, vNode));
+            }
+            //if v is a client
+            if (trips.get(vTrip).get(vNode).getClass() == Client.class) {
+                //Move 4  
+                bestC = this.getBestChromosome(bestC, this.mutationMovePermuteTwoClient(trips, uTrip, uNode, vTrip, vNode));
+                //if x is a client
+                if (trips.get(uTrip).get((uNode + 1) % trips.get(uTrip).size()).getClass() == Client.class) {
+                    //Move 5
+                    bestC = this.getBestChromosome(bestC, this.mutationMove5(trips, uTrip, uNode, vTrip, vNode));
+                    //if y is a client
+                    if (trips.get(vTrip).get((vNode + 1) % trips.get(vTrip).size()).getClass() == Client.class) {
+                        //Move 6
+                        bestC = this.getBestChromosome(bestC, this.mutationMove6(trips, uTrip, uNode, vTrip, vNode));
+                        //if (u, x) and (v, y) are non adjacent in the same trip
+                        if (uTrip == vTrip && Math.abs(uNode - vNode) > 3) {
+                            //Move 7
+                            bestC = this.getBestChromosome(bestC, this.mutationMovePermuteTwoClient(trips, uTrip, uNode + 1, vTrip, vNode));
+                        }
+                        if (uTrip != vTrip) {
+                            //Move 8
+                            bestC = this.getBestChromosome(bestC, this.mutationMovePermuteTwoClient(trips, uTrip, uNode + 1, vTrip, vNode));
+                            //Move 9
+                            bestC = this.getBestChromosome(bestC, this.mutationMove9(trips, uTrip, uNode, vTrip, vNode));
+                        }
+                    }
+                }
+
+            }
+            return bestC;
+        }
+        return null;
+    }
+
+    /**
+     * Move 1 of the mutation process: if u is a client node, move u after v
+     *
+     * @param trips the list of trips
+     * @param uTrip the trip number of u
+     * @param uNode the node number of u
+     * @param vTrip the trip number of v
+     * @param vNode the node number of v
+     * @return the chromosome corresponding to the mutation if it occurred, null
+     * otherwise
+     */
+    private Chromosome mutationMove1(List<List<Object>> trips, int uTrip, int uNode, int vTrip, int vNode) {
+        List<List<Object>> tripsTemps = new ArrayList<>();
+        for (List<Object> lo : trips) {
+            tripsTemps.add(new ArrayList<>(lo));
+        }
+        if (uTrip != vTrip || uNode > vNode) {
+            Client u = (Client) tripsTemps.get(uTrip).remove(uNode);
+            tripsTemps.get(vTrip).add((vNode + 1) % tripsTemps.get(vTrip).size(), u);
+        } else if (uNode < vNode) {
+            Client u = (Client) tripsTemps.get(uTrip).get(uNode);
+            tripsTemps.get(vTrip).add((vNode + 1) % tripsTemps.get(vTrip).size(), u);
+            tripsTemps.get(uTrip).remove(uNode);
+        } else {
+            return null;
+        }
+
+        return this.tripsToChromosome(tripsTemps);
+    }
+
+    /**
+     * Move 2 of the mutation process: if u and x are client nodes, move (u, x)
+     * after v Move 3 of the mutation process: if u and x are client nodes, move
+     * (x, u) after v
+     *
+     * @param is2 whether you want to do move 2 or 3 (because move 2 and 3 are
+     * similar)
+     * @param trips the list of trips
+     * @param uTrip the trip number of u
+     * @param uNode the node number of u
+     * @param vTrip the trip number of v
+     * @param vNode the node number of v
+     * @return the chromosome corresponding to the mutation if it occurred, null
+     * otherwise
+     */
+    private Chromosome mutationMove23(boolean is2, List<List<Object>> trips, int uTrip, int uNode, int vTrip, int vNode) {
+        List<List<Object>> tripsTemps = new ArrayList<>();
+        for (List<Object> lo : trips) {
+            tripsTemps.add(new ArrayList<>(lo));
+        }
+        if (uTrip != vTrip || uNode > vNode) {
+            List<Client> ux = new ArrayList<>();
+            ux.add((Client) tripsTemps.get(uTrip).remove(uNode + 1));
+            if (is2) {
+                ux.add(0, (Client) tripsTemps.get(uTrip).remove(uNode));
+            } else {
+                ux.add((Client) tripsTemps.get(uTrip).remove(uNode));
+            }
+            tripsTemps.get(vTrip).addAll((vNode + 1) % tripsTemps.get(vTrip).size(), ux);
+        } else if (uNode < vNode && uNode + 1 != vNode) {
+            List<Client> ux = new ArrayList<>();
+            ux.add((Client) tripsTemps.get(uTrip).get(uNode + 1));
+            if (is2) {
+                ux.add(0, (Client) tripsTemps.get(uTrip).get(uNode));
+            } else {
+                ux.add((Client) tripsTemps.get(uTrip).get(uNode));
+            }
+            tripsTemps.get(vTrip).addAll((vNode + 1) % tripsTemps.get(vTrip).size(), ux);
+            tripsTemps.get(uTrip).remove(uNode + 1);
+            tripsTemps.get(uTrip).remove(uNode);
+        } else {
+            return null;
+        }
+
+        return this.tripsToChromosome(tripsTemps);
+    }
+
+    /**
+     * Move of the mutation process to permute two clients (used in moves 4, 7,
+     * 8). Move 4: if u and v are client nodes, permute u and v. Move 7: if (u,
+     * x) and (v, y) are non adjacent in the same trip, replace them by (u, v)
+     * and (x, y). Move 8: if (u, x) and (v, y) are in distinct trips, replace
+     * them by (u, v) and (x, y)
+     *
+     * @param trips the list of trips
+     * @param cli1Trip the trip number of cli1
+     * @param cli1Node the node number of cli1
+     * @param cli2Trip the trip number of cli2
+     * @param cli2Node the node number of cli2
+     * @return the chromosome corresponding to the mutation if it occurred, null
+     * otherwise
+     */
+    private Chromosome mutationMovePermuteTwoClient(List<List<Object>> trips, int cli1Trip, int cli1Node, int cli2Trip, int cli2Node) {
+        List<List<Object>> tripsTemps = new ArrayList<>();
+        for (List<Object> lo : trips) {
+            tripsTemps.add(new ArrayList<>(lo));
+        }
+        Client temp = (Client) tripsTemps.get(cli1Trip).get(cli1Node);
+        tripsTemps.get(cli1Trip).set(cli1Node, tripsTemps.get(cli2Trip).get(cli2Node));
+        tripsTemps.get(cli2Trip).set(cli2Node, temp);
+
+        return this.tripsToChromosome(tripsTemps);
+    }
+
+    /**
+     * Move 5 of the mutation process: if u, x and v are clients nodes, permute
+     * (u, x) with v
+     *
+     * @param trips the list of trips
+     * @param uTrip the trip number of u
+     * @param uNode the node number of u
+     * @param vTrip the trip number of v
+     * @param vNode the node number of v
+     * @return the chromosome corresponding to the mutation if it occurred, null
+     * otherwise
+     */
+    private Chromosome mutationMove5(List<List<Object>> trips, int uTrip, int uNode, int vTrip, int vNode) {
+        List<List<Object>> tripsTemps = new ArrayList<>();
+        for (List<Object> lo : trips) {
+            tripsTemps.add(new ArrayList<>(lo));
+        }
+        Client u = (Client) tripsTemps.get(uTrip).get(uNode);
+        tripsTemps.get(uTrip).set(uNode, tripsTemps.get(vTrip).get(vNode));
+        tripsTemps.get(vTrip).set(vNode, u);
+        if (uTrip != vTrip || uNode + 1 > vNode) {
+            Client x = (Client) tripsTemps.get(uTrip).remove(uNode + 1);
+            tripsTemps.get(vTrip).add((vNode + 1) % tripsTemps.get(vTrip).size(), x);
+        } else if (uNode + 1 < vNode) {
+            Client x = (Client) tripsTemps.get(uTrip).get(uNode + 1);
+            tripsTemps.get(vTrip).add((vNode + 1) % tripsTemps.get(vTrip).size(), x);
+            tripsTemps.get(uTrip).remove(uNode + 1);
+        } else {
+            return null;
+        }
+
+        return this.tripsToChromosome(tripsTemps);
+    }
+
+    /**
+     * Move 6 of the mutation process: if (u, x) and (v, y) are client nodes,
+     * permute (u, x) and (v, y)
+     *
+     * @param trips the list of trips
+     * @param uTrip the trip number of u
+     * @param uNode the node number of u
+     * @param vTrip the trip number of v
+     * @param vNode the node number of v
+     * @return the chromosome corresponding to the mutation if it occurred, null
+     * otherwise
+     */
+    private Chromosome mutationMove6(List<List<Object>> trips, int uTrip, int uNode, int vTrip, int vNode) {
+        List<List<Object>> tripsTemps = new ArrayList<>();
+        for (List<Object> lo : trips) {
+            tripsTemps.add(new ArrayList<>(lo));
+        }
+        //Swap u & v
+        Client temp = (Client) tripsTemps.get(uTrip).get(uNode);
+        tripsTemps.get(uTrip).set(uNode, tripsTemps.get(vTrip).get(vNode));
+        tripsTemps.get(vTrip).set(vNode, temp);
+        //Swap x & y
+        temp = (Client) tripsTemps.get(uTrip).get(uNode + 1);
+        tripsTemps.get(uTrip).set(uNode + 1, tripsTemps.get(vTrip).get(vNode + 1));
+        tripsTemps.get(vTrip).set(vNode + 1, temp);
+
+        return this.tripsToChromosome(tripsTemps);
+    }
+
+    /**
+     * Move 9 of the mutation process: if (u, x) and (v, y) are in distinct
+     * trips, replace them by (u, y) and (x, v)
+     *
+     * @param trips the list of trips
+     * @param uTrip the trip number of u
+     * @param uNode the node number of u
+     * @param vTrip the trip number of v
+     * @param vNode the node number of v
+     * @return the chromosome corresponding to the mutation if it occurred, null
+     * otherwise
+     */
+    private Chromosome mutationMove9(List<List<Object>> trips, int uTrip, int uNode, int vTrip, int vNode) {
+        List<List<Object>> tripsTemps = new ArrayList<>();
+        for (List<Object> lo : trips) {
+            tripsTemps.add(new ArrayList<>(lo));
+        }
+        Client x = (Client) tripsTemps.get(uTrip).get(uNode + 1);
+
+        tripsTemps.get(uTrip).set(uNode + 1, tripsTemps.get(vTrip).get(vNode + 1));
+        tripsTemps.get(vTrip).set(vNode + 1, tripsTemps.get(vTrip).get(vNode));
+        tripsTemps.get(vTrip).set(vNode, x);
+
+        return this.tripsToChromosome(tripsTemps);
+    }
+
+    /**
+     * Compare two Chromosome and return the best
+     *
+     * @param c1 the first Chromosome
+     * @param c2 the second Chromosome
+     * @return the best Chromosome
+     * @throws SolverException SolverException If there is an internal exception
+     * or inconsistant values.
+     */
+    private Chromosome getBestChromosome(Chromosome c1, Chromosome c2) throws SolverException {
+        if (c2 != null && (c1 == null || c2.getTournee().getCost() < c1.getTournee().getCost())) {
+            return c2;
+        }
+        return c1;
+    }
+
+    /**
+     * Convert trips to a Chromosome
+     *
+     * @param trips the trips to convert
+     * @return the chromosome
+     */
+    private Chromosome tripsToChromosome(List<List<Object>> trips) {
+        List<Client> clients = new ArrayList<>();
+        for (List<Object> lo : trips) {
+            for (Object o : lo) {
+                if (o.getClass() == Client.class) {
+                    clients.add((Client) o);
+                }
+            }
+        }
+        Chromosome c = new Chromosome(this.instance, clients);
+
+        return c;
+    }
+
+    /**
+     * Convert a Chromosome to a trips
+     *
+     * @param c the Chromosome to convert
+     * @return the trips
+     * @throws SolverException If there is an internal exception or inconsistant
+     * values.
+     */
+    private List<List<Object>> chromosomeToTrips(Chromosome c) throws SolverException {
+        List<List<Object>> trips = new ArrayList<>();
+        for (Trip trip : c.getTournee().getTrips()) {
+            List<Object> temp = new ArrayList<>();
+            for (Emplacement em : trip.getEmplacements()) {
+                if (em.getClass() == Depot.class) {
+                    temp.add(em);
+                } else {
+                    temp.add(em.getClient());
+                }
+            }
+            trips.add(temp);
+        }
+
+        return trips;
     }
 
     /**
@@ -273,14 +603,6 @@ public class GeneticSolver implements ISolver {
         }
         //Sort the chromosomePool by cost
         this.sortChromosomePool();
-
-        /*for (Chromosome c : this.chromosomePool) {
-            try {
-                System.out.println("Chromosome: " + c.getTournee().getCost());
-            } catch (SolverException ex) {
-                Logger.getLogger(GeneticSolver.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }*/
     }
 
     /**
@@ -325,34 +647,27 @@ public class GeneticSolver implements ISolver {
      * @return the child Chromosome
      */
     private Chromosome doCrossover(Chromosome p1, Chromosome p2) {
-        ///Create a copy of the parent chromosomes
+        //Create a copy of the parent chromosomes
         List<Client> p2Cli = new ArrayList<>(p2.getClients());
-        ///Left rotate the copy of the parents
+        //Left rotate the copy of the parents
         Collections.rotate(p2Cli, -1);
-        ///Create a child from the first parents chromosome
+        //Create a child from the first parents chromosome
         List<Client> childCli = new ArrayList<>(p1.getClients());
-        ///Get a random range
+        //Get a random range
         Random r = new Random();
         int i = r.nextInt(childCli.size());
         int j = r.nextInt(childCli.size());
-        //System.out.println("Range from " + Math.min(i, j) + " to " + Math.max(i, j));
         //Make of the copy of the randomly selected range
         List<Client> p1Range = p1.getClients().subList(Math.min(i, j), Math.max(i, j) + 1);
         //Fill the chromosome with the remaining clients
-        int l = ((Math.max(i, j) + 1) % childCli.size());
+        int l = (Math.max(i, j) + 1) % p2Cli.size();
         for (int k = ((Math.max(i, j) + 1) % childCli.size()); k != (Math.min(i, j) % childCli.size()); k = (k + 1) % childCli.size()) {
             while (p1Range.contains(p2Cli.get(l))) {
-                l = (l + 1) % childCli.size();
+                l = (l + 1) % p2Cli.size();
             }
-            //System.out.println("---> k=" + k + "  l=" + l);
             childCli.set(k, p2Cli.get(l));
-            l = (l + 1) % childCli.size();
+            l = (l + 1) % p2Cli.size();
         }
-        /*System.out.println("-----------");
-        System.out.println(p1.getClients());
-        System.out.println(p2Cli);
-        System.out.println(childCli);
-        System.out.println("-----------");*/
         return new Chromosome(p1.getInstance(), childCli);
     }
 
@@ -371,41 +686,40 @@ public class GeneticSolver implements ISolver {
      *
      * @param args the args
      */
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         Instance i = null;
-        //for (int j = 0; j < 40; j++) {
-        int id = 30;
-        System.out.println(id);
-        try {
-            InstanceFileParser ifp = new InstanceFileParser();
-            i = ifp.parse(new File("src/main/resources/instances/instance_" + id + "-triangle.txt"));
-        } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
-            return;
-        }
-
-        NaiveSolver ds = new NaiveSolver(i);
-        ds.solve();
-        double cns = i.getPlanningCurrent().getCout();
-        System.out.println("---Cout ns: " + cns);
-        GeneticSolver gs = new GeneticSolver(i, 2, 5000, 2500, 0.0);
-        gs.solve();
-        double cgs = i.getPlanningCurrent().getCout();
-        System.out.println("---Cout gs: " + cgs + " ( " + (cgs - cns) + " )");
-        try {
-            System.out.println(gs.chromosomePool.get(gs.chromosomePool.size() - 1).getTournee().getCost());
-        } catch (SolverException e) {
-            e.printStackTrace();
-        }
-        System.out.println(gs.chromosomePool.size());
-        /*try {
+        for (int j = 0; j < 40; j++) {
+            int id = j;
+            System.out.println(id);
+            try {
+                InstanceFileParser ifp = new InstanceFileParser();
+                i = ifp.parse(new File("src/main/resources/instances/instance_" + id + "-triangle.txt"));
+            } catch (Exception ex) {
+                LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
+                return;
+            }
+            NaiveSolver ds = new NaiveSolver(i);
+            ds.solve();
+            double cns = i.getPlanningCurrent().getCout();
+            System.out.println("---Cout ns: " + cns);
+            GeneticSolver gs = new GeneticSolver(i, 2, 5000, 2500, 0.5);
+            gs.solve();
+            double cgs = i.getPlanningCurrent().getCout();
+            System.out.println("---Cout gs: " + cgs + " ( " + (cgs - cns) + " )");
+            try {
+                System.out.println(gs.chromosomePool.get(gs.chromosomePool.size() - 1).getTournee().getCost());
+            } catch (SolverException e) {
+                e.printStackTrace();
+            }
+            System.out.println(gs.chromosomePool.size());*/
+            /*try {
         SolutionWriter sw = new SolutionWriter();
         sw.write(i, "target/instance_" + id + "-triangle_sol_sp.txt");
         } catch (Exception ex) {
         LOGGER.log(Level.SEVERE, "Exception while writing a solution", ex);
         }*/
         //}
-    }
+    //}
 
     @Override
     public String toString() {
