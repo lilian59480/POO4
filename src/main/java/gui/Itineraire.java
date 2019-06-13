@@ -367,6 +367,7 @@ public class Itineraire extends JFrame { // NOSONAR
      */
     private void jTableVehiculeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableVehiculeMouseClicked
     }//GEN-LAST:event_jTableVehiculeMouseClicked
+
     /**
      * Enable all Client.
      *
@@ -377,6 +378,7 @@ public class Itineraire extends JFrame { // NOSONAR
 
         this.clientModelTable.setAll(Boolean.TRUE);
     }//GEN-LAST:event_showClientButtonActionPerformed
+
     /**
      * isable Table.
      *
@@ -386,6 +388,7 @@ public class Itineraire extends JFrame { // NOSONAR
         // TODO add your handling code here:
         this.clientModelTable.setAll(Boolean.FALSE);
     }//GEN-LAST:event_hideClientButtonActionPerformed
+
     /**
      * Enable all Client.
      *
@@ -395,6 +398,7 @@ public class Itineraire extends JFrame { // NOSONAR
         // TODO add your handling code here:
         this.vehiculeModelTable.setAll(Boolean.TRUE);
     }//GEN-LAST:event_showVehiculeButtonActionPerformed
+
     /**
      * Disable all Client.
      *
@@ -406,6 +410,11 @@ public class Itineraire extends JFrame { // NOSONAR
 
     }//GEN-LAST:event_hideVehiculeButtonActionPerformed
 
+    /**
+     * Zoom button event.
+     *
+     * @param evt Internal event
+     */
     private void zoomButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomButtonActionPerformed
         this.canvas2.center();
     }//GEN-LAST:event_zoomButtonActionPerformed
