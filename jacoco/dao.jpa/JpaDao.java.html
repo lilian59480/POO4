@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JpaDao.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">POO4-Project</a> &gt; <a href="index.source.html" class="el_package">dao.jpa</a> &gt; <span class="el_source">JpaDao.java</span></div><h1>JpaDao.java</h1><pre class="source lang-java linenums">/*
+ * POO4 Project
+ * Copyright (C) 2019
+ * Lilian Petitpas, Thomas Ternisien, Thibaut Fenain, Corentin Apolinario
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package dao.jpa;
+
+import dao.Dao;
+import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
+import javax.persistence.PersistenceException;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
+/**
+ *
+ * @author Corentin
+ * @param &lt;T&gt; Type of object
+ */
+public abstract class JpaDao&lt;T&gt; implements Dao&lt;T&gt; {
+
+    /**
+     * Name of the persistance unit.
+     */
+    public static final String PERSISTANCE_UNIT = &quot;POO4_ProjetPU&quot;;
+
+    /**
+     * Entity manager factory.
+     */
+<span class="nc" id="L50">    protected static final EntityManagerFactory EMF = Persistence.createEntityManagerFactory(PERSISTANCE_UNIT);</span>
+
+    /**
+     * Entity manager.
+     */
+<span class="nc" id="L55">    protected static final EntityManager EM = EMF.createEntityManager();</span>
+
+    /**
+     * Class logger.
+     */
+<span class="nc" id="L60">    private static final Logger LOGGER = Logger.getLogger(JpaDao.class.getName());</span>
+
+    /**
+     * Entity class to manipulate using Dao.
+     */
+    private final Class&lt;T&gt; entityClass;
+
+    /**
+     * Construct a new Dao using JPA.
+     *
+     * @param entityClass Class to use.
+     */
+<span class="nc" id="L72">    public JpaDao(Class&lt;T&gt; entityClass) {</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (entityClass == null) {</span>
+<span class="nc" id="L74">            throw new NullPointerException(&quot;Entity class should not be null&quot;);</span>
+        }
+
+<span class="nc" id="L77">        this.entityClass = entityClass;</span>
+<span class="nc" id="L78">    }</span>
+
+    @Override
+    public boolean create(T obj) {
+<span class="nc bnc" id="L82" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L83">            return false;</span>
+        }
+<span class="nc" id="L85">        final EntityTransaction et = JpaDao.EM.getTransaction();</span>
+        try {
+<span class="nc" id="L87">            et.begin();</span>
+<span class="nc" id="L88">            JpaDao.EM.persist(obj);</span>
+<span class="nc" id="L89">            et.commit();</span>
+<span class="nc" id="L90">        } catch (PersistenceException ex) {</span>
+<span class="nc" id="L91">            LOGGER.log(Level.SEVERE, &quot;Exception while creating an object&quot;, ex);</span>
+<span class="nc" id="L92">            et.rollback();</span>
+<span class="nc" id="L93">            return false;</span>
+<span class="nc" id="L94">        }</span>
+<span class="nc" id="L95">        return true;</span>
+    }
+
+    @Override
+    public T find(int id) {
+<span class="nc" id="L100">        T storedObject = JpaDao.EM.find(this.entityClass, id);</span>
+<span class="nc" id="L101">        return storedObject;</span>
+    }
+
+    @Override
+    public Collection&lt;T&gt; findAll() {
+        Collection&lt;T&gt; storedObjects;
+
+<span class="nc" id="L108">        final CriteriaBuilder cb = JpaDao.EM.getCriteriaBuilder();</span>
+<span class="nc" id="L109">        final CriteriaQuery&lt;T&gt; cq = cb.createQuery(this.entityClass);</span>
+<span class="nc" id="L110">        Root&lt;T&gt; request = cq.from(this.entityClass);</span>
+<span class="nc" id="L111">        cq.select(request);</span>
+
+<span class="nc" id="L113">        storedObjects = JpaDao.EM.createQuery(cq).getResultList();</span>
+
+<span class="nc" id="L115">        return storedObjects;</span>
+    }
+
+    @Override
+    public boolean update(T obj) {
+<span class="nc bnc" id="L120" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L121">            return false;</span>
+        }
+<span class="nc" id="L123">        final EntityTransaction et = JpaDao.EM.getTransaction();</span>
+        try {
+<span class="nc" id="L125">            et.begin();</span>
+<span class="nc" id="L126">            JpaDao.EM.merge(obj);</span>
+<span class="nc" id="L127">            et.commit();</span>
+<span class="nc" id="L128">        } catch (PersistenceException ex) {</span>
+<span class="nc" id="L129">            LOGGER.log(Level.SEVERE, &quot;Exception while updating an object&quot;, ex);</span>
+<span class="nc" id="L130">            et.rollback();</span>
+<span class="nc" id="L131">            return false;</span>
+<span class="nc" id="L132">        }</span>
+<span class="nc" id="L133">        return true;</span>
+    }
+
+    @Override
+    public boolean delete(T obj) {
+<span class="nc bnc" id="L138" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L139">            return false;</span>
+        }
+<span class="nc" id="L141">        final EntityTransaction et = JpaDao.EM.getTransaction();</span>
+        try {
+<span class="nc" id="L143">            et.begin();</span>
+<span class="nc" id="L144">            JpaDao.EM.remove(obj);</span>
+<span class="nc" id="L145">            et.commit();</span>
+<span class="nc" id="L146">        } catch (PersistenceException ex) {</span>
+<span class="nc" id="L147">            LOGGER.log(Level.SEVERE, &quot;Exception while deleting an object&quot;, ex);</span>
+<span class="nc" id="L148">            et.rollback();</span>
+<span class="nc" id="L149">            return false;</span>
+<span class="nc" id="L150">        }</span>
+<span class="nc" id="L151">        return true;</span>
+    }
+
+    @Override
+    public boolean deleteAll() {
+<span class="nc" id="L156">        final EntityTransaction et = JpaDao.EM.getTransaction();</span>
+        try {
+<span class="nc" id="L158">            et.begin();</span>
+<span class="nc" id="L159">            final CriteriaBuilder cb = JpaDao.EM.getCriteriaBuilder();</span>
+<span class="nc" id="L160">            final CriteriaDelete&lt;T&gt; cq = cb.createCriteriaDelete(this.entityClass);</span>
+<span class="nc" id="L161">            int nbDelete = JpaDao.EM.createQuery(cq).executeUpdate();</span>
+<span class="nc" id="L162">            et.commit();</span>
+<span class="nc" id="L163">        } catch (PersistenceException ex) {</span>
+<span class="nc" id="L164">            LOGGER.log(Level.SEVERE, &quot;Exception while deleting all object&quot;, ex);</span>
+<span class="nc" id="L165">            et.rollback();</span>
+<span class="nc" id="L166">            return false;</span>
+<span class="nc" id="L167">        }</span>
+<span class="nc" id="L168">        return true;</span>
+    }
+
+    @Override
+    public void close() {
+<span class="nc bnc" id="L173" title="All 4 branches missed.">        if (JpaDao.EM != null &amp;&amp; JpaDao.EM.isOpen()) {</span>
+<span class="nc" id="L174">            JpaDao.EM.close();</span>
+        }
+<span class="nc bnc" id="L176" title="All 4 branches missed.">        if (JpaDao.EMF != null &amp;&amp; JpaDao.EMF.isOpen()) {</span>
+<span class="nc" id="L177">            JpaDao.EMF.close();</span>
+        }
+<span class="nc" id="L179">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

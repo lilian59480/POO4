@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InstanceFileParser.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">POO4-Project</a> &gt; <a href="index.source.html" class="el_package">io.input</a> &gt; <span class="el_source">InstanceFileParser.java</span></div><h1>InstanceFileParser.java</h1><pre class="source lang-java linenums">/*
+ * POO4 Project
+ * Copyright (C) 2019
+ * Lilian Petitpas, Thomas Ternisien, Thibaut Fenain, Corentin Apolinario
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package io.input;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.SequenceInputStream;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import model.Client;
+import model.Depot;
+import model.Emplacement;
+import model.Instance;
+import model.Route;
+import model.Vehicule;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+/**
+ * Class that parses an instance file.
+ *
+ * @author Lilian Petitpas
+ */
+public class InstanceFileParser {
+
+    /**
+     * Class logger.
+     */
+<span class="fc" id="L62">    private static final Logger LOGGER = Logger.getLogger(InstanceFileParser.class.getName());</span>
+
+    /**
+     * Factory for the XML Document builder.
+     */
+    private DocumentBuilderFactory dbf;
+
+    /**
+     * XML Document builder, used to get a {@link org.w3c.dom.Document} from a
+     * file.
+     */
+    private DocumentBuilder db;
+
+    /**
+     * TSV Parser, used for some data inside XML Nodes.
+     */
+    private TsvParser tsvParser;
+
+    /**
+     * Constructor.
+     *
+     * @throws ParserException When parsing can't be done properly
+     * @todo We may have to discuss if we keep this API or not
+     */
+<span class="fc" id="L86">    public InstanceFileParser() throws ParserException {</span>
+<span class="fc" id="L87">        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();</span>
+<span class="fc" id="L88">        documentBuilderFactory.setExpandEntityReferences(false);</span>
+
+        try {
+<span class="fc" id="L91">            documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);</span>
+<span class="fc" id="L92">            documentBuilderFactory.setFeature(&quot;http://xml.org/sax/features/external-general-entities&quot;, false);</span>
+<span class="fc" id="L93">            documentBuilderFactory.setFeature(&quot;http://xml.org/sax/features/external-parameter-entities&quot;, false);</span>
+<span class="fc" id="L94">            this.dbf = documentBuilderFactory;</span>
+<span class="fc" id="L95">            this.db = this.dbf.newDocumentBuilder();</span>
+<span class="fc" id="L96">            this.tsvParser = new TsvParser();</span>
+
+<span class="nc" id="L98">        } catch (ParserConfigurationException ex) {</span>
+<span class="nc" id="L99">            throw new ParserException(ex);</span>
+<span class="fc" id="L100">        }</span>
+<span class="fc" id="L101">    }</span>
+
+    /**
+     * Parses a {@link File} and returns an Instance.
+     *
+     * @param f The file to parse
+     * @return an Instance
+     * @throws ParserException When parsing can't be done properly
+     */
+    public Instance parse(File f) throws ParserException {
+<span class="nc" id="L111">        try (FileInputStream fis = new FileInputStream(f)) {</span>
+<span class="nc" id="L112">            return this.parse(fis);</span>
+<span class="nc" id="L113">        } catch (IOException ex) {</span>
+<span class="nc" id="L114">            throw new ParserException(ex);</span>
+        }
+    }
+
+    /**
+     * Parses an {@link InputStream} and returns an Instance.
+     *
+     * @param is The {@link InputStream} to parse
+     * @return an Instance
+     * @throws ParserException When parsing can't be done properly
+     */
+    public Instance parse(InputStream is) throws ParserException {
+<span class="nc" id="L126">        InputStream validInputStream = InstanceFileParser.createSuitableXmlRoot(is);</span>
+        Document document;
+
+        try {
+<span class="nc" id="L130">            document = this.db.parse(validInputStream);</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">            if (document == null) {</span>
+<span class="nc" id="L132">                throw new NullPointerException(&quot;Document is null&quot;);</span>
+            }
+<span class="nc" id="L134">        } catch (SAXException | IOException | NullPointerException ex) {</span>
+<span class="nc" id="L135">            throw new ParserException(ex);</span>
+<span class="nc" id="L136">        }</span>
+
+<span class="nc" id="L138">        Instance inst = new Instance();</span>
+
+<span class="nc" id="L140">        int nbCustomers = this.getNbCustomers(document);</span>
+<span class="nc" id="L141">        LOGGER.log(Level.FINER, &quot;Number of clients : {0}&quot;, nbCustomers);</span>
+
+<span class="nc" id="L143">        int nbLocations = this.getNbLocations(document);</span>
+<span class="nc" id="L144">        LOGGER.log(Level.FINER, &quot;Number of locations : {0}&quot;, nbLocations);</span>
+
+<span class="nc" id="L146">        int nbVehicles = this.getNbVehicles(document);</span>
+<span class="nc" id="L147">        inst.setNbVehicules(nbVehicles);</span>
+<span class="nc" id="L148">        LOGGER.log(Level.FINER, &quot;Number of vehicules : {0}&quot;, nbVehicles);</span>
+
+<span class="nc" id="L150">        int vehicleCapacity = this.getVehicleCapacity(document);</span>
+<span class="nc" id="L151">        inst.setCapaciteVehicule(vehicleCapacity);</span>
+<span class="nc" id="L152">        LOGGER.log(Level.FINER, &quot;Vehicule capacity : {0}&quot;, vehicleCapacity);</span>
+
+<span class="nc" id="L154">        int externalVehicleCost = this.getExternalVehicleCost(document);</span>
+<span class="nc" id="L155">        inst.setCoutVehicule(externalVehicleCost);</span>
+<span class="nc" id="L156">        LOGGER.log(Level.FINER, &quot;External vehicule cost : {0}&quot;, externalVehicleCost);</span>
+
+<span class="nc" id="L158">        Map&lt;Integer, Emplacement&gt; locationsMap = this.getLocationsList(document);</span>
+<span class="nc" id="L159">        LOGGER.log(Level.FINER, &quot;Locations : {0}&quot;, locationsMap);</span>
+
+<span class="nc" id="L161">        Map&lt;Integer, Depot&gt; depotsList = this.getDepotsList(document, locationsMap);</span>
+<span class="nc" id="L162">        LOGGER.log(Level.FINER, &quot;Depots : {0}&quot;, depotsList);</span>
+
+        // We assume there is only one Depot with id = 0
+<span class="nc" id="L165">        Depot mainDepot = depotsList.get(0);</span>
+<span class="nc bnc" id="L166" title="All 2 branches missed.">        if (mainDepot == null) {</span>
+<span class="nc" id="L167">            throw new ParserException(new NullPointerException(&quot;mainDepot is null&quot;));</span>
+        }
+<span class="nc" id="L169">        LOGGER.log(Level.FINER, &quot;Main depot : {0}&quot;, mainDepot);</span>
+
+<span class="nc" id="L171">        inst.setDepot(mainDepot);</span>
+<span class="nc" id="L172">        locationsMap.put(0, mainDepot);</span>
+<span class="nc" id="L173">        LOGGER.log(Level.FINEST, &quot;Replacing location 0 with the depot&quot;);</span>
+
+<span class="nc" id="L175">        Map&lt;Integer, Client&gt; customersList = this.getCustomersList(document, locationsMap);</span>
+<span class="nc" id="L176">        LOGGER.log(Level.FINER, &quot;Customers : {0}&quot;, customersList);</span>
+
+        // Drop IDs as they are not stored now
+<span class="nc" id="L179">        inst.setClients(new ArrayList&lt;&gt;(customersList.values()));</span>
+
+<span class="nc" id="L181">        List&lt;Route&gt; travelCostsTimesList = this.getTravelCostsTimesList(document, locationsMap);</span>
+<span class="nc" id="L182">        LOGGER.log(Level.FINER, &quot;Travel cost : {0}&quot;, travelCostsTimesList);</span>
+
+<span class="nc" id="L184">        inst.setRoutes(travelCostsTimesList);</span>
+
+        // Create vehicules
+<span class="nc" id="L187">        List&lt;Vehicule&gt; vehiculeList = new LinkedList&lt;&gt;();</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">        for (int i = 0; i &lt; nbVehicles; i++) {</span>
+<span class="nc" id="L189">            Vehicule v = new Vehicule(mainDepot, vehicleCapacity);</span>
+<span class="nc" id="L190">            v.setInstance(inst);</span>
+<span class="nc" id="L191">            vehiculeList.add(v);</span>
+        }
+<span class="nc" id="L193">        inst.setVehicules(vehiculeList);</span>
+<span class="nc" id="L194">        LOGGER.log(Level.FINER, &quot;Vehicule created&quot;);</span>
+
+<span class="nc" id="L196">        return inst;</span>
+    }
+
+    /**
+     * Returns the value inside the node {@code NB_CUSTOMERS}.
+     *
+     * @param document The document parsed
+     * @return The value as an int
+     * @throws ParserException When parsing can't be done properly
+     */
+    private int getNbCustomers(Document document) throws ParserException {
+<span class="nc" id="L207">        return this.getSingleNodeValueInteger(document, &quot;NB_CUSTOMERS&quot;);</span>
+    }
+
+    /**
+     * Returns the value inside the node {@code NB_LOCATIONS}.
+     *
+     * @param document The document parsed
+     * @return The value as an int
+     * @throws ParserException When parsing can't be done properly
+     */
+    private int getNbLocations(Document document) throws ParserException {
+<span class="nc" id="L218">        return this.getSingleNodeValueInteger(document, &quot;NB_LOCATIONS&quot;);</span>
+    }
+
+    /**
+     * Returns the value inside the node {@code NB_VEHICLES}.
+     *
+     * @param document The document parsed
+     * @return The value as an int
+     * @throws ParserException When parsing can't be done properly
+     */
+    private int getNbVehicles(Document document) throws ParserException {
+<span class="nc" id="L229">        return this.getSingleNodeValueInteger(document, &quot;NB_VEHICLES&quot;);</span>
+    }
+
+    /**
+     * Returns the value inside the node {@code VEHICLE_CAPACITY}.
+     *
+     * @param document The document parsed
+     * @return The value as an int
+     * @throws ParserException When parsing can't be done properly
+     */
+    private int getVehicleCapacity(Document document) throws ParserException {
+<span class="nc" id="L240">        return this.getSingleNodeValueInteger(document, &quot;VEHICLE_CAPACITY&quot;);</span>
+    }
+
+    /**
+     * Returns the value inside the node {@code EXTERNAL_VEHICLE_COST}.
+     *
+     * @param document The document parsed
+     * @return The value as an int
+     * @throws ParserException When parsing can't be done properly
+     */
+    private int getExternalVehicleCost(Document document) throws ParserException {
+<span class="nc" id="L251">        return this.getSingleNodeValueInteger(document, &quot;EXTERNAL_VEHICLE_COST&quot;);</span>
+    }
+
+    /**
+     * Returns the value inside the node {@code DEPOT}.
+     *
+     * @param document The document parsed
+     * @param locations Map of locations
+     * @return The value as a list
+     * @throws ParserException When parsing can't be done properly
+     */
+    private Map&lt;Integer, Depot&gt; getDepotsList(Document document, Map&lt;Integer, Emplacement&gt; locations) throws ParserException {
+<span class="nc" id="L263">        List&lt;String[]&gt; depoList = this.getSingleNodeTsv(document, &quot;DEPOT&quot;);</span>
+
+<span class="nc" id="L265">        Iterator&lt;String[]&gt; depotIter = depoList.iterator();</span>
+
+<span class="nc" id="L267">        Map&lt;Integer, Depot&gt; depotMap = new HashMap&lt;&gt;();</span>
+
+        // Skip first entry, as it is an header
+<span class="nc bnc" id="L270" title="All 2 branches missed.">        if (!depotIter.hasNext()) {</span>
+<span class="nc" id="L271">            return depotMap;</span>
+        }
+<span class="nc" id="L273">        depotIter.next();</span>
+
+<span class="nc bnc" id="L275" title="All 2 branches missed.">        while (depotIter.hasNext()) {</span>
+<span class="nc" id="L276">            String[] elt = depotIter.next();</span>
+            // ID DEMAND NBLOC LOCS
+<span class="nc" id="L278">            int fileId = Integer.parseInt(elt[0]);</span>
+            // Demand should be equals to 0 in all cases
+<span class="nc" id="L280">            int demand = Integer.parseInt(elt[1]);</span>
+<span class="nc bnc" id="L281" title="All 2 branches missed.">            if (demand != 0) {</span>
+<span class="nc" id="L282">                LOGGER.log(Level.WARNING, &quot;Demand not null, stange&quot;);</span>
+            }
+<span class="nc" id="L284">            int nbloc = Integer.parseInt(elt[2]);</span>
+
+<span class="nc" id="L286">            int locId = -1;</span>
+            // There should be only one location, so we will assume it is the case.
+            // Keep only the last locId
+<span class="nc bnc" id="L289" title="All 2 branches missed.">            for (int i = 3; i &lt; 3 + nbloc; i++) {</span>
+<span class="nc" id="L290">                locId = Integer.parseInt(elt[i]);</span>
+            }
+
+<span class="nc" id="L293">            Emplacement emp = locations.get(locId);</span>
+<span class="nc" id="L294">            Depot depot = new Depot(emp);</span>
+<span class="nc" id="L295">            depotMap.put(fileId, depot);</span>
+<span class="nc" id="L296">        }</span>
+
+<span class="nc" id="L298">        return depotMap;</span>
+    }
+
+    /**
+     * Returns the value inside the node {@code CUSTOMERS}.
+     *
+     * @param document The document parsed
+     * @param locations Map of locations
+     * @return The value as a list
+     * @throws ParserException When parsing can't be done properly
+     */
+    private Map&lt;Integer, Client&gt; getCustomersList(Document document, Map&lt;Integer, Emplacement&gt; locations) throws ParserException {
+
+<span class="nc" id="L311">        List&lt;String[]&gt; customerList = this.getSingleNodeTsv(document, &quot;CUSTOMERS&quot;);</span>
+
+<span class="nc" id="L313">        Iterator&lt;String[]&gt; customerIter = customerList.iterator();</span>
+
+<span class="nc" id="L315">        Map&lt;Integer, Client&gt; clientMap = new HashMap&lt;&gt;();</span>
+
+        // Skip first entry, as it is an header
+<span class="nc bnc" id="L318" title="All 2 branches missed.">        if (!customerIter.hasNext()) {</span>
+<span class="nc" id="L319">            return clientMap;</span>
+        }
+<span class="nc" id="L321">        customerIter.next();</span>
+
+<span class="nc bnc" id="L323" title="All 2 branches missed.">        while (customerIter.hasNext()) {</span>
+<span class="nc" id="L324">            String[] elt = customerIter.next();</span>
+            // ID DEMAND NBLOC LOCS
+<span class="nc" id="L326">            int fileId = Integer.parseInt(elt[0]);</span>
+            // Demand should be equals to 0 in all cases
+<span class="nc" id="L328">            int demand = Integer.parseInt(elt[1]);</span>
+<span class="nc" id="L329">            int nbloc = Integer.parseInt(elt[2]);</span>
+
+<span class="nc" id="L331">            Client client = new Client(demand);</span>
+
+            // There should be only one location, so we will assume it is the case.
+            // Keep only the last locId
+<span class="nc bnc" id="L335" title="All 2 branches missed.">            for (int i = 3; i &lt; 3 + nbloc; i++) {</span>
+<span class="nc" id="L336">                int locId = Integer.parseInt(elt[i]);</span>
+<span class="nc" id="L337">                Emplacement emp = locations.get(locId);</span>
+<span class="nc" id="L338">                client.addEmplacement(emp);</span>
+            }
+
+<span class="nc" id="L341">            clientMap.put(fileId, client);</span>
+<span class="nc" id="L342">        }</span>
+
+<span class="nc" id="L344">        return clientMap;</span>
+    }
+
+    /**
+     * Returns the value inside the node {@code LOCATIONS}.
+     *
+     * @param document The document parsed
+     * @return The value as a list
+     * @throws ParserException When parsing can't be done properly
+     */
+    private Map&lt;Integer, Emplacement&gt; getLocationsList(Document document) throws ParserException {
+
+<span class="nc" id="L356">        List&lt;String[]&gt; locationList = this.getSingleNodeTsv(document, &quot;LOCATIONS&quot;);</span>
+
+<span class="nc" id="L358">        Iterator&lt;String[]&gt; locationIter = locationList.iterator();</span>
+
+<span class="nc" id="L360">        Map&lt;Integer, Emplacement&gt; locationMap = new HashMap&lt;&gt;();</span>
+
+        // Skip first entry, as it is an header
+<span class="nc bnc" id="L363" title="All 2 branches missed.">        if (!locationIter.hasNext()) {</span>
+<span class="nc" id="L364">            return locationMap;</span>
+        }
+<span class="nc" id="L366">        locationIter.next();</span>
+
+<span class="nc bnc" id="L368" title="All 2 branches missed.">        while (locationIter.hasNext()) {</span>
+<span class="nc" id="L369">            String[] elt = locationIter.next();</span>
+            // ID x y TWE TWL
+<span class="nc" id="L371">            int fileId = Integer.parseInt(elt[0]);</span>
+<span class="nc" id="L372">            double x = Double.parseDouble(elt[1]);</span>
+<span class="nc" id="L373">            double y = Double.parseDouble(elt[2]);</span>
+<span class="nc" id="L374">            int twe = Integer.parseInt(elt[3]);</span>
+<span class="nc" id="L375">            int twl = Integer.parseInt(elt[4]);</span>
+
+<span class="nc" id="L377">            Emplacement emplacement = new Emplacement(twe, twl, x, y);</span>
+            //emplacement.setId(fileId);
+
+<span class="nc" id="L380">            locationMap.put(fileId, emplacement);</span>
+<span class="nc" id="L381">        }</span>
+
+<span class="nc" id="L383">        return locationMap;</span>
+    }
+
+    /**
+     * Returns the value inside the node {@code TRAVEL_COSTS_TIMES}.
+     *
+     * @param document The document parsed
+     * @param locations Map of locations
+     * @return The value as a list
+     * @throws ParserException When parsing can't be done properly
+     */
+    private List&lt;Route&gt; getTravelCostsTimesList(Document document, Map&lt;Integer, Emplacement&gt; locations) throws ParserException {
+<span class="nc" id="L395">        List&lt;String[]&gt; rawRouteList = this.getSingleNodeTsv(document, &quot;TRAVEL_COSTS_TIMES&quot;);</span>
+
+<span class="nc" id="L397">        Iterator&lt;String[]&gt; routeIter = rawRouteList.iterator();</span>
+
+<span class="nc" id="L399">        List&lt;Route&gt; routeList = new ArrayList&lt;&gt;();</span>
+
+        // Skip first entry, as it is an header
+<span class="nc bnc" id="L402" title="All 2 branches missed.">        if (!routeIter.hasNext()) {</span>
+<span class="nc" id="L403">            return routeList;</span>
+        }
+<span class="nc" id="L405">        routeIter.next();</span>
+
+<span class="nc bnc" id="L407" title="All 2 branches missed.">        while (routeIter.hasNext()) {</span>
+<span class="nc" id="L408">            String[] elt = routeIter.next();</span>
+            // IDFROM	IDTO	COST	TIME
+<span class="nc" id="L410">            int fileIdFrom = Integer.parseInt(elt[0]);</span>
+<span class="nc" id="L411">            int fileIdTo = Integer.parseInt(elt[1]);</span>
+<span class="nc" id="L412">            double cost = Double.parseDouble(elt[2]);</span>
+<span class="nc" id="L413">            int time = Integer.parseInt(elt[3]);</span>
+
+<span class="nc" id="L415">            Emplacement from = locations.get(fileIdFrom);</span>
+<span class="nc" id="L416">            Emplacement to = locations.get(fileIdTo);</span>
+
+<span class="nc" id="L418">            Route r = new Route(from, to, cost, time);</span>
+
+<span class="nc" id="L420">            routeList.add(r);</span>
+<span class="nc" id="L421">            from.addRouteTo(r);</span>
+<span class="nc" id="L422">        }</span>
+
+<span class="nc" id="L424">        return routeList;</span>
+    }
+
+    /**
+     * Retrieves a node from his tag name and returns the value inside as a
+     * number.
+     *
+     * @param document The document parsed
+     * @param tagName The tag name we need to read
+     * @return The value as an int
+     * @throws ParserException When parsing can't be done properly
+     */
+    private int getSingleNodeValueInteger(Document document, String tagName) throws ParserException {
+<span class="nc" id="L437">        LOGGER.log(Level.FINEST, &quot;Node to parse : {0}&quot;, tagName);</span>
+
+<span class="nc" id="L439">        NodeList nodeList = document.getElementsByTagName(tagName);</span>
+<span class="nc bnc" id="L440" title="All 2 branches missed.">        if (nodeList.getLength() != 1) {</span>
+<span class="nc" id="L441">            throw new ParserException(&quot;Expected only one tag in the DOM&quot;, 1, nodeList.getLength());</span>
+        }
+
+<span class="nc" id="L444">        Node singleNode = nodeList.item(0);</span>
+<span class="nc" id="L445">        return Integer.parseInt(singleNode.getTextContent(), 10);</span>
+    }
+
+    /**
+     * Retrieves a node from his tag name and returns the value inside as a list
+     * of elements.
+     *
+     * @param document The document parsed
+     * @param tagName The tag name we need to read
+     * @return The value as a list
+     * @throws ParserException When parsing can't be done properly
+     */
+    private List&lt;String[]&gt; getSingleNodeTsv(Document document, String tagName) throws ParserException {
+
+<span class="nc" id="L459">        LOGGER.log(Level.FINEST, &quot;Node to parse : {0}&quot;, tagName);</span>
+
+<span class="nc" id="L461">        NodeList nodeList = document.getElementsByTagName(tagName);</span>
+<span class="nc bnc" id="L462" title="All 2 branches missed.">        if (nodeList.getLength() != 1) {</span>
+<span class="nc" id="L463">            throw new ParserException(&quot;Expected only one tag in the DOM&quot;, 1, nodeList.getLength());</span>
+        }
+
+<span class="nc" id="L466">        Node singleNode = nodeList.item(0);</span>
+<span class="nc" id="L467">        String nodeText = singleNode.getTextContent();</span>
+
+<span class="nc" id="L469">        return this.tsvParser.parse(new StringReader(nodeText.substring(1)));</span>
+    }
+
+    /**
+     * Add a root node to create a valid XML Document.
+     *
+     * Since instance files are XML like files, without a root node, we need to
+     * create a root node. With that, we can leave the XML parsing part to a
+     * dedicated library with a better support than an hand-made one.
+     *
+     * Thanks to
+     * https://stackoverflow.com/questions/6640756/parsing-an-xml-stream-with-no-root-element
+     * for the code to sandwich an {@link InputStream}
+     *
+     * @param inputStream Stream to sandwich
+     * @return A valid and well formed document
+     */
+    private static InputStream createSuitableXmlRoot(InputStream inputStream) {
+<span class="nc" id="L487">        List&lt;InputStream&gt; streams = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L488">        streams.add(new ByteArrayInputStream(&quot;&lt;root&gt;&quot;.getBytes()));</span>
+<span class="nc bnc" id="L489" title="All 2 branches missed.">        if (inputStream != null) {</span>
+<span class="nc" id="L490">            streams.add(inputStream);</span>
+        }
+<span class="nc" id="L492">        streams.add(new ByteArrayInputStream(&quot;&lt;/root&gt;&quot;.getBytes()));</span>
+
+<span class="nc" id="L494">        return new SequenceInputStream(Collections.enumeration(streams));</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

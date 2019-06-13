@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ShortestPathSolver.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">POO4-Project</a> &gt; <a href="index.source.html" class="el_package">algo.genetic</a> &gt; <span class="el_source">ShortestPathSolver.java</span></div><h1>ShortestPathSolver.java</h1><pre class="source lang-java linenums">/*
+ * POO4 Project
+ * Copyright (C) 2019
+ * Lilian Petitpas, Thomas Ternisien, Thibaut Fenain, Corentin Apolinario
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package algo.genetic;
+
+import algo.ISolver;
+import algo.SolverException;
+import algo.iterative.NaiveSolver;
+import io.input.InstanceFileParser;
+
+import model.Instance;
+import model.Vehicule;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ * ShortestPathSolver class
+ *
+ * @author Thomas
+ */
+public class ShortestPathSolver implements ISolver {
+
+    /**
+     * Class logger.
+     */
+<span class="nc" id="L46">    private static final Logger LOGGER = Logger.getLogger(ShortestPathSolver.class.getName());</span>
+
+    /**
+     * Current instance.
+     */
+    private Instance instance;
+
+    /**
+     * ShortestPathSolver constructor, without an Instance.
+     * &lt;p&gt;
+     * This constructor is recommended as you can solve multiples instances by
+     * using the instance setter.
+     */
+    public ShortestPathSolver() {
+<span class="nc" id="L60">        this(null);</span>
+<span class="nc" id="L61">    }</span>
+
+    /**
+     * ShortestPathSolver constructor, with an Instance.
+     *
+     * @param i Instance to solve
+     */
+<span class="nc" id="L68">    public ShortestPathSolver(Instance i) {</span>
+<span class="nc" id="L69">        this.instance = i;</span>
+<span class="nc" id="L70">    }</span>
+
+    @Override
+    public Instance getInstance() {
+<span class="nc" id="L74">        return this.instance;</span>
+    }
+
+    @Override
+    public void setInstance(Instance i) {
+<span class="nc" id="L79">        this.instance = i;</span>
+<span class="nc" id="L80">    }</span>
+
+    @Override
+    public boolean solve() {
+<span class="nc" id="L84">        LOGGER.log(Level.FINE, &quot;Solving a new instance&quot;);</span>
+
+        try {
+<span class="nc" id="L87">            Chromosome chromosome = new Chromosome(this.instance);</span>
+<span class="nc" id="L88">            this.instance.clear();</span>
+<span class="nc" id="L89">            List&lt;Vehicule&gt; vehicules = this.instance.getVehicules();</span>
+<span class="nc" id="L90">            int nbV = this.instance.getNbVehicules();</span>
+
+<span class="nc" id="L92">            List&lt;Label&gt; tournee = new ArrayList&lt;&gt;(chromosome.getTournee().getTournee());</span>
+<span class="nc" id="L93">            Collections.reverse(tournee);</span>
+            Vehicule v;
+<span class="nc bnc" id="L95" title="All 2 branches missed.">            for (int i = 0; i &lt; tournee.size(); i++) {</span>
+<span class="nc" id="L96">                Label label = tournee.get(i);</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">                if (i &gt;= nbV) {</span>
+<span class="nc" id="L98">                    LOGGER.log(Level.INFO, &quot;Ajout d'un extra vehicule&quot;);</span>
+<span class="nc" id="L99">                    v = this.instance.addVehicule();</span>
+                } else {
+<span class="nc" id="L101">                    v = vehicules.get(i);</span>
+                }
+<span class="nc bnc" id="L103" title="All 2 branches missed.">                if (label.getPrecedents().size() &gt; 1) {</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">                    for (int j = 1; j &lt; label.getPrecedents().size(); j++) {</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">                        if (!v.addEmplacement(label.getPrecedents().get(j))) {</span>
+<span class="nc" id="L106">                            LOGGER.log(Level.WARNING,</span>
+                                    &quot;Error while adding emplacement to vehicule during ShortestPathEmplacements calculation&quot;);
+<span class="nc" id="L108">                            throw new SolverException(</span>
+                                    &quot;Error while adding emplacement to vehicule during ShortestPathEmplacements calculation&quot;);
+                        }
+                    }
+                }
+<span class="nc bnc" id="L113" title="All 2 branches missed.">                if (!v.addEmplacement(label.getEmplacement())) {</span>
+<span class="nc" id="L114">                    LOGGER.log(Level.WARNING,</span>
+                            &quot;Error while adding emplacement to vehicule during ShortestPathEmplacements calculation&quot;);
+<span class="nc" id="L116">                    throw new SolverException(</span>
+                            &quot;Error while adding emplacement to vehicule during ShortestPathEmplacements calculation&quot;);
+                }
+            }
+
+<span class="nc" id="L121">        } catch (SolverException ex) {</span>
+<span class="nc" id="L122">            LOGGER.log(Level.SEVERE, &quot;Exception while solving an Instance&quot;, ex);</span>
+<span class="nc" id="L123">            return false;</span>
+<span class="nc" id="L124">        }</span>
+
+        // Check for instance validity
+<span class="nc" id="L127">        return this.instance.check();</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

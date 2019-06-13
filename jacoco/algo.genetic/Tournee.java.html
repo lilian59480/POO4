@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Tournee.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">POO4-Project</a> &gt; <a href="index.source.html" class="el_package">algo.genetic</a> &gt; <span class="el_source">Tournee.java</span></div><h1>Tournee.java</h1><pre class="source lang-java linenums">/*
+ * POO4 Project
+ * Copyright (C) 2019
+ * Lilian Petitpas, Thomas Ternisien, Thibaut Fenain, Corentin Apolinario
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package algo.genetic;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Tournee class
+ *
+ * @author Thomas
+ */
+public class Tournee {
+
+    /**
+     * Cost of the tournee
+     */
+    private double cost;
+
+    /**
+     * Number of vehicle in the Tournee
+     */
+    private int nbVehicule;
+
+    /**
+     * Cost for extra vehicles
+     */
+    private double costExtraVehicule;
+
+    /**
+     * Labels of the tournee
+     */
+    private List&lt;Label&gt; tournee;
+
+    /**
+     * Tournee constructor
+     *
+     * @param nbVehicle         the number of vehicule of the tournee
+     * @param costExtraVehicule the cost for extra vehicle
+     */
+<span class="nc" id="L57">    public Tournee(int nbVehicle, double costExtraVehicule) {</span>
+<span class="nc" id="L58">        this.nbVehicule = nbVehicle;</span>
+<span class="nc" id="L59">        this.costExtraVehicule = costExtraVehicule;</span>
+<span class="nc" id="L60">        this.cost = 0.0;</span>
+<span class="nc" id="L61">        this.tournee = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L62">    }</span>
+
+    /**
+     * Tournee constructor that extends a Tournee
+     *
+     * @param label         the Label
+     * @param parentTournee the parentTournee to extend
+     */
+<span class="nc" id="L70">    public Tournee(Label label, Tournee parentTournee) {</span>
+<span class="nc" id="L71">        this.nbVehicule = parentTournee.getNbVehicule();</span>
+<span class="nc" id="L72">        this.costExtraVehicule = parentTournee.getCostExtraVehicule();</span>
+<span class="nc" id="L73">        this.tournee = new ArrayList&lt;&gt;(parentTournee.getTournee());</span>
+<span class="nc" id="L74">        this.tournee.add(label);</span>
+<span class="nc" id="L75">    }</span>
+
+    /**
+     * Tournee constructor that copies a Tournee
+     *
+     * @param tournee the parentTournee to extend
+     */
+<span class="nc" id="L82">    public Tournee(Tournee tournee) {</span>
+<span class="nc" id="L83">        this.nbVehicule = tournee.getNbVehicule();</span>
+<span class="nc" id="L84">        this.costExtraVehicule = tournee.getCostExtraVehicule();</span>
+<span class="nc" id="L85">        this.cost = tournee.getCost();</span>
+<span class="nc" id="L86">        this.tournee = new ArrayList&lt;&gt;(tournee.getTournee());</span>
+<span class="nc" id="L87">    }</span>
+
+    /**
+     * Tournee constructor that convert a BestLabel
+     *
+     * @param bestLabel         the BestLabel to convert
+     * @param nbVehicule        the number of vehicule of the tournee
+     * @param costExtraVehicule the cost for extra vehicle
+     */
+<span class="nc" id="L96">    public Tournee(BestLabel bestLabel, int nbVehicule, double costExtraVehicule) {</span>
+<span class="nc" id="L97">        this.nbVehicule = nbVehicule;</span>
+<span class="nc" id="L98">        this.costExtraVehicule = costExtraVehicule;</span>
+<span class="nc" id="L99">        this.cost = 0.0;</span>
+<span class="nc" id="L100">        this.tournee = new ArrayList&lt;&gt;(bestLabel.getLabelsPre());</span>
+<span class="nc" id="L101">        this.addLabel(bestLabel.getLabel());</span>
+<span class="nc" id="L102">    }</span>
+
+    /**
+     * Function that updates the cost of the Tournee
+     */
+    private void updateCost() {
+<span class="nc" id="L108">        int nbExtraVRequired = Math.max(this.tournee.size() - this.nbVehicule, 0);</span>
+<span class="nc" id="L109">        double tempCost = 0.0;</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">        for (Label label : this.tournee) {</span>
+<span class="nc" id="L111">            tempCost += label.getCost();</span>
+<span class="nc" id="L112">        }</span>
+<span class="nc" id="L113">        this.cost = tempCost + nbExtraVRequired * this.costExtraVehicule;</span>
+<span class="nc" id="L114">    }</span>
+
+    /**
+     * Get the cost of the Tournee
+     *
+     * @return the cost
+     */
+    public double getCost() {
+<span class="nc" id="L122">        return this.cost;</span>
+    }
+
+    /**
+     * Get the tournee of the Tournee
+     *
+     * @return the cost
+     */
+    public List&lt;Label&gt; getTournee() {
+<span class="nc" id="L131">        return this.tournee;</span>
+    }
+
+    /**
+     * Add a label to the tournee
+     *
+     * @param label the label to add
+     */
+    public void addLabel(Label label) {
+<span class="nc" id="L140">        this.tournee.add(label);</span>
+<span class="nc" id="L141">        this.updateCost();</span>
+<span class="nc" id="L142">    }</span>
+
+    /**
+     * Add a labels to the tournee
+     *
+     * @param labels labels to add
+     */
+    public void addLabels(List&lt;Label&gt; labels) {
+<span class="nc" id="L150">        this.tournee.addAll(labels);</span>
+<span class="nc" id="L151">        this.updateCost();</span>
+<span class="nc" id="L152">    }</span>
+
+    /**
+     * Get the number of vehicule of the tournee
+     *
+     * @return the number of vehicule
+     */
+    public int getNbVehicule() {
+<span class="nc" id="L160">        return this.nbVehicule;</span>
+    }
+
+    /**
+     * Get the cost for extra vehicule
+     *
+     * @return the cost for extra vehicule
+     */
+    public double getCostExtraVehicule() {
+<span class="nc" id="L169">        return this.costExtraVehicule;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L174">        return &quot;Tournee{&quot; + &quot;cost=&quot; + cost + &quot;, nbVehicule=&quot; + nbVehicule + &quot;, costExtraVehicule=&quot; + costExtraVehicule + &quot;, tournee=&quot; + tournee + '}';</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

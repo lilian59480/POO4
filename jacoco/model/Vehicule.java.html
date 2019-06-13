@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Vehicule.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">POO4-Project</a> &gt; <a href="index.source.html" class="el_package">model</a> &gt; <span class="el_source">Vehicule.java</span></div><h1>Vehicule.java</h1><pre class="source lang-java linenums">/*
+ * POO4 Project
+ * Copyright (C) 2019
+ * Lilian Petitpas, Thomas Ternisien, Thibaut Fenain, Corentin Apolinario
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package model;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+/**
+ * Vehicule model representation.
+ *
+ * @author Corentin
+ */
+@Entity
+@Table(name = &quot;VEHICULE&quot;)
+public class Vehicule implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Depot.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = &quot;ID&quot;)
+    private int id;
+    @ManyToOne
+    private Depot depot;
+
+    /**
+     * A list of destinations.
+     */
+    @OneToMany
+    private List&lt;Emplacement&gt; destinations;
+
+    /**
+     * Current planning.
+     */
+    @ManyToOne
+    private Planning planning;
+
+    /**
+     * Instance.
+     */
+    @ManyToOne
+    private Instance instance;
+
+    /**
+     * Cost.
+     */
+    private double cout;
+
+    /**
+     * Capacity.
+     */
+    private int capacite;
+
+    /**
+     * Used capacity.
+     */
+    private int capaciteUtilisee;
+
+    /**
+     * Current time.
+     */
+    @Column(name = &quot;VEHICLETIME&quot;)
+    private int time;
+
+    /**
+     * Vehicule constructor with empty capacity.
+     */
+    public Vehicule() {
+<span class="fc" id="L98">        this(0);</span>
+<span class="fc" id="L99">    }</span>
+
+    /**
+     * Vehicule constructor with no depot.
+     *
+     * @param capacite Vehicule capacity.
+     */
+    public Vehicule(int capacite) {
+<span class="fc" id="L107">        this(null, 0);</span>
+<span class="fc" id="L108">    }</span>
+
+    /**
+     * Vehicule constructor.
+     *
+     * @param depot Depot.
+     * @param capacite Vehicule capacity.
+     */
+<span class="fc" id="L116">    public Vehicule(Depot depot, int capacite) {</span>
+<span class="fc" id="L117">        this.depot = depot;</span>
+<span class="fc" id="L118">        this.destinations = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L119">        this.cout = 0;</span>
+<span class="fc" id="L120">        this.capaciteUtilisee = 0;</span>
+<span class="fc" id="L121">        this.capacite = capacite;</span>
+<span class="fc" id="L122">    }</span>
+
+    /**
+     * Check if this Vehicule is consistant.
+     *
+     * @return True if this vehicule is valid.
+     */
+    public boolean check() {
+<span class="fc" id="L130">        boolean valid = true;</span>
+<span class="pc bpc" id="L131" title="1 of 2 branches missed.">        valid &amp;= (this.getCapaciteRestante() &gt;= 0);</span>
+
+<span class="fc" id="L133">        Emplacement last = this.getDepot();</span>
+<span class="fc" id="L134">        this.time = 0;</span>
+        // TODO Check time
+<span class="pc bpc" id="L136" title="1 of 2 branches missed.">        for (Emplacement destination : this.destinations) {</span>
+<span class="nc" id="L137">            int timeToDestination = last.getTempsTo(destination);</span>
+<span class="nc" id="L138">            int timeAtDestination = this.time + timeToDestination;</span>
+
+<span class="nc bnc" id="L140" title="All 2 branches missed.">            if ((this.time + timeToDestination) &lt; destination.getHeureDebut()) {</span>
+<span class="nc" id="L141">                timeAtDestination = destination.getHeureDebut();</span>
+            }
+
+            // Check that we can go to next destination
+<span class="nc" id="L145">            valid &amp;= this.hasEnoughRemainingTime(last, destination);</span>
+
+<span class="nc" id="L147">            this.time = timeAtDestination;</span>
+
+            // Set the new last destination
+<span class="nc" id="L150">            last = destination;</span>
+<span class="nc" id="L151">        }</span>
+<span class="fc" id="L152">        return valid;</span>
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+<span class="pc bpc" id="L157" title="1 of 2 branches missed.">        if (this == obj) {</span>
+<span class="fc" id="L158">            return true;</span>
+        }
+<span class="nc bnc" id="L160" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L161">            return false;</span>
+        }
+<span class="nc bnc" id="L163" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L164">            return false;</span>
+        }
+<span class="nc" id="L166">        final Vehicule other = (Vehicule) obj;</span>
+<span class="nc bnc" id="L167" title="All 2 branches missed.">        if (this.capacite != other.capacite) {</span>
+<span class="nc" id="L168">            return false;</span>
+        }
+<span class="nc bnc" id="L170" title="All 2 branches missed.">        if (!Objects.equals(this.depot, other.depot)) {</span>
+<span class="nc" id="L171">            return false;</span>
+        }
+<span class="nc" id="L173">        return true;</span>
+    }
+
+    /**
+     * Get a list of emplacements.
+     *
+     * @return Emplacement list.
+     */
+    public List&lt;Emplacement&gt; getEmplacements() {
+<span class="fc" id="L182">        return this.destinations;</span>
+    }
+
+    /**
+     * Set a new planning.
+     *
+     * @param planning New planning.
+     */
+    public void setPlanning(Planning planning) {
+<span class="fc" id="L191">        this.planning = planning;</span>
+<span class="fc" id="L192">    }</span>
+
+    /**
+     * Set a new Instance.
+     *
+     * @param instance New instance.
+     */
+    public void setInstance(Instance instance) {
+<span class="fc" id="L200">        this.instance = instance;</span>
+<span class="fc" id="L201">        this.planning = instance.getPlanningCurrent();</span>
+<span class="fc" id="L202">    }</span>
+
+    /**
+     * Get cost.
+     *
+     * @return The cout.
+     */
+    public double getCout() {
+<span class="nc" id="L210">        return this.cout;</span>
+    }
+
+    /**
+     * Clear this vehicule.
+     */
+    public void clear() {
+<span class="fc" id="L217">        this.cout = 0.0;</span>
+<span class="fc" id="L218">        this.time = 0;</span>
+<span class="fc" id="L219">        this.capaciteUtilisee = 0;</span>
+<span class="fc" id="L220">        this.time = 0;</span>
+<span class="fc" id="L221">        this.destinations.clear();</span>
+<span class="fc" id="L222">    }</span>
+
+    /**
+     * Get free capacity.
+     *
+     * @return Capacity - Used capacity.
+     */
+    public int getCapaciteRestante() {
+<span class="fc" id="L230">        return this.capacite - this.capaciteUtilisee;</span>
+    }
+
+    /**
+     * Add new client.
+     *
+     * @param c New client.
+     * @return True if we can add it.
+     */
+    public boolean addClient(Client c) {
+<span class="pc bpc" id="L240" title="1 of 2 branches missed.">        if (c == null) {</span>
+<span class="nc" id="L241">            return false;</span>
+        }
+
+        // Test if enough remaining capacity
+<span class="fc bfc" id="L245" title="All 2 branches covered.">        if (this.getCapaciteRestante() &lt; c.getDemande()) {</span>
+<span class="fc" id="L246">            return false;</span>
+        }
+
+<span class="fc" id="L249">        int position = this.destinations.size();</span>
+
+<span class="pc bpc" id="L251" title="1 of 2 branches missed.">        Emplacement lastEmplacement = position != 0 ? this.destinations.get(position - 1) : depot;</span>
+
+<span class="fc bfc" id="L253" title="All 2 branches covered.">        for (Emplacement e : c.getEmplacements()) {</span>
+            // Test if enough remaining time
+<span class="fc" id="L255">            int timeToDestination = lastEmplacement.getTempsTo(e);</span>
+<span class="fc" id="L256">            int timeAtDestination = this.time + timeToDestination;</span>
+
+<span class="pc bpc" id="L258" title="1 of 2 branches missed.">            if ((this.time + timeToDestination) &lt; e.getHeureDebut()) {</span>
+<span class="nc" id="L259">                timeAtDestination = e.getHeureDebut();</span>
+            }
+
+<span class="fc bfc" id="L262" title="All 2 branches covered.">            if (!this.hasEnoughRemainingTime(lastEmplacement, e)) {</span>
+<span class="fc" id="L263">                continue;</span>
+            }
+
+<span class="fc" id="L266">            c.setPosition(position + 1);</span>
+
+<span class="pc bpc" id="L268" title="1 of 2 branches missed.">            if (!this.destinations.add(e)) {</span>
+<span class="nc" id="L269">                return false;</span>
+            }
+
+            // Il faut ajouter la distance client -&gt; depot et depot -&gt; client
+            // Ne pas oublier d'enlever la distance pour le dernier client
+<span class="pc bpc" id="L274" title="1 of 2 branches missed.">            if (position == 0) {</span>
+<span class="fc" id="L275">                double depotToClient = this.depot.getDistanceTo(e);</span>
+<span class="fc" id="L276">                double clientToDepot = e.getDistanceTo(this.depot);</span>
+<span class="fc" id="L277">                this.cout = depotToClient + clientToDepot;</span>
+<span class="fc" id="L278">            } else {</span>
+<span class="nc" id="L279">                double diffCout = -lastEmplacement.getDistanceTo(this.depot);</span>
+<span class="nc" id="L280">                diffCout += lastEmplacement.getDistanceTo(e);</span>
+<span class="nc" id="L281">                diffCout += e.getDistanceTo(this.depot);</span>
+
+<span class="nc" id="L283">                this.cout += diffCout;</span>
+            }
+
+<span class="fc" id="L286">            this.capaciteUtilisee += c.getDemande();</span>
+<span class="fc" id="L287">            this.time = timeAtDestination;</span>
+
+<span class="fc" id="L289">            c.setVehicule(this);</span>
+
+<span class="fc" id="L291">            this.planning.recalculerCoutTotal();</span>
+
+<span class="fc" id="L293">            return true;</span>
+        }
+
+<span class="fc" id="L296">        return false;</span>
+    }
+
+    /**
+     * Add new emplacement.
+     *
+     * @param e New emplacement.
+     * @return True if we can add it.
+     */
+    public boolean addEmplacement(Emplacement e) {
+<span class="nc bnc" id="L306" title="All 2 branches missed.">        if (e == null) {</span>
+<span class="nc" id="L307">            return false;</span>
+        }
+
+<span class="nc" id="L310">        Client c = e.getClient();</span>
+
+        // Test if enough remaining capacity
+<span class="nc bnc" id="L313" title="All 2 branches missed.">        if (this.getCapaciteRestante() &lt; c.getDemande()) {</span>
+<span class="nc" id="L314">            return false;</span>
+        }
+
+<span class="nc" id="L317">        int position = this.destinations.size();</span>
+
+<span class="nc bnc" id="L319" title="All 2 branches missed.">        Emplacement lastEmplacement = position != 0 ? this.destinations.get(position - 1) : depot;</span>
+
+        // Test if enough remaining time
+<span class="nc" id="L322">        int timeToDestination = lastEmplacement.getTempsTo(e);</span>
+<span class="nc" id="L323">        int timeAtDestination = this.time + timeToDestination;</span>
+
+<span class="nc bnc" id="L325" title="All 2 branches missed.">        if ((this.time + timeToDestination) &lt; e.getHeureDebut()) {</span>
+<span class="nc" id="L326">            timeAtDestination = e.getHeureDebut();</span>
+        }
+
+<span class="nc bnc" id="L329" title="All 2 branches missed.">        if (!this.hasEnoughRemainingTime(lastEmplacement, e)) {</span>
+<span class="nc" id="L330">            return false;</span>
+        }
+
+<span class="nc" id="L333">        c.setPosition(position + 1);</span>
+
+<span class="nc bnc" id="L335" title="All 2 branches missed.">        if (!this.destinations.add(e)) {</span>
+<span class="nc" id="L336">            return false;</span>
+        }
+
+        // Il faut ajouter la distance client -&gt; depot et depot -&gt; client
+        // Ne pas oublier d'enlever la distance pour le dernier client
+<span class="nc bnc" id="L341" title="All 2 branches missed.">        if (position == 0) {</span>
+<span class="nc" id="L342">            double depotToClient = this.depot.getDistanceTo(e);</span>
+<span class="nc" id="L343">            double clientToDepot = e.getDistanceTo(this.depot);</span>
+<span class="nc" id="L344">            this.cout = depotToClient + clientToDepot;</span>
+<span class="nc" id="L345">        } else {</span>
+<span class="nc" id="L346">            double diffCout = -lastEmplacement.getDistanceTo(this.depot);</span>
+<span class="nc" id="L347">            diffCout += lastEmplacement.getDistanceTo(e);</span>
+<span class="nc" id="L348">            diffCout += e.getDistanceTo(this.depot);</span>
+
+<span class="nc" id="L350">            this.cout += diffCout;</span>
+        }
+
+<span class="nc" id="L353">        this.capaciteUtilisee += c.getDemande();</span>
+<span class="nc" id="L354">        this.time = timeAtDestination;</span>
+
+<span class="nc" id="L356">        c.setVehicule(this);</span>
+
+<span class="nc" id="L358">        this.planning.recalculerCoutTotal();</span>
+
+<span class="nc" id="L360">        return true;</span>
+
+    }
+
+    /**
+     * Get depot.
+     *
+     * @return The depot.
+     */
+    public Depot getDepot() {
+<span class="fc" id="L370">        return this.depot;</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L375">        int hash = 3;</span>
+<span class="nc" id="L376">        hash = 17 * hash + Objects.hashCode(this.depot);</span>
+<span class="nc" id="L377">        hash = 17 * hash + this.capacite;</span>
+<span class="nc" id="L378">        return hash;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L383">        return &quot;Vehicule{&quot; + &quot;depot=&quot; + depot + &quot;, destinations=&quot; + destinations + &quot;, cout=&quot; + cout + &quot;, capacite=&quot;</span>
+                + capacite + &quot;, capaciteUtilisee=&quot; + capaciteUtilisee + '}';
+    }
+
+    /**
+     * Check if there is enough time to move from an Emplacement to another.
+     *
+     * Check also if you can go to the depot within time limits.
+     *
+     * @param last Emplacement from where you start
+     * @param next Destination emplacement
+     * @return True if there is time to do the route.
+     */
+    public boolean hasEnoughRemainingTime(Emplacement last, Emplacement next) {
+        // Test if enough remaining time
+<span class="fc" id="L398">        int timeToDestination = last.getTempsTo(next);</span>
+<span class="fc" id="L399">        int timeAtDestination = this.time + timeToDestination;</span>
+
+<span class="pc bpc" id="L401" title="1 of 2 branches missed.">        if ((this.time + timeToDestination) &lt; next.getHeureDebut()) {</span>
+<span class="nc" id="L402">            timeAtDestination = next.getHeureDebut();</span>
+        }
+
+<span class="fc" id="L405">        int timeAtDepot = timeAtDestination + next.getTempsTo(this.depot);</span>
+<span class="pc bpc" id="L406" title="1 of 4 branches missed.">        return !(timeAtDestination &gt; next.getHeureFin() || timeAtDepot &gt; this.depot.getHeureFin());</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

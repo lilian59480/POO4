@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Planning.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">POO4-Project</a> &gt; <a href="index.source.html" class="el_package">model</a> &gt; <span class="el_source">Planning.java</span></div><h1>Planning.java</h1><pre class="source lang-java linenums">/*
+ * POO4 Project
+ * Copyright (C) 2019
+ * Lilian Petitpas, Thomas Ternisien, Thibaut Fenain, Corentin Apolinario
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package model;
+
+import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+/**
+ * Planning model representation.
+ *
+ * @author Corentin
+ */
+@Entity
+@Table(name = &quot;PLANNING&quot;)
+public class Planning implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = &quot;ID&quot;)
+    private int id;
+
+    /**
+     * List of vehicules.
+     */
+    @OneToMany(mappedBy = &quot;planning&quot;)
+    private List&lt;Vehicule&gt; vehicules;
+
+    /**
+     * An instance.
+     */
+    @ManyToOne
+    private Instance instance;
+
+    /**
+     * Final cost of this planning.
+     */
+    private double cout;
+
+    /**
+     * Planning constructor, not linked to a planning.
+     */
+    public Planning() {
+<span class="fc" id="L70">        this(null);</span>
+<span class="fc" id="L71">    }</span>
+
+    /**
+     * Planning construcor.
+     *
+     * @param instance A new planning.
+     */
+    public Planning(Instance instance) {
+<span class="fc" id="L79">        this(0.0, instance, new LinkedList&lt;Vehicule&gt;());</span>
+<span class="fc" id="L80">    }</span>
+
+    /**
+     * Planning constuctor.
+     *
+     * @param cout Cost of this planning.
+     * @param instance Instance linked to this planning.
+     * @param vehiculeSet List of vehicules.
+     */
+<span class="fc" id="L89">    public Planning(double cout, Instance instance, List&lt;Vehicule&gt; vehiculeSet) {</span>
+<span class="fc" id="L90">        this.cout = cout;</span>
+<span class="fc" id="L91">        this.instance = instance;</span>
+<span class="fc" id="L92">        this.vehicules = vehiculeSet;</span>
+<span class="fc" id="L93">    }</span>
+
+    /**
+     * Get a list of vehicules.
+     *
+     * @return A list of vehicules.
+     */
+    public List&lt;Vehicule&gt; getVehicules() {
+<span class="fc" id="L101">        return this.vehicules;</span>
+    }
+
+    /**
+     * Add a new vehicule to the planning.
+     *
+     * @param v The vehicule to add.
+     * @return True if the vehicule can be added.
+     */
+    public boolean addVehicule(Vehicule v) {
+<span class="fc bfc" id="L111" title="All 2 branches covered.">        if (v == null) {</span>
+<span class="fc" id="L112">            return false;</span>
+        }
+
+<span class="fc" id="L115">        v.setPlanning(this);</span>
+<span class="fc" id="L116">        return this.vehicules.add(v);</span>
+    }
+
+    /**
+     * Recalculate the cost of this planning from the beginning.
+     */
+    public void recalculerCoutTotal() {
+<span class="fc" id="L123">        double cost = 0;</span>
+<span class="pc bpc" id="L124" title="1 of 2 branches missed.">        for (Vehicule vehicule : this.vehicules) {</span>
+<span class="nc" id="L125">            cost += vehicule.getCout();</span>
+<span class="nc" id="L126">        }</span>
+<span class="fc" id="L127">        int vehiculeSupp = this.vehicules.size() - this.instance.getNbVehicules();</span>
+<span class="fc" id="L128">        cost += vehiculeSupp * this.instance.getCoutVehicule();</span>
+<span class="fc" id="L129">        this.cout = cost;</span>
+<span class="fc" id="L130">    }</span>
+
+    /**
+     * Get final cost.
+     *
+     * @return The cost.
+     */
+    public double getCout() {
+<span class="nc" id="L138">        return this.cout;</span>
+    }
+
+    /**
+     * Clear this planning.
+     */
+    public void clear() {
+<span class="nc" id="L145">        this.vehicules.clear();</span>
+<span class="nc" id="L146">        this.cout = 0.0;</span>
+<span class="nc" id="L147">    }</span>
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L151">        int hash = 7;</span>
+<span class="nc" id="L152">        hash = 41 * hash + Objects.hashCode(this.vehicules);</span>
+<span class="nc" id="L153">        hash = 41 * hash + Objects.hashCode(this.instance);</span>
+<span class="nc" id="L154">        return hash;</span>
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+<span class="pc bpc" id="L159" title="1 of 2 branches missed.">        if (this == obj) {</span>
+<span class="fc" id="L160">            return true;</span>
+        }
+<span class="nc bnc" id="L162" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L163">            return false;</span>
+        }
+<span class="nc bnc" id="L165" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L166">            return false;</span>
+        }
+<span class="nc" id="L168">        final Planning other = (Planning) obj;</span>
+<span class="nc bnc" id="L169" title="All 2 branches missed.">        if (!Objects.equals(this.vehicules, other.vehicules)) {</span>
+<span class="nc" id="L170">            return false;</span>
+        }
+<span class="nc" id="L172">        return Objects.equals(this.instance, other.instance);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L177">        return &quot;Planning{&quot; + &quot;vehicules=&quot; + vehicules + &quot;, cout=&quot; + cout + '}';</span>
+    }
+
+    /**
+     * Check if this planning is valid.
+     *
+     * @return True if valid, false otherwise.
+     */
+    public boolean check() {
+<span class="nc" id="L186">        boolean valid = true;</span>
+<span class="nc bnc" id="L187" title="All 2 branches missed.">        for (Vehicule vehicule : this.vehicules) {</span>
+<span class="nc" id="L188">            valid &amp;= vehicule.check();</span>
+<span class="nc" id="L189">        }</span>
+<span class="nc" id="L190">        return valid;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

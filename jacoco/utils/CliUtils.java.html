@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CliUtils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">POO4-Project</a> &gt; <a href="index.source.html" class="el_package">utils</a> &gt; <span class="el_source">CliUtils.java</span></div><h1>CliUtils.java</h1><pre class="source lang-java linenums">/*
+ * POO4 Project
+ * Copyright (C) 2019
+ * Lilian Petitpas, Thomas Ternisien, Thibaut Fenain, Corentin Apolinario
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package utils;
+
+import java.io.PrintStream;
+
+/**
+ * Cli utilities
+ *
+ * @author Lilian Petitpas
+ */
+public class CliUtils {
+
+    /**
+     * Possible options.
+     */
+<span class="nc" id="L33">    public static enum Options {</span>
+        /**
+         * Help option.
+         *
+         * Should display the help message.
+         */
+<span class="nc" id="L39">        HELP,</span>
+        /**
+         * Usage option.
+         *
+         * Should display the help message or an usage example.
+         */
+<span class="nc" id="L45">        USAGE,</span>
+        /**
+         * Unknown argument option.
+         *
+         * Should display the help message.
+         */
+<span class="nc" id="L51">        UNKNOWN,</span>
+        /**
+         * No arguments option.
+         *
+         * Should execute the program.
+         */
+<span class="nc" id="L57">        NO_ARGS;</span>
+    }
+
+    /**
+     * Utils class, no need for constructor
+     */
+    private CliUtils() {
+        // Utils
+    }
+
+    /**
+     * Print introduction text.
+     *
+     * Add details like a title and authors.
+     *
+     * @param ps Stream to use.
+     */
+    public static void printIntro(PrintStream ps) {
+<span class="nc" id="L75">        ps.println(&quot;+------------+&quot;);</span>
+<span class="nc" id="L76">        ps.println(&quot;|POO4 Project|&quot;);</span>
+<span class="nc" id="L77">        ps.println(&quot;+------------+&quot;);</span>
+
+<span class="nc" id="L79">        ps.println(&quot;Made by&quot;);</span>
+<span class="nc" id="L80">        ps.println(&quot;+ Lilian Petitpas&quot;);</span>
+<span class="nc" id="L81">        ps.println(&quot;+ Thomas Ternisien&quot;);</span>
+<span class="nc" id="L82">        ps.println(&quot;+ Thibaut Fenain&quot;);</span>
+<span class="nc" id="L83">        ps.println(&quot;+ Corentin Apolinario&quot;);</span>
+<span class="nc" id="L84">    }</span>
+
+    /**
+     * Print licence text.
+     *
+     * Licence explanation.
+     *
+     * @param ps Stream to use.
+     */
+    public static void printLicence(PrintStream ps) {
+<span class="nc" id="L94">        ps.println(&quot;POO4-Project Copyright (C) 2019 &quot;</span>
+                + &quot;Lilian Petitpas, &quot;
+                + &quot;Thomas Ternisien, &quot;
+                + &quot;Thibaut Fenain, &quot;
+                + &quot;Corentin Apolinario&quot;);
+<span class="nc" id="L99">        ps.println(&quot;&quot;);</span>
+<span class="nc" id="L100">        ps.println(&quot;This program comes with ABSOLUTELY NO WARRANTY&quot;);</span>
+<span class="nc" id="L101">        ps.println(&quot;This is free software, and you are welcome to &quot;</span>
+                + &quot;redistribute under certain conditions&quot;);
+<span class="nc" id="L103">    }</span>
+
+    /**
+     * Parse arguments.
+     *
+     * @param args Cli Arguments
+     * @return An Option from the enum
+     */
+    public static Options parseArguments(String[] args) {
+<span class="nc" id="L112">        int argLength = args.length;</span>
+
+<span class="nc bnc" id="L114" title="All 2 branches missed.">        if (argLength == 0) {</span>
+<span class="nc" id="L115">            return Options.NO_ARGS;</span>
+        }
+
+<span class="nc bnc" id="L118" title="All 2 branches missed.">        if (argLength == 1) {</span>
+<span class="nc" id="L119">            String arg0 = args[0];</span>
+
+<span class="nc bnc" id="L121" title="All 4 branches missed.">            if (arg0 == null || arg0.isEmpty()) {</span>
+<span class="nc" id="L122">                return Options.UNKNOWN;</span>
+            }
+
+<span class="nc bnc" id="L125" title="All 3 branches missed.">            switch (arg0) {</span>
+                case &quot;help&quot;:
+<span class="nc" id="L127">                    return Options.HELP;</span>
+                case &quot;usage&quot;:
+<span class="nc" id="L129">                    return Options.USAGE;</span>
+                default:
+<span class="nc" id="L131">                    return Options.UNKNOWN;</span>
+            }
+        }
+
+<span class="nc" id="L135">        return Options.UNKNOWN;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

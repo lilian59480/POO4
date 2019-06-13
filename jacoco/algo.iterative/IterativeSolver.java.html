@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IterativeSolver.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">POO4-Project</a> &gt; <a href="index.source.html" class="el_package">algo.iterative</a> &gt; <span class="el_source">IterativeSolver.java</span></div><h1>IterativeSolver.java</h1><pre class="source lang-java linenums">/*
+ * POO4 Project
+ * Copyright (C) 2019
+ * Lilian Petitpas, Thomas Ternisien, Thibaut Fenain, Corentin Apolinario
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package algo.iterative;
+
+import algo.ISolver;
+import algo.SolverException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import model.Client;
+import model.Instance;
+import model.Vehicule;
+
+/**
+ * Implementation of a Naive solver.
+ *
+ * This solver iterates over all clients and try to assign them a vehicule.
+ *
+ * @author Corentin
+ * @author Lilian Petitpas
+ */
+public class IterativeSolver implements ISolver {
+
+    /**
+     * Class logger.
+     */
+<span class="nc" id="L43">    private static final Logger LOGGER = Logger.getLogger(IterativeSolver.class.getName());</span>
+
+    /**
+     * Current instance.
+     */
+    private Instance instance;
+
+    /**
+     * Client modifier class.
+     */
+    private Modifier&lt;Client&gt; clientModifier;
+
+    /**
+     * Vehicule modifier class.
+     */
+    private Modifier&lt;Vehicule&gt; vehiculeModifier;
+
+    /**
+     * Solver constructor, without an Instance.
+     *
+     * This constructor is recommended as you can solve multiples instances by
+     * using the instance setter.
+     *
+     * @param cm Client list modifier
+     * @param vm Vehicule list modifier
+     */
+    public IterativeSolver(Modifier&lt;Client&gt; cm, Modifier&lt;Vehicule&gt; vm) {
+<span class="nc" id="L70">        this(null, cm, vm);</span>
+<span class="nc" id="L71">    }</span>
+
+    /**
+     * Solver constructor, with an Instance.
+     *
+     * @param i Instance to solve
+     * @param cm Client list modifier
+     * @param vm Vehicule list modifier
+     */
+<span class="nc" id="L80">    public IterativeSolver(Instance i, Modifier&lt;Client&gt; cm, Modifier&lt;Vehicule&gt; vm) {</span>
+<span class="nc" id="L81">        this.instance = i;</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">        if (cm == null) {</span>
+<span class="nc" id="L83">            throw new NullPointerException(&quot;Client modifier can't be null&quot;);</span>
+        }
+<span class="nc" id="L85">        this.clientModifier = cm;</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">        if (vm == null) {</span>
+<span class="nc" id="L87">            throw new NullPointerException(&quot;Vehicule modifier can't be null&quot;);</span>
+        }
+<span class="nc" id="L89">        this.vehiculeModifier = vm;</span>
+<span class="nc" id="L90">    }</span>
+
+    @Override
+    public Instance getInstance() {
+<span class="nc" id="L94">        return this.instance;</span>
+    }
+
+    @Override
+    public void setInstance(Instance i) {
+<span class="nc" id="L99">        this.instance = i;</span>
+<span class="nc" id="L100">    }</span>
+
+    @Override
+    public boolean solve() {
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        if (this.instance == null) {</span>
+<span class="nc" id="L105">            LOGGER.log(Level.WARNING, &quot;No instance to solve&quot;);</span>
+<span class="nc" id="L106">            return false;</span>
+        }
+<span class="nc" id="L108">        LOGGER.log(Level.FINE, &quot;Solving a new instance&quot;);</span>
+        try {
+<span class="nc" id="L110">            this.iterativeSolver();</span>
+<span class="nc" id="L111">        } catch (SolverException ex) {</span>
+<span class="nc" id="L112">            LOGGER.log(Level.SEVERE, &quot;Exception while solving an Instance&quot;, ex);</span>
+<span class="nc" id="L113">            return false;</span>
+<span class="nc" id="L114">        }</span>
+        // Check for instance validity
+<span class="nc" id="L116">        return this.instance.check();</span>
+    }
+
+    /**
+     * Solve the current instance using a naive algorithm.
+     *
+     * It iterates over all clients and try to assign them a vehicule.
+     *
+     * If it is not possible, ask for an external vehicule.
+     *
+     * @throws SolverException If there is an internal exception or inconsistant
+     * values.
+     */
+    private void iterativeSolver() throws SolverException {
+<span class="nc" id="L130">        this.instance.clear();</span>
+<span class="nc" id="L131">        List&lt;Client&gt; clients = this.instance.getClients();</span>
+
+<span class="nc" id="L133">        this.clientModifier.modifyList(clients);</span>
+<span class="nc" id="L134">        System.out.println(&quot;\n\n\n\n\n\n&quot; + clients + &quot;\n\n\n\n\n\n\n&quot;);</span>
+
+<span class="nc bnc" id="L136" title="All 2 branches missed.">        for (Client c : clients) {</span>
+<span class="nc" id="L137">            boolean affecte = false;</span>
+
+<span class="nc" id="L139">            List&lt;Vehicule&gt; vehicules = this.instance.getVehicules();</span>
+
+<span class="nc" id="L141">            this.vehiculeModifier.modifyList(vehicules);</span>
+
+<span class="nc bnc" id="L143" title="All 2 branches missed.">            for (Vehicule v : vehicules) {</span>
+<span class="nc bnc" id="L144" title="All 2 branches missed.">                if (v.addClient(c)) {</span>
+<span class="nc" id="L145">                    affecte = true;</span>
+<span class="nc" id="L146">                    break;</span>
+                }
+<span class="nc" id="L148">            }</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">            if (!affecte) {</span>
+<span class="nc" id="L150">                LOGGER.log(Level.INFO, &quot;Plus de vehicule dispo pour affecter le client {0}&quot;, c);</span>
+<span class="nc" id="L151">                Vehicule v = this.instance.addVehicule();</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">                if (v == null) {</span>
+<span class="nc" id="L153">                    LOGGER.log(Level.WARNING, &quot;Invalid vehicule !&quot;);</span>
+<span class="nc" id="L154">                    throw new SolverException(&quot;Invalid vehicule&quot;);</span>
+                }
+<span class="nc" id="L156">                LOGGER.log(Level.INFO, &quot;Nouveau vehicule créé&quot;);</span>
+<span class="nc bnc" id="L157" title="All 2 branches missed.">                if (!v.addClient(c)) {</span>
+<span class="nc" id="L158">                    LOGGER.log(Level.WARNING, &quot;Erreur : Impossible d affecter le client {0}&quot;, c);</span>
+                }
+            }
+<span class="nc" id="L161">        }</span>
+<span class="nc" id="L162">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L166">        return &quot;IterativeSolver&quot;;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

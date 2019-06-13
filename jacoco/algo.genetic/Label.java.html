@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Label.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">POO4-Project</a> &gt; <a href="index.source.html" class="el_package">algo.genetic</a> &gt; <span class="el_source">Label.java</span></div><h1>Label.java</h1><pre class="source lang-java linenums">/*
+ * POO4 Project
+ * Copyright (C) 2019
+ * Lilian Petitpas, Thomas Ternisien, Thibaut Fenain, Corentin Apolinario
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package algo.genetic;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import model.Emplacement;
+
+/**
+ * Label class
+ *
+ * @author Thomas
+ */
+public class Label {
+    /**
+     * Load of the vehicule
+     */
+    private int load;
+
+    /**
+     * Cost of the travel
+     */
+    private double cost;
+
+    /**
+     * Duration of the travel
+     */
+    private int time;
+
+    /**
+     * Emplacement associated to this label
+     */
+    private Emplacement emplacement;
+
+    /**
+     * Emplacements that will be served before
+     */
+    private List&lt;Emplacement&gt; precedents;
+
+    /**
+     * Emplacements that can be served after
+     */
+    private List&lt;Emplacement&gt; suivants;
+
+    /**
+     * Label constructor
+     *
+     * @param load        the load of the vehicule
+     * @param cost        the cost of the travel
+     * @param time        the time of the travel
+     * @param emplacement the emplacement associated to this label
+     */
+<span class="nc" id="L70">    public Label(int load, double cost, int time, Emplacement emplacement) {</span>
+<span class="nc" id="L71">        this.load = load;</span>
+<span class="nc" id="L72">        this.cost = cost;</span>
+<span class="nc" id="L73">        this.time = time;</span>
+<span class="nc" id="L74">        this.emplacement = emplacement;</span>
+<span class="nc" id="L75">        this.precedents = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L76">        this.suivants = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L77">    }</span>
+
+    /**
+     * Label constructor with an emplacement
+     *
+     * @param load             the load of the vehicule
+     * @param cost             the cost of the travel
+     * @param time             the time of the travel
+     * @param emplacement      the emplacement associated to this label
+     * @param firstEmplacement the first emplacement to add
+     */
+    public Label(int load, double cost, int time, Emplacement emplacement, Emplacement firstEmplacement) {
+<span class="nc" id="L89">        this(load, cost, time, emplacement);</span>
+<span class="nc" id="L90">        this.precedents.add(firstEmplacement);</span>
+<span class="nc" id="L91">    }</span>
+
+    /**
+     * Label constructor with a list of emplacements
+     *
+     * @param load        the load of the vehicule
+     * @param cost        the cost of the travel
+     * @param time        the time of the travel
+     * @param emplacement the emplacement associated to this label
+     * @param precedents  the list of precedent emplacements to add
+     */
+<span class="nc" id="L102">    public Label(int load, double cost, int time, Emplacement emplacement, List&lt;Emplacement&gt; precedents) {</span>
+<span class="nc" id="L103">        this.load = load;</span>
+<span class="nc" id="L104">        this.cost = cost;</span>
+<span class="nc" id="L105">        this.time = time;</span>
+<span class="nc" id="L106">        this.emplacement = emplacement;</span>
+<span class="nc" id="L107">        this.precedents = new ArrayList&lt;&gt;(precedents);</span>
+<span class="nc" id="L108">        this.suivants = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L109">    }</span>
+
+    /**
+     * Get the load
+     *
+     * @return the load
+     */
+    public int getLoad() {
+<span class="nc" id="L117">        return this.load;</span>
+    }
+
+    /**
+     * Get the cost of the travel
+     *
+     * @return the cost
+     */
+    public double getCost() {
+<span class="nc" id="L126">        return this.cost;</span>
+    }
+
+    /**
+     * Get the time of the travel
+     *
+     * @return the time
+     */
+    public int getTime() {
+<span class="nc" id="L135">        return this.time;</span>
+    }
+
+    /**
+     * Get the emplacement of the label
+     *
+     * @return the emplacement
+     */
+    public Emplacement getEmplacement() {
+<span class="nc" id="L144">        return this.emplacement;</span>
+    }
+
+    /**
+     * Get the precedent emplacements
+     *
+     * @return the precedent emplacements
+     */
+    public List&lt;Emplacement&gt; getPrecedents() {
+<span class="nc" id="L153">        return this.precedents;</span>
+    }
+
+    /**
+     * Add an emplacement to the precedent emplacements
+     *
+     * @param precedent the emplacement to add
+     */
+    public void addPrecedent(Emplacement precedent) {
+<span class="nc" id="L162">        this.precedents.add(precedent);</span>
+<span class="nc" id="L163">    }</span>
+
+    /**
+     * Add an emplacement to the suivant emplacements
+     *
+     * @param suivant the emplacement to add
+     */
+    public void addSuivant(Emplacement suivant) {
+<span class="nc" id="L171">        this.suivants.add(suivant);</span>
+<span class="nc" id="L172">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L176">        return &quot;Label{&quot; +</span>
+                &quot;load=&quot; + load +
+                &quot;, cost=&quot; + cost +
+                &quot;, time=&quot; + time +
+                &quot;, emplacement=&quot; + emplacement +
+                &quot;, precedents=&quot; + precedents +
+                &quot;, suivants=&quot; + suivants +
+                '}';
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

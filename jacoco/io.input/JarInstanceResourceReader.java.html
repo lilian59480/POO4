@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JarInstanceResourceReader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">POO4-Project</a> &gt; <a href="index.source.html" class="el_package">io.input</a> &gt; <span class="el_source">JarInstanceResourceReader.java</span></div><h1>JarInstanceResourceReader.java</h1><pre class="source lang-java linenums">/*
+ * POO4 Project
+ * Copyright (C) 2019
+ * Lilian Petitpas, Thomas Ternisien, Thibaut Fenain, Corentin Apolinario
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package io.input;
+
+import java.io.InputStream;
+import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ * This class allow us to iterate over Instance files stored inside the Jar
+ * archive.
+ *
+ * @author Lilian Petitpas
+ */
+public class JarInstanceResourceReader implements Iterable&lt;InputStream&gt; {
+
+    /**
+     * Class logger.
+     */
+<span class="nc" id="L37">    private static final Logger LOGGER = Logger.getLogger(JarInstanceResourceReader.class.getName());</span>
+
+    /**
+     * Maximum value for iterator index.
+     */
+    private static final int MAX_INDEX = 40;
+
+    /**
+     * Class loader used for Jar resources gathering.
+     */
+    private final Class&lt;JarInstanceResourceReader&gt; loader;
+
+    /**
+     * Constructor.
+     */
+<span class="nc" id="L52">    public JarInstanceResourceReader() {</span>
+<span class="nc" id="L53">        this.loader = JarInstanceResourceReader.class;</span>
+<span class="nc" id="L54">    }</span>
+
+    /**
+     * Create a new iterator to iterate over Instance files.
+     *
+     * @return A FilenameIterator iterator of InputStream
+     */
+    @Override
+    public FilenameIterator&lt;InputStream&gt; iterator() {
+<span class="nc" id="L63">        return new FilenameIterator&lt;InputStream&gt;() {</span>
+
+<span class="nc" id="L65">            private final Class&lt;JarInstanceResourceReader&gt; loader = JarInstanceResourceReader.this.loader;</span>
+
+<span class="nc" id="L67">            private int currentIndex = 0;</span>
+
+            @Override
+            public boolean hasNext() {
+<span class="nc bnc" id="L71" title="All 2 branches missed.">                return this.currentIndex &lt; MAX_INDEX;</span>
+            }
+
+            @Override
+            public InputStream next() {
+<span class="nc bnc" id="L76" title="All 2 branches missed.">                if (!this.hasNext()) {</span>
+<span class="nc" id="L77">                    throw new NoSuchElementException(&quot;Iterator does not have next element&quot;);</span>
+                }
+<span class="nc" id="L79">                int i = this.currentIndex;</span>
+<span class="nc" id="L80">                this.currentIndex++;</span>
+<span class="nc" id="L81">                LOGGER.log(Level.FINEST, &quot;File jar:///instances/instance_{0}-triangle.txt retrieved&quot;, i);</span>
+<span class="nc" id="L82">                return this.loader.getResourceAsStream(&quot;/instances/instance_&quot; + i + &quot;-triangle.txt&quot;);</span>
+            }
+
+            @Override
+            public String getFilename() {
+<span class="nc" id="L87">                return &quot;/instances/instance_&quot; + (this.currentIndex - 1) + &quot;-triangle.txt&quot;;</span>
+            }
+
+        };
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

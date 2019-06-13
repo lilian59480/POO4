@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ListeInstance.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">POO4-Project</a> &gt; <a href="index.source.html" class="el_package">template</a> &gt; <span class="el_source">ListeInstance.java</span></div><h1>ListeInstance.java</h1><pre class="source lang-java linenums">/*
+ * POO4 Project
+ * Copyright (C) 2019
+ * Lilian Petitpas, Thomas Ternisien, Thibaut Fenain, Corentin Apolinario
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package template;
+
+import algo.iterative.NaiveSolver;
+import dao.DaoException;
+import dao.DaoFactory;
+import io.input.FilenameIterator;
+import io.input.InstanceFileParser;
+import io.input.JarInstanceResourceReader;
+import io.input.ParserException;
+import java.awt.Color;
+import java.io.File;
+import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import model.Instance;
+
+/**
+ * List instances.
+ *
+ * @todo Follow wireframes.
+ * @author thibaut
+ */
+public class ListeInstance extends JFrame { // NOSONAR
+
+    /**
+     * Class logger.
+     */
+<span class="nc" id="L52">    private static final Logger LOGGER = Logger.getLogger(ListeInstance.class.getName());</span>
+
+    /**
+     * Serial UID, for serialisation.
+     */
+    private static final long serialVersionUID = 20190511190815L;
+
+    /**
+     * List of Instances.
+     */
+    private final DefaultListModel&lt;Instance&gt; dlm;
+    private DaoFactory daoFactory;
+
+    /**
+     * Creates new form List.
+     */
+<span class="nc" id="L68">    public ListeInstance() {</span>
+<span class="nc" id="L69">        this.initConnexion();</span>
+<span class="nc" id="L70">        JarInstanceResourceReader instanceReader = new JarInstanceResourceReader();</span>
+<span class="nc" id="L71">        this.dlm = new DefaultListModel&lt;&gt;();</span>
+
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        for (FilenameIterator&lt;InputStream&gt; iterator = instanceReader.iterator(); iterator.hasNext();) {</span>
+            try {
+<span class="nc" id="L75">                InputStream next = iterator.next();</span>
+<span class="nc" id="L76">                InstanceFileParser ifp = new InstanceFileParser();</span>
+<span class="nc" id="L77">                Instance instance = ifp.parse(next);</span>
+<span class="nc" id="L78">                instance.setInstanceName(iterator.getFilename());</span>
+<span class="nc" id="L79">                this.dlm.addElement(instance);</span>
+<span class="nc" id="L80">            } catch (ParserException ex) {</span>
+<span class="nc" id="L81">                LOGGER.log(Level.SEVERE, &quot;Exception while reading Instances!&quot;, ex);</span>
+<span class="nc" id="L82">            }</span>
+        }
+
+<span class="nc" id="L85">        this.initComponents();</span>
+<span class="nc" id="L86">        this.initialisationFenetre();</span>
+<span class="nc" id="L87">        LOGGER.log(Level.INFO, &quot;daoFactory :&quot;, this.daoFactory.toString());</span>
+
+<span class="nc" id="L89">    }</span>
+
+    /**
+     * Initialise this window.
+     */
+    private void initialisationFenetre() {
+
+<span class="nc" id="L96">        this.setVisible(true);</span>
+<span class="nc" id="L97">        this.setTitle(&quot;Gestion des clients by Thibaut Fenain&quot;);</span>
+<span class="nc" id="L98">        this.getContentPane().setBackground(Color.white);</span>
+<span class="nc" id="L99">        this.setLocationRelativeTo(null);</span>
+<span class="nc" id="L100">        this.setDefaultCloseOperation(EXIT_ON_CLOSE);</span>
+
+<span class="nc" id="L102">    }</span>
+
+    /**
+     * Allow to connect to the DB.
+     *
+     * @author Thibaut Fenain
+     */
+    private void initConnexion() {
+        try {
+<span class="nc" id="L111">            this.daoFactory = DaoFactory.getDaoFactory(DaoFactory.PersistenceType.JPA);</span>
+<span class="nc" id="L112">        } catch (DaoException ex) {</span>
+<span class="nc" id="L113">            Logger.getLogger(Itineraire.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L114">            JOptionPane errorPane = new JOptionPane();</span>
+<span class="nc" id="L115">            JOptionPane.showMessageDialog(this, &quot;ERROR CONNEXION DATABASE&quot;,</span>
+                    &quot;Erreur Connection&quot;, ERROR_MESSAGE);
+<span class="nc" id="L117">            this.dispose();</span>
+
+<span class="nc" id="L119">        }</span>
+<span class="nc" id="L120">    }</span>
+    //CHECKSTYLE:OFF
+    /**
+     * This method is called from within the constructor to initialize the form.
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+
+    // &lt;editor-fold defaultstate=&quot;collapsed&quot; desc=&quot;Generated Code&quot;&gt;//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+<span class="nc" id="L130">        jScrollPane1 = new javax.swing.JScrollPane();</span>
+<span class="nc" id="L131">        jListInstance = new javax.swing.JList&lt;&gt;();</span>
+<span class="nc" id="L132">        jButtonSolveInstance = new javax.swing.JButton();</span>
+<span class="nc" id="L133">        jButtonDisplayInstance = new javax.swing.JButton();</span>
+<span class="nc" id="L134">        jTitle = new javax.swing.JLabel();</span>
+<span class="nc" id="L135">        jSelectectLabel = new javax.swing.JLabel();</span>
+<span class="nc" id="L136">        jSelectedInstance = new javax.swing.JLabel();</span>
+<span class="nc" id="L137">        uploadButton = new javax.swing.JButton();</span>
+<span class="nc" id="L138">        jLabel1 = new javax.swing.JLabel();</span>
+
+<span class="nc" id="L140">        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);</span>
+<span class="nc" id="L141">        setBackground(new java.awt.Color(255, 255, 51));</span>
+<span class="nc" id="L142">        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));</span>
+<span class="nc" id="L143">        setForeground(new java.awt.Color(204, 204, 255));</span>
+
+<span class="nc" id="L145">        jListInstance.setModel(dlm);</span>
+<span class="nc" id="L146">        jListInstance.addListSelectionListener(new javax.swing.event.ListSelectionListener() {</span>
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+<span class="nc" id="L148">                jListInstanceValueChanged(evt);</span>
+<span class="nc" id="L149">            }</span>
+        });
+<span class="nc" id="L151">        jScrollPane1.setViewportView(jListInstance);</span>
+
+<span class="nc" id="L153">        jButtonSolveInstance.setText(&quot;Touver une solution&quot;);</span>
+<span class="nc" id="L154">        jButtonSolveInstance.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L156">                jButtonSolveInstanceActionPerformed(evt);</span>
+<span class="nc" id="L157">            }</span>
+        });
+
+<span class="nc" id="L160">        jButtonDisplayInstance.setText(&quot;Afficher une solution&quot;);</span>
+<span class="nc" id="L161">        jButtonDisplayInstance.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L163">                jButtonDisplayInstanceActionPerformed(evt);</span>
+<span class="nc" id="L164">            }</span>
+        });
+
+<span class="nc" id="L167">        jTitle.setFont(new java.awt.Font(&quot;Tahoma&quot;, 1, 24)); // NOI18N</span>
+<span class="nc" id="L168">        jTitle.setText(&quot;Deliver2I&quot;);</span>
+
+<span class="nc" id="L170">        jSelectectLabel.setText(&quot;File selected :&quot;);</span>
+
+<span class="nc" id="L172">        uploadButton.setText(&quot;Select a file&quot;);</span>
+<span class="nc" id="L173">        uploadButton.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L175">                uploadButtonActionPerformed(evt);</span>
+<span class="nc" id="L176">            }</span>
+        });
+
+<span class="nc" id="L179">        jLabel1.setText(&quot;Solve an external instance&quot;);</span>
+
+<span class="nc" id="L181">        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());</span>
+<span class="nc" id="L182">        getContentPane().setLayout(layout);</span>
+<span class="nc" id="L183">        layout.setHorizontalGroup(</span>
+<span class="nc" id="L184">            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L185">            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()</span>
+<span class="nc" id="L186">                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)</span>
+<span class="nc" id="L187">                .addComponent(jTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="nc" id="L188">                .addGap(228, 228, 228))</span>
+<span class="nc" id="L189">            .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L190">                .addGap(118, 118, 118)</span>
+<span class="nc" id="L191">                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L192">                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 596, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="nc" id="L193">                    .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L194">                        .addComponent(jLabel1)</span>
+<span class="nc" id="L195">                        .addGap(67, 67, 67)</span>
+<span class="nc" id="L196">                        .addComponent(uploadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))</span>
+<span class="nc" id="L197">                    .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L198">                        .addComponent(jSelectectLabel)</span>
+<span class="nc" id="L199">                        .addGap(78, 78, 78)</span>
+<span class="nc" id="L200">                        .addComponent(jSelectedInstance, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE))</span>
+<span class="nc" id="L201">                    .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L202">                        .addComponent(jButtonDisplayInstance)</span>
+<span class="nc" id="L203">                        .addGap(108, 108, 108)</span>
+<span class="nc" id="L204">                        .addComponent(jButtonSolveInstance)))</span>
+<span class="nc" id="L205">                .addContainerGap(154, Short.MAX_VALUE))</span>
+        );
+<span class="nc" id="L207">        layout.setVerticalGroup(</span>
+<span class="nc" id="L208">            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L209">            .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L210">                .addGap(47, 47, 47)</span>
+<span class="nc" id="L211">                .addComponent(jTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="nc" id="L212">                .addGap(29, 29, 29)</span>
+<span class="nc" id="L213">                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 373, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="nc" id="L214">                .addGap(33, 33, 33)</span>
+<span class="nc" id="L215">                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)</span>
+<span class="nc" id="L216">                    .addComponent(uploadButton)</span>
+<span class="nc" id="L217">                    .addComponent(jLabel1))</span>
+<span class="nc" id="L218">                .addGap(57, 57, 57)</span>
+<span class="nc" id="L219">                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L220">                    .addComponent(jSelectectLabel)</span>
+<span class="nc" id="L221">                    .addComponent(jSelectedInstance, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))</span>
+<span class="nc" id="L222">                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)</span>
+<span class="nc" id="L223">                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)</span>
+<span class="nc" id="L224">                    .addComponent(jButtonDisplayInstance)</span>
+<span class="nc" id="L225">                    .addComponent(jButtonSolveInstance))</span>
+<span class="nc" id="L226">                .addGap(109, 109, 109))</span>
+        );
+
+<span class="nc" id="L229">        pack();</span>
+<span class="nc" id="L230">    }// &lt;/editor-fold&gt;//GEN-END:initComponents</span>
+    //CHECKSTYLE:ON
+    
+    /**
+     * @todo Write Code and Javadoc
+     * @param evt Event
+     */
+    private void jButtonSolveInstanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSolveInstanceActionPerformed
+        // TODO add your handling code here:
+<span class="nc" id="L239">    }//GEN-LAST:event_jButtonSolveInstanceActionPerformed</span>
+
+    /**
+     * @todo Write Code and Javadoc
+     * @param evt Event
+     */
+    private void jListInstanceValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListInstanceValueChanged
+        // TODO add your handling code here:
+<span class="nc" id="L247">        String selected = this.jListInstance.getSelectedValue().toString();</span>
+<span class="nc" id="L248">        this.jSelectedInstance.setText(selected);</span>
+
+<span class="nc" id="L250">    }//GEN-LAST:event_jListInstanceValueChanged</span>
+
+    /**
+     * @todo Write Code and Javadoc
+     * @param evt Event
+     */
+    private void jButtonDisplayInstanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDisplayInstanceActionPerformed
+        // TODO add your handling code here:
+<span class="nc bnc" id="L258" title="All 2 branches missed.">        if (this.jListInstance.getSelectedValue() instanceof Instance) {</span>
+<span class="nc" id="L259">            Instance i = this.jListInstance.getSelectedValue();</span>
+<span class="nc" id="L260">            Itineraire itineraire = new Itineraire(i);</span>
+<span class="nc bnc" id="L261" title="All 2 branches missed.">        } else if (this.jSelectedInstance != null) {</span>
+
+<span class="nc" id="L263">            String fileName = this.jSelectedInstance.getText();</span>
+
+<span class="nc" id="L265">            NaiveSolver ds = this.createInstance(fileName);</span>
+<span class="nc" id="L266">            ds.solve();</span>
+<span class="nc" id="L267">            Itineraire itineraire = new Itineraire(ds.getInstance());</span>
+
+        }
+
+
+<span class="nc" id="L272">    }//GEN-LAST:event_jButtonDisplayInstanceActionPerformed</span>
+    /**
+     * Upload Instance.
+     *
+     * @param evt event.
+     */
+    private void uploadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadButtonActionPerformed
+        // TODO add your handling code here:
+<span class="nc" id="L280">        JFileChooser chooser = new JFileChooser();</span>
+<span class="nc" id="L281">        FileNameExtensionFilter filter = new FileNameExtensionFilter(</span>
+                &quot;Instance&quot;, &quot;txt&quot;);
+<span class="nc" id="L283">        chooser.setFileFilter(filter);</span>
+<span class="nc" id="L284">        int returnVal = chooser.showOpenDialog(this.getParent());</span>
+<span class="nc bnc" id="L285" title="All 2 branches missed.">        if (returnVal == JFileChooser.APPROVE_OPTION) {</span>
+
+<span class="nc" id="L287">            this.jSelectedInstance.setText(chooser.getSelectedFile().getAbsolutePath());</span>
+        }
+<span class="nc" id="L289">    }//GEN-LAST:event_uploadButtonActionPerformed</span>
+
+    /**
+     * Create Instance.
+     *
+     * @todo What! Please refactor.
+     * @param fileName file Name.
+     * @return A solver.
+     */
+    private NaiveSolver createInstance(String fileName) {
+        Instance i;
+        try {
+<span class="nc" id="L301">            InstanceFileParser ifp = new InstanceFileParser();</span>
+<span class="nc" id="L302">            i = ifp.parse(new File(fileName));</span>
+<span class="nc" id="L303">        } catch (ParserException ex) {</span>
+<span class="nc" id="L304">            LOGGER.log(Level.SEVERE, &quot;Exception while solving an Instance&quot;, ex);</span>
+<span class="nc" id="L305">            return null;</span>
+<span class="nc" id="L306">        }</span>
+<span class="nc" id="L307">        NaiveSolver ds = new NaiveSolver(i);</span>
+<span class="nc" id="L308">        ds.solve();</span>
+<span class="nc" id="L309">        return ds;</span>
+    }
+    //CHECKSTYLE:OFF
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonDisplayInstance;
+    private javax.swing.JButton jButtonSolveInstance;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JList&lt;Instance&gt; jListInstance;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel jSelectectLabel;
+    private javax.swing.JLabel jSelectedInstance;
+    private javax.swing.JLabel jTitle;
+    private javax.swing.JButton uploadButton;
+    // End of variables declaration//GEN-END:variables
+    //CHECKSTYLE:ON
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

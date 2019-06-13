@@ -1,0 +1,12 @@
+algo
+algo.genetic
+algo.iterative
+dao
+dao.jpa
+io
+io.input
+io.output
+main
+model
+template
+utils

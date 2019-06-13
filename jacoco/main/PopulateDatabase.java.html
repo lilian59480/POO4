@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PopulateDatabase.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">POO4-Project</a> &gt; <a href="index.source.html" class="el_package">main</a> &gt; <span class="el_source">PopulateDatabase.java</span></div><h1>PopulateDatabase.java</h1><pre class="source lang-java linenums">/*
+ * POO4 Project
+ * Copyright (C) 2019
+ * Lilian Petitpas, Thomas Ternisien, Thibaut Fenain, Corentin Apolinario
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package main;
+
+import dao.ClientDao;
+import dao.DaoException;
+import dao.DaoFactory;
+import dao.DepotDao;
+import dao.InstanceDao;
+import dao.PlanningDao;
+import dao.RouteDao;
+import dao.VehiculeDao;
+import io.input.FilenameIterator;
+import io.input.InstanceFileParser;
+import io.input.JarInstanceResourceReader;
+import io.input.ParserException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import model.Instance;
+import utils.CliUtils;
+
+/**
+ * Populate the database with instances taken from Jar, used as one entry point
+ * for this project.
+ *
+ * @author Lilian Petitpas
+ * @author Corentin Apolinario
+ */
+public class PopulateDatabase {
+
+    /**
+     * Class logger.
+     */
+<span class="nc" id="L54">    private static final Logger LOGGER = Logger.getLogger(PopulateDatabase.class.getName());</span>
+
+    /**
+     * PrintStream used to print progress to the user.
+     */
+<span class="nc" id="L59">    private static final PrintStream PS = System.out;</span>
+
+    /**
+     * Instance Reader.
+     */
+<span class="nc" id="L64">    private static final JarInstanceResourceReader JAR_INSTANCE_RR = new JarInstanceResourceReader();</span>
+
+    /**
+     * Instance file parser.
+     */
+    private final InstanceFileParser ifp;
+
+    /**
+     * DaoFactory.
+     */
+    private final DaoFactory daoFactory;
+
+    /**
+     * PopulateDatabase constructor.
+     *
+     * @throws DaoException After a database exception.
+     * @throws ParserException If we can't instantiate the parser.
+     */
+<span class="nc" id="L82">    public PopulateDatabase() throws DaoException, ParserException {</span>
+<span class="nc" id="L83">        this.daoFactory = DaoFactory.getDaoFactory(DaoFactory.PersistenceType.JPA);</span>
+<span class="nc" id="L84">        this.ifp = new InstanceFileParser();</span>
+<span class="nc" id="L85">    }</span>
+
+    /**
+     * Cleaning the database.
+     */
+    public void clean() {
+<span class="nc" id="L91">        PopulateDatabase.PS.println(&quot;Cleaning the database&quot;);</span>
+
+<span class="nc" id="L93">        boolean success = true;</span>
+
+<span class="nc" id="L95">        LOGGER.log(Level.INFO, &quot;Deleting Routes&quot;);</span>
+<span class="nc" id="L96">        RouteDao routeManager = this.daoFactory.getRouteDao();</span>
+<span class="nc" id="L97">        success &amp;= routeManager.deleteAll();</span>
+<span class="nc" id="L98">        LOGGER.log(Level.INFO, &quot;Routes deleted&quot;);</span>
+
+<span class="nc" id="L100">        LOGGER.log(Level.INFO, &quot;Deleting Clients&quot;);</span>
+<span class="nc" id="L101">        ClientDao clientManager = this.daoFactory.getClientDao();</span>
+<span class="nc" id="L102">        success &amp;= clientManager.deleteAll();</span>
+<span class="nc" id="L103">        LOGGER.log(Level.INFO, &quot;Clients deleted&quot;);</span>
+
+<span class="nc" id="L105">        LOGGER.log(Level.INFO, &quot;Deleting Vehicules&quot;);</span>
+<span class="nc" id="L106">        VehiculeDao vehiculeManager = this.daoFactory.getVehiculeDao();</span>
+<span class="nc" id="L107">        success &amp;= vehiculeManager.deleteAll();</span>
+<span class="nc" id="L108">        LOGGER.log(Level.INFO, &quot;Vehicules deleted&quot;);</span>
+
+<span class="nc" id="L110">        LOGGER.log(Level.INFO, &quot;Deleting Depots&quot;);</span>
+<span class="nc" id="L111">        DepotDao depotManager = this.daoFactory.getDepotDao();</span>
+<span class="nc" id="L112">        success &amp;= depotManager.deleteAll();</span>
+<span class="nc" id="L113">        LOGGER.log(Level.INFO, &quot;Depots deleted&quot;);</span>
+
+<span class="nc" id="L115">        LOGGER.log(Level.INFO, &quot;Deleting Plannings&quot;);</span>
+<span class="nc" id="L116">        PlanningDao planningManager = this.daoFactory.getPlanningDao();</span>
+<span class="nc" id="L117">        success &amp;= planningManager.deleteAll();</span>
+<span class="nc" id="L118">        LOGGER.log(Level.INFO, &quot;Plannings deleted&quot;);</span>
+
+<span class="nc" id="L120">        LOGGER.log(Level.INFO, &quot;Deleting Instances&quot;);</span>
+<span class="nc" id="L121">        InstanceDao instanceManager = this.daoFactory.getInstanceDao();</span>
+<span class="nc" id="L122">        success &amp;= instanceManager.deleteAll();</span>
+<span class="nc" id="L123">        LOGGER.log(Level.INFO, &quot;Instances deleted&quot;);</span>
+
+<span class="nc bnc" id="L125" title="All 2 branches missed.">        if (!success) {</span>
+<span class="nc" id="L126">            LOGGER.log(Level.SEVERE, &quot;Error while cleaning database&quot;);</span>
+        }
+<span class="nc" id="L128">    }</span>
+
+    /**
+     * Populate the database.
+     */
+    public void populate() {
+<span class="nc" id="L134">        this.populate(40);</span>
+<span class="nc" id="L135">    }</span>
+
+    /**
+     * Populate the database.
+     *
+     * @param max Maximum number of instances to load
+     */
+    public void populate(int max) {
+<span class="nc" id="L143">        PopulateDatabase.PS.println(&quot;Populating the database&quot;);</span>
+
+<span class="nc" id="L145">        InstanceDao instanceManager = this.daoFactory.getInstanceDao();</span>
+
+<span class="nc" id="L147">        int i = 0;</span>
+<span class="nc bnc" id="L148" title="All 4 branches missed.">        for (FilenameIterator&lt;InputStream&gt; iterator = PopulateDatabase.JAR_INSTANCE_RR.iterator(); iterator.hasNext() &amp;&amp; i &lt; max; i++) {</span>
+
+<span class="nc" id="L150">            try (InputStream is = iterator.next()) {</span>
+<span class="nc" id="L151">                LOGGER.log(Level.INFO, &quot;Parsing new file&quot;);</span>
+<span class="nc" id="L152">                LOGGER.log(Level.INFO, &quot;Loaded {0}&quot;, iterator.getFilename());</span>
+
+<span class="nc" id="L154">                PopulateDatabase.PS.println(&quot;Resource &quot; + iterator.getFilename() + &quot; loaded from Jar&quot;);</span>
+
+<span class="nc" id="L156">                Instance instance = this.ifp.parse(is);</span>
+
+<span class="nc" id="L158">                LOGGER.log(Level.FINE, &quot;Instance parsed : {0}&quot;, is);</span>
+
+<span class="nc" id="L160">                boolean status = instanceManager.create(instance);</span>
+
+<span class="nc bnc" id="L162" title="All 2 branches missed.">                if (!status) {</span>
+<span class="nc" id="L163">                    LOGGER.log(Level.SEVERE, &quot;Error while populating database with this instance&quot;);</span>
+<span class="nc" id="L164">                    PopulateDatabase.PS.println(&quot;Resource not added&quot;);</span>
+                } else {
+<span class="nc" id="L166">                    PopulateDatabase.PS.println(&quot;Resource added&quot;);</span>
+                }
+
+<span class="nc" id="L169">            } catch (ParserException | IOException ex) {</span>
+<span class="nc" id="L170">                LOGGER.log(Level.INFO, &quot;Error while populating database, cleaning&quot;, ex);</span>
+<span class="nc" id="L171">                this.clean();</span>
+<span class="nc" id="L172">                System.exit(1);</span>
+<span class="nc" id="L173">            }</span>
+
+        }
+
+<span class="nc" id="L177">        PopulateDatabase.PS.println(&quot;Database populated&quot;);</span>
+
+<span class="nc" id="L179">    }</span>
+
+    /**
+     * Print help text.
+     */
+    private void printHelp() {
+<span class="nc" id="L185">        PopulateDatabase.PS.println(&quot;Usage : populate.jar [option]&quot;);</span>
+
+<span class="nc" id="L187">        PopulateDatabase.PS.println(&quot;Options :&quot;);</span>
+<span class="nc" id="L188">        PopulateDatabase.PS.println(&quot;\thelp\tPrint help&quot;);</span>
+<span class="nc" id="L189">        PopulateDatabase.PS.println(&quot;\tusage\tPrint help&quot;);</span>
+<span class="nc" id="L190">    }</span>
+
+    /**
+     * Cli Entry point.
+     *
+     * @param args Arguments, 1st can be &quot;help&quot; or &quot;usage&quot;
+     */
+    public static void main(String[] args) {
+<span class="nc" id="L198">        LOGGER.log(Level.INFO, &quot;Cleaning and populating database&quot;);</span>
+<span class="nc" id="L199">        LOGGER.log(Level.FINE, &quot;Arguments : {0}&quot;, Arrays.toString(args));</span>
+
+        PopulateDatabase self;
+        try {
+<span class="nc" id="L203">            self = new PopulateDatabase();</span>
+<span class="nc" id="L204">        } catch (DaoException | ParserException ex) {</span>
+<span class="nc" id="L205">            LOGGER.log(Level.SEVERE, &quot;Impossible to initialise PopulateDatabase&quot;, ex);</span>
+<span class="nc" id="L206">            System.exit(-1);</span>
+<span class="nc" id="L207">            return;</span>
+<span class="nc" id="L208">        }</span>
+
+<span class="nc" id="L210">        CliUtils.printIntro(PopulateDatabase.PS);</span>
+<span class="nc" id="L211">        PopulateDatabase.PS.println(&quot;******************&quot;);</span>
+<span class="nc" id="L212">        CliUtils.printLicence(PopulateDatabase.PS);</span>
+<span class="nc" id="L213">        PopulateDatabase.PS.println(&quot;******************&quot;);</span>
+
+<span class="nc" id="L215">        CliUtils.Options ops = CliUtils.parseArguments(args);</span>
+
+<span class="nc bnc" id="L217" title="All 3 branches missed.">        switch (ops) {</span>
+            case UNKNOWN:
+<span class="nc" id="L219">                PopulateDatabase.PS.println(&quot;Unknown arguments&quot;);</span>
+<span class="nc" id="L220">                self.printHelp();</span>
+<span class="nc" id="L221">                break;</span>
+            case HELP:
+            case USAGE:
+<span class="nc" id="L224">                self.printHelp();</span>
+<span class="nc" id="L225">                break;</span>
+            case NO_ARGS:
+            default:
+<span class="nc" id="L228">                self.clean();</span>
+<span class="nc" id="L229">                self.populate();</span>
+        }
+<span class="nc" id="L231">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

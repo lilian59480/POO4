@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Chromosome.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">POO4-Project</a> &gt; <a href="index.source.html" class="el_package">algo.genetic</a> &gt; <span class="el_source">Chromosome.java</span></div><h1>Chromosome.java</h1><pre class="source lang-java linenums">/*
+ * POO4 Project
+ * Copyright (C) 2019
+ * Lilian Petitpas, Thomas Ternisien, Thibaut Fenain, Corentin Apolinario
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package algo.genetic;
+
+import algo.SolverException;
+
+import model.Client;
+import model.Emplacement;
+import model.Instance;
+import model.Planning;
+import model.Vehicule;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * Chromosome class
+ *
+ * @author Thomas
+ */
+public class Chromosome {
+
+    /**
+     * Clients of the chromosome
+     */
+    private List&lt;Client&gt; clients;
+
+    /**
+     * Tournee of this chromosome
+     */
+    private Tournee tournee;
+
+    private Instance instance;
+
+    /**
+     * Chromosome constructor
+     */
+<span class="nc" id="L55">    public Chromosome() {</span>
+<span class="nc" id="L56">        this.clients = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L57">    }</span>
+
+    /**
+     * Chromosome constructor that converts an Instance
+     *
+     * @param i The instance to convert
+     */
+<span class="nc" id="L64">    public Chromosome(Instance i) {</span>
+<span class="nc" id="L65">        this.instance = i;</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        if (i.getPlanningCurrent().getVehicules().size() &gt; 0) {</span>
+<span class="nc" id="L67">            this.clients = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L68">            Planning p = i.getPlanningCurrent();</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">            for (Vehicule vehicule : p.getVehicules()) {</span>
+<span class="nc" id="L70">                List&lt;Emplacement&gt; ems = vehicule.getEmplacements();</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">                for (Emplacement e : ems) {</span>
+<span class="nc" id="L72">                    this.clients.add(e.getClient());</span>
+<span class="nc" id="L73">                }</span>
+<span class="nc" id="L74">            }</span>
+<span class="nc" id="L75">        } else { // No planning to optimise</span>
+<span class="nc" id="L76">            this.clients = new ArrayList&lt;&gt;(i.getClients());</span>
+        }
+<span class="nc" id="L78">    }</span>
+
+    /**
+     * Chromosome constructor that copies a Chromosome
+     *
+     * @param chromosome the chromosome to copy
+     * @throws SolverException If there is an internal exception or inconsistant
+     *                         values.
+     */
+<span class="nc" id="L87">    public Chromosome(Chromosome chromosome) throws SolverException {</span>
+<span class="nc" id="L88">        this.instance = chromosome.getInstance();</span>
+<span class="nc" id="L89">        this.clients = new ArrayList&lt;&gt;(chromosome.getClients());</span>
+<span class="nc" id="L90">        this.tournee = new Tournee(chromosome.getTournee());</span>
+<span class="nc" id="L91">    }</span>
+
+    /**
+     * Chromosome constructor using a list of clients
+     *
+     * @param i       The instance to convert
+     * @param clients The list of client
+     */
+<span class="nc" id="L99">    Chromosome(Instance i, List&lt;Client&gt; clients) {</span>
+<span class="nc" id="L100">        this.instance = i;</span>
+<span class="nc" id="L101">        this.clients = new ArrayList&lt;&gt;(clients);</span>
+<span class="nc" id="L102">    }</span>
+
+    /**
+     * Get the clients of the chromosome
+     *
+     * @return the clients
+     */
+    public List&lt;Client&gt; getClients() {
+<span class="nc" id="L110">        return this.clients;</span>
+    }
+
+    /**
+     * Get the tournee of the chromosome
+     * and generate it if it doesn't exist
+     *
+     * @return the tournee
+     * @throws SolverException If there is an internal exception or inconsistant
+     *                         values.
+     */
+    public Tournee getTournee() throws SolverException {
+<span class="nc bnc" id="L122" title="All 2 branches missed.">        if (this.tournee == null) {</span>
+<span class="nc" id="L123">            this.generateTournee();</span>
+        }
+<span class="nc" id="L125">        return this.tournee;</span>
+    }
+
+    /**
+     * Get the instance of the chromosome
+     *
+     * @return the instance
+     */
+    public Instance getInstance() {
+<span class="nc" id="L134">        return this.instance;</span>
+    }
+
+    /**
+     * Functions that generate the chromosome's tournee using the shortest path algo
+     *
+     * @throws SolverException If there is an internal exception or inconsistant
+     *                         values.
+     */
+    public void generateTournee() throws SolverException {
+<span class="nc" id="L144">        ShortestPathClients sp = new ShortestPathClients(this.instance, this);</span>
+<span class="nc" id="L145">        this.tournee = sp.findBestTournee();</span>
+<span class="nc" id="L146">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L150">        return &quot;Chromosome{&quot; +</span>
+                &quot;clients=&quot; + clients +
+                &quot;, tournee=&quot; + tournee +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+<span class="nc bnc" id="L158" title="All 2 branches missed.">        if (this == o) return true;</span>
+<span class="nc bnc" id="L159" title="All 4 branches missed.">        if (o == null || getClass() != o.getClass()) return false;</span>
+<span class="nc" id="L160">        Chromosome that = (Chromosome) o;</span>
+<span class="nc" id="L161">        return this.clients.equals(that.clients);</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L166">        return Objects.hash(this.clients);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

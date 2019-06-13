@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Client.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">POO4-Project</a> &gt; <a href="index.source.html" class="el_package">model</a> &gt; <span class="el_source">Client.java</span></div><h1>Client.java</h1><pre class="source lang-java linenums">/*
+ * POO4 Project
+ * Copyright (C) 2019
+ * Lilian Petitpas, Thomas Ternisien, Thibaut Fenain, Corentin Apolinario
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package model;
+
+import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import org.eclipse.persistence.annotations.CascadeOnDelete;
+
+/**
+ * Client model representation.
+ *
+ * @author Corentin
+ */
+@Entity
+@Table(name = &quot;CLIENT&quot;)
+public class Client implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Demand of the client.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = &quot;ID&quot;)
+    protected Integer id;
+    private int demande;
+
+    /**
+     * List of Client's Emplacements.
+     */
+    @OneToMany(mappedBy = &quot;client&quot;, cascade = CascadeType.ALL)
+    @CascadeOnDelete
+    private List&lt;Emplacement&gt; emplacements;
+
+    /**
+     * Current position.
+     */
+    private int position;
+
+    /**
+     * Vehicule linked.
+     */
+    @ManyToOne
+    private Vehicule vehicule;
+
+    /**
+     * Client constructor, with a null demand.
+     */
+    public Client() {
+<span class="fc" id="L78">        this(0);</span>
+<span class="fc" id="L79">    }</span>
+
+    /**
+     * Client constructor with a specific demand.
+     *
+     * @param demande Client's demand.
+     */
+<span class="fc" id="L86">    public Client(int demande) {</span>
+<span class="fc" id="L87">        this.position = -1;</span>
+<span class="fc" id="L88">        this.emplacements = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L89">        this.demande = demande;</span>
+<span class="fc" id="L90">        this.vehicule = null;</span>
+<span class="fc" id="L91">    }</span>
+
+    /**
+     * Add a emplacement and set Emplacement client to itself.
+     *
+     * @param e Emplacement to add
+     * @return True if we can add this emplacement.
+     */
+    public boolean addEmplacement(Emplacement e) {
+<span class="fc bfc" id="L100" title="All 4 branches covered.">        if (e == null || this.emplacements.contains(e)) {</span>
+<span class="fc" id="L101">            return false;</span>
+        }
+<span class="fc" id="L103">        e.setClient(this);</span>
+<span class="fc" id="L104">        return this.emplacements.add(e);</span>
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+<span class="pc bpc" id="L109" title="1 of 2 branches missed.">        if (this == obj) {</span>
+<span class="fc" id="L110">            return true;</span>
+        }
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L113">            return false;</span>
+        }
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L116">            return false;</span>
+        }
+<span class="nc" id="L118">        final Client other = (Client) obj;</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">        if (this.demande != other.getDemande()) {</span>
+<span class="nc" id="L120">            return false;</span>
+        }
+<span class="nc" id="L122">        return Objects.equals(this.emplacements, other.getEmplacements());</span>
+    }
+
+    /**
+     * Get demand.
+     *
+     * @return The demand.
+     */
+    public int getDemande() {
+<span class="fc" id="L131">        return this.demande;</span>
+    }
+
+    /**
+     * Get position.
+     *
+     * @return The position.
+     */
+    public int getPosition() {
+<span class="fc" id="L140">        return this.position;</span>
+    }
+
+    /**
+     * Set new position.
+     *
+     * @param position The position.
+     */
+    public void setPosition(int position) {
+<span class="fc" id="L149">        this.position = position;</span>
+<span class="fc" id="L150">    }</span>
+
+    /**
+     * Get emplacement list.
+     *
+     * @return The list of emplacements.
+     */
+    public List&lt;Emplacement&gt; getEmplacements() {
+<span class="fc" id="L158">        return this.emplacements;</span>
+    }
+
+    /**
+     * Get current vehicule.
+     *
+     * @return The vehicule.
+     */
+    public Vehicule getVehicule() {
+<span class="fc" id="L167">        return this.vehicule;</span>
+    }
+
+    /**
+     * Set new vehicule.
+     *
+     * @param vehicule The vehicule.
+     */
+    public void setVehicule(Vehicule vehicule) {
+<span class="fc" id="L176">        this.vehicule = vehicule;</span>
+<span class="fc" id="L177">    }</span>
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L181">        int hash = 7;</span>
+<span class="nc" id="L182">        hash = 37 * hash + this.demande;</span>
+<span class="nc" id="L183">        hash = 37 * hash + Objects.hashCode(this.emplacements);</span>
+<span class="nc" id="L184">        return hash;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L189">        return &quot;Client{&quot; + &quot;demande=&quot; + demande + &quot;, emplacements=&quot; + emplacements + &quot;, position=&quot; + position + &quot;, vehicule=&quot; + vehicule + '}';</span>
+    }
+
+    /**
+     * Clear this instance.
+     */
+    public void clear() {
+<span class="fc" id="L196">        this.position = -1;</span>
+<span class="fc" id="L197">        this.vehicule = null;</span>
+<span class="fc" id="L198">    }</span>
+
+    /**
+     * Check if a client is valid.
+     *
+     * Check if a vehicule is set to this client.
+     *
+     * @return True if this client is valid, false otherwise
+     */
+    public boolean check() {
+<span class="fc bfc" id="L208" title="All 2 branches covered.">        return this.vehicule != null;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

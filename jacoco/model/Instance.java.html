@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Instance.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">POO4-Project</a> &gt; <a href="index.source.html" class="el_package">model</a> &gt; <span class="el_source">Instance.java</span></div><h1>Instance.java</h1><pre class="source lang-java linenums">/*
+ * POO4 Project
+ * Copyright (C) 2019
+ * Lilian Petitpas, Thomas Ternisien, Thibaut Fenain, Corentin Apolinario
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package model;
+
+import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+/**
+ * Instance model representation.
+ *
+ * @author Corentin
+ */
+@Entity
+@Table(name = &quot;INSTANCE&quot;)
+public class Instance implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+<span class="fc" id="L47">    private static final Logger LOGGER = Logger.getLogger(Instance.class.getName());</span>
+
+    /**
+     * Class logger.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = &quot;ID&quot;)
+    private int id;
+
+    /**
+     * Vehicule capacity.
+     */
+    private int capaciteVehicule;
+
+    /**
+     * Vehicule cost.
+     */
+    private int coutVehicule;
+
+    /**
+     * Number of vehicule.
+     */
+    private int nbVehicules;
+
+    /**
+     * Depot.
+     */
+    @OneToOne(cascade = CascadeType.ALL)
+    private Depot depot;
+
+    /**
+     * List of clients.
+     */
+    @OneToMany(cascade = CascadeType.ALL)
+    private List&lt;Client&gt; clients;
+
+    /**
+     * List of vehicules.
+     */
+    @OneToMany(mappedBy = &quot;instance&quot;, cascade = CascadeType.ALL)
+    private List&lt;Vehicule&gt; vehicules;
+
+    /**
+     * List of routes.
+     */
+    @OneToMany(cascade = CascadeType.ALL)
+    private List&lt;Route&gt; routes;
+
+    /**
+     * List of plannings.
+     */
+    @OneToMany(mappedBy = &quot;instance&quot;, cascade = CascadeType.ALL)
+    private List&lt;Planning&gt; plannings;
+
+    private String instanceName;
+
+    /**
+     * Instance constructor.
+     */
+<span class="fc" id="L107">    public Instance() {</span>
+<span class="fc" id="L108">        this.clients = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L109">        this.routes = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L110">        this.vehicules = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L111">        this.plannings = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L112">        this.plannings.add(new Planning(this));</span>
+<span class="fc" id="L113">    }</span>
+
+    @Override
+    public boolean equals(Object obj) {
+<span class="nc bnc" id="L117" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L118">            return true;</span>
+        }
+<span class="nc bnc" id="L120" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L121">            return false;</span>
+        }
+<span class="nc bnc" id="L123" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L124">            return false;</span>
+        }
+<span class="nc" id="L126">        final Instance other = (Instance) obj;</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">        if (this.capaciteVehicule != other.getCapaciteVehicule()) {</span>
+<span class="nc" id="L128">            return false;</span>
+        }
+<span class="nc bnc" id="L130" title="All 2 branches missed.">        if (this.coutVehicule != other.getCoutVehicule()) {</span>
+<span class="nc" id="L131">            return false;</span>
+        }
+<span class="nc bnc" id="L133" title="All 2 branches missed.">        if (this.nbVehicules != other.getNbVehicules()) {</span>
+<span class="nc" id="L134">            return false;</span>
+        }
+<span class="nc bnc" id="L136" title="All 2 branches missed.">        if (!Objects.equals(this.depot, other.getDepot())) {</span>
+<span class="nc" id="L137">            return false;</span>
+        }
+<span class="nc bnc" id="L139" title="All 2 branches missed.">        if (!Objects.equals(this.clients, other.getClients())) {</span>
+<span class="nc" id="L140">            return false;</span>
+        }
+<span class="nc bnc" id="L142" title="All 2 branches missed.">        if (!Objects.equals(this.vehicules, other.getVehicules())) {</span>
+<span class="nc" id="L143">            return false;</span>
+        }
+<span class="nc" id="L145">        return Objects.equals(this.routes, other.routes);</span>
+    }
+
+    /**
+     * Set vehicule capacity.
+     *
+     * @param capaciteVehicule The CapaciteVehicule.
+     */
+    public void setCapaciteVehicule(int capaciteVehicule) {
+<span class="fc bfc" id="L154" title="All 2 branches covered.">        if (capaciteVehicule &lt; 0) {</span>
+<span class="fc" id="L155">            throw new IllegalArgumentException(&quot;capcciteVehicule should not be negative&quot;);</span>
+        }
+<span class="fc" id="L157">        this.capaciteVehicule = capaciteVehicule;</span>
+<span class="fc" id="L158">    }</span>
+
+    /**
+     * Get vehicule capacity.
+     *
+     * @return The vehicule capacity.
+     */
+    public int getCapaciteVehicule() {
+<span class="fc" id="L166">        return this.capaciteVehicule;</span>
+    }
+
+    /**
+     * Set vehicule cost.
+     *
+     * @param coutVehicule The CoutVehicule.
+     */
+    public void setCoutVehicule(int coutVehicule) {
+<span class="fc bfc" id="L175" title="All 2 branches covered.">        if (coutVehicule &lt; 0) {</span>
+<span class="fc" id="L176">            throw new IllegalArgumentException(&quot;coutVehicule should not be negative&quot;);</span>
+        }
+<span class="fc" id="L178">        this.coutVehicule = coutVehicule;</span>
+<span class="fc" id="L179">    }</span>
+
+    /**
+     * Set depot.
+     *
+     * @param depot The Depot.
+     */
+    public void setDepot(Depot depot) {
+<span class="fc" id="L187">        this.depot = depot;</span>
+<span class="fc" id="L188">    }</span>
+
+    /**
+     * Set client list.
+     *
+     * @param clients A list of clients.
+     */
+    public void setClients(List&lt;Client&gt; clients) {
+<span class="fc bfc" id="L196" title="All 2 branches covered.">        if (clients == null) {</span>
+<span class="fc" id="L197">            throw new NullPointerException(&quot;List of clients should not be null&quot;);</span>
+        }
+<span class="fc" id="L199">        this.clients = clients;</span>
+<span class="fc" id="L200">    }</span>
+
+    /**
+     * Set routes list.
+     *
+     * @param routes A list of routes.
+     */
+    public void setRoutes(List&lt;Route&gt; routes) {
+<span class="nc" id="L208">        this.routes = routes;</span>
+<span class="nc" id="L209">    }</span>
+
+    /**
+     * Set vehicule list.
+     *
+     * @param vehicules A list of vehicules.
+     */
+    public void setVehicules(List&lt;Vehicule&gt; vehicules) {
+<span class="fc" id="L217">        this.vehicules = vehicules;</span>
+<span class="fc bfc" id="L218" title="All 2 branches covered.">        for (Vehicule v : this.vehicules) {</span>
+<span class="fc" id="L219">            this.getPlanningCurrent().addVehicule(v);</span>
+<span class="fc" id="L220">        }</span>
+<span class="fc" id="L221">    }</span>
+
+    /**
+     * Get current planning.
+     *
+     * @return The current planning.
+     */
+    public Planning getPlanningCurrent() {
+<span class="fc" id="L229">        return this.plannings.get(this.plannings.size() - 1);</span>
+    }
+
+    /**
+     * Set new planning.
+     *
+     * @param planningCurrent The new planning.
+     */
+    public void setPlanningCurrent(Planning planningCurrent) {
+<span class="fc" id="L238">        this.plannings.add(planningCurrent);</span>
+<span class="fc" id="L239">    }</span>
+
+    /**
+     * Add new planning.
+     */
+    public void addNewPlanning() {
+<span class="fc" id="L245">        Planning p = new Planning(this);</span>
+<span class="fc bfc" id="L246" title="All 2 branches covered.">        for (Vehicule v : this.vehicules) {</span>
+<span class="fc" id="L247">            p.addVehicule(v);</span>
+<span class="fc" id="L248">        }</span>
+<span class="fc" id="L249">        this.plannings.add(p);</span>
+<span class="fc" id="L250">    }</span>
+
+    /**
+     * Clear this instance.
+     */
+    public void clear() {
+<span class="nc bnc" id="L256" title="All 2 branches missed.">        for (Client c : this.clients) {</span>
+<span class="nc" id="L257">            c.clear();</span>
+<span class="nc" id="L258">        }</span>
+<span class="nc bnc" id="L259" title="All 2 branches missed.">        for (Vehicule v : this.vehicules) {</span>
+<span class="nc" id="L260">            v.clear();</span>
+<span class="nc" id="L261">        }</span>
+<span class="nc bnc" id="L262" title="All 2 branches missed.">        while (this.nbVehicules &lt; this.vehicules.size()) {</span>
+<span class="nc" id="L263">            this.vehicules.remove(this.vehicules.size() - 1);</span>
+        }
+<span class="nc" id="L265">        this.addNewPlanning();</span>
+<span class="nc" id="L266">    }</span>
+
+    /**
+     * Get clients.
+     *
+     * @return A list of clients.
+     */
+    public List&lt;Client&gt; getClients() {
+<span class="fc" id="L274">        return this.clients;</span>
+    }
+
+    /**
+     * Get vehicules.
+     *
+     * @return A list of vehicules.
+     */
+    public List&lt;Vehicule&gt; getVehicules() {
+<span class="fc" id="L283">        return this.vehicules;</span>
+    }
+
+    /**
+     * Get depot.
+     *
+     * @return The depot.
+     */
+    public Depot getDepot() {
+<span class="fc" id="L292">        return this.depot;</span>
+    }
+
+    /**
+     * Add a new vehicule.
+     *
+     * @return A new vehicule.
+     */
+    public Vehicule addVehicule() {
+<span class="fc" id="L301">        Vehicule v = new Vehicule(this.depot, this.capaciteVehicule);</span>
+<span class="fc" id="L302">        v.setInstance(this);</span>
+<span class="fc" id="L303">        this.vehicules.add(v);</span>
+<span class="fc" id="L304">        this.getPlanningCurrent().addVehicule(v);</span>
+<span class="fc" id="L305">        return v;</span>
+    }
+
+    /**
+     * Get number of vehicules.
+     *
+     * @return Number of vehicules allocated.
+     */
+    public int getNbVehicules() {
+<span class="fc" id="L314">        return this.nbVehicules;</span>
+    }
+
+    /**
+     * Set number of vehicules.
+     *
+     * @param nbVehicule New number of vehicule.
+     */
+    public void setNbVehicules(int nbVehicule) {
+<span class="fc bfc" id="L323" title="All 2 branches covered.">        if (nbVehicule &lt; 0) {</span>
+<span class="fc" id="L324">            throw new IllegalArgumentException(&quot;nbVehicule should not be negative&quot;);</span>
+        }
+<span class="fc" id="L326">        this.nbVehicules = nbVehicule;</span>
+<span class="fc" id="L327">    }</span>
+
+    /**
+     * Get Vehicule cost.
+     *
+     * @return The CoutVehicule.
+     */
+    public int getCoutVehicule() {
+<span class="fc" id="L335">        return this.coutVehicule;</span>
+    }
+
+    /**
+     * Get Instance name.
+     *
+     * @return The instance Name.
+     */
+    public String getInstanceName() {
+<span class="nc" id="L344">        return this.instanceName;</span>
+    }
+
+    /**
+     * Set instance Name.
+     *
+     * @param instanceName setted instanceName.
+     */
+    public void setInstanceName(String instanceName) {
+<span class="nc" id="L353">        this.instanceName = instanceName;</span>
+<span class="nc" id="L354">    }</span>
+
+    /**
+     * Check the validity of this instance.
+     *
+     * Check the validity of all clients internally.
+     *
+     * @return True if the instance is valid, false otherwise
+     */
+    public boolean check() {
+<span class="nc" id="L364">        boolean valid = this.getPlanningCurrent().check();</span>
+
+<span class="nc bnc" id="L366" title="All 2 branches missed.">        for (Client c : this.clients) {</span>
+<span class="nc" id="L367">            valid &amp;= c.check();</span>
+<span class="nc" id="L368">        }</span>
+
+<span class="nc bnc" id="L370" title="All 2 branches missed.">        if (!valid) {</span>
+<span class="nc" id="L371">            LOGGER.log(Level.WARNING, &quot;Invalid instance solution&quot;);</span>
+        }
+<span class="nc" id="L373">        return valid;</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L378">        int hash = 7;</span>
+<span class="nc" id="L379">        hash = 29 * hash + this.capaciteVehicule;</span>
+<span class="nc" id="L380">        hash = 29 * hash + this.coutVehicule;</span>
+<span class="nc" id="L381">        hash = 29 * hash + this.nbVehicules;</span>
+<span class="nc" id="L382">        hash = 29 * hash + Objects.hashCode(this.depot);</span>
+<span class="nc" id="L383">        hash = 29 * hash + Objects.hashCode(this.clients);</span>
+<span class="nc" id="L384">        hash = 29 * hash + Objects.hashCode(this.vehicules);</span>
+<span class="nc" id="L385">        hash = 29 * hash + Objects.hashCode(this.routes);</span>
+<span class="nc" id="L386">        return hash;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L391">        return &quot;Instance &quot; + this.instanceName;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

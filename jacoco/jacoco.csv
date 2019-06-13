@@ -1,0 +1,65 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+POO4-Project,template,Itineraire,623,0,2,0,125,0,8,0,7,0
+POO4-Project,template,Itineraire.new MouseWheelListener() {...},11,0,0,0,3,0,2,0,2,0
+POO4-Project,template,Itineraire.new MouseMotionAdapter() {...},11,0,0,0,3,0,2,0,2,0
+POO4-Project,template,Itineraire.new ActionListener() {...},11,0,0,0,3,0,2,0,2,0
+POO4-Project,template,MyCanvas,264,0,16,0,57,0,17,0,9,0
+POO4-Project,template,ListeInstance,535,0,8,0,134,0,14,0,10,0
+POO4-Project,template,ListeInstance.new ListSelectionListener() {...},11,0,0,0,3,0,2,0,2,0
+POO4-Project,template,ListeInstance.new ActionListener() {...},11,0,0,0,3,0,2,0,2,0
+POO4-Project,template,ListeInstance.new ActionListener() {...},11,0,0,0,3,0,2,0,2,0
+POO4-Project,template,ListeInstance.new ActionListener() {...},11,0,0,0,3,0,2,0,2,0
+POO4-Project,algo.iterative,RandomSolver.new Modifier() {...},6,0,0,0,3,0,2,0,2,0
+POO4-Project,algo.iterative,RandomSolver.new Modifier() {...},6,0,0,0,3,0,2,0,2,0
+POO4-Project,algo.iterative,CvCostCapacitySortedSolver.1.new Comparator() {...},12,0,0,0,2,0,2,0,2,0
+POO4-Project,algo.iterative,RandomSolver,21,0,0,0,7,0,4,0,4,0
+POO4-Project,algo.iterative,NaiveSolver,21,0,0,0,7,0,4,0,4,0
+POO4-Project,algo.iterative,CvCostCapacitySortedSolver.2.new Comparator() {...},12,0,0,0,2,0,2,0,2,0
+POO4-Project,algo.iterative,CvCostCapacitySortedSolver,21,0,0,0,7,0,4,0,4,0
+POO4-Project,algo.iterative,NaiveSolver.new Modifier() {...},4,0,0,0,2,0,2,0,2,0
+POO4-Project,algo.iterative,IterativeSolver,172,0,18,0,50,0,17,0,8,0
+POO4-Project,algo.iterative,CvCostCapacitySortedSolver.new Modifier() {...},10,0,0,0,3,0,2,0,2,0
+POO4-Project,algo.iterative,CvCostCapacitySortedSolver.new Modifier() {...},10,0,0,0,3,0,2,0,2,0
+POO4-Project,algo.iterative,NaiveSolver.new Modifier() {...},4,0,0,0,2,0,2,0,2,0
+POO4-Project,dao,DaoException,8,0,0,0,4,0,2,0,2,0
+POO4-Project,dao,DaoFactory.PersistenceType,14,0,0,0,2,0,1,0,1,0
+POO4-Project,dao,DaoFactory,17,0,2,0,4,0,3,0,2,0
+POO4-Project,io.output,SolutionWriter,110,0,8,0,31,0,10,0,6,0
+POO4-Project,io.output,WriterException,8,0,0,0,4,0,2,0,2,0
+POO4-Project,utils,CliUtils.Options,44,0,0,0,5,0,1,0,1,0
+POO4-Project,utils,CliUtils,75,0,11,0,26,0,9,0,3,0
+POO4-Project,dao.jpa,JpaInstanceDao,25,0,2,0,8,0,4,0,3,0
+POO4-Project,dao.jpa,JpaEmplacementDao,12,0,2,0,5,0,3,0,2,0
+POO4-Project,dao.jpa,JpaPlanningDao,12,0,2,0,5,0,3,0,2,0
+POO4-Project,dao.jpa,JpaVehiculeDao,19,0,2,0,7,0,4,0,3,0
+POO4-Project,dao.jpa,JpaClientDao,19,0,2,0,7,0,4,0,3,0
+POO4-Project,dao.jpa,JpaDepotDao,12,0,2,0,5,0,3,0,2,0
+POO4-Project,dao.jpa,JpaDaoFactory,17,0,0,0,8,0,8,0,8,0
+POO4-Project,dao.jpa,JpaDao,187,0,16,0,69,0,17,0,9,0
+POO4-Project,dao.jpa,JpaRouteDao,12,0,2,0,5,0,3,0,2,0
+POO4-Project,algo.genetic,Tournee,178,0,2,0,43,0,13,0,12,0
+POO4-Project,algo.genetic,Label,127,0,0,0,29,0,11,0,11,0
+POO4-Project,algo.genetic,ClientLabels,46,0,0,0,11,0,6,0,6,0
+POO4-Project,algo.genetic,ShortestPathClients,519,0,56,0,94,0,38,0,10,0
+POO4-Project,algo.genetic,GeneticSolver,669,0,44,0,138,0,37,0,15,0
+POO4-Project,algo.genetic,Chromosome,175,0,14,0,40,0,18,0,11,0
+POO4-Project,algo.genetic,BestLabel,83,0,0,0,19,0,7,0,7,0
+POO4-Project,algo.genetic,GeneticSolver.new Comparator() {...},24,0,0,0,5,0,2,0,2,0
+POO4-Project,algo.genetic,ShortestPathSolver,140,0,12,0,35,0,12,0,6,0
+POO4-Project,model,Instance,214,199,28,12,51,52,21,25,7,19
+POO4-Project,model,Planning,89,91,10,4,23,23,10,9,4,8
+POO4-Project,model,Route,103,54,14,0,24,11,10,6,3,6
+POO4-Project,model,Depot,7,30,0,0,2,5,1,3,1,3
+POO4-Project,model,Client,46,104,7,7,12,27,5,16,1,13
+POO4-Project,model,Point,100,82,13,5,23,18,15,8,7,7
+POO4-Project,model,Emplacement,40,131,9,9,9,27,7,11,1,8
+POO4-Project,model,Vehicule,263,266,34,18,61,63,25,18,3,14
+POO4-Project,main,PopulateDatabase,299,0,11,0,87,0,13,0,7,0
+POO4-Project,main,Gui,27,0,0,0,9,0,4,0,4,0
+POO4-Project,main,Cli,359,0,13,0,89,0,16,0,9,0
+POO4-Project,algo,SolverException,8,0,0,0,4,0,2,0,2,0
+POO4-Project,io.input,ParserException,27,0,0,0,6,0,3,0,3,0
+POO4-Project,io.input,JarInstanceResourceReader.new FilenameIterator() {...},73,0,4,0,11,0,6,0,4,0
+POO4-Project,io.input,TsvParser,40,40,0,2,10,11,2,4,2,3
+POO4-Project,io.input,InstanceFileParser,664,39,34,0,152,12,31,2,14,2
+POO4-Project,io.input,JarInstanceResourceReader,16,0,0,0,5,0,3,0,3,0

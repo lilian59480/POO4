@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClientLabels.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">POO4-Project</a> &gt; <a href="index.source.html" class="el_package">algo.genetic</a> &gt; <span class="el_source">ClientLabels.java</span></div><h1>ClientLabels.java</h1><pre class="source lang-java linenums">/*
+ * POO4 Project
+ * Copyright (C) 2019
+ * Lilian Petitpas, Thomas Ternisien, Thibaut Fenain, Corentin Apolinario
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package algo.genetic;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * ClientLabels class
+ *
+ * @author Thomas
+ */
+public class ClientLabels {
+
+    /**
+     * The client's number
+     */
+    private int clientNb;
+
+    /**
+     * Map that associate an emplacement to a list of Label
+     */
+    private List&lt;Label&gt; labels;
+
+    /**
+     * ClientLabels constructor
+     *
+     * @param cnb the client's number
+     */
+<span class="nc" id="L46">    public ClientLabels(int cnb) {</span>
+<span class="nc" id="L47">        this.clientNb = cnb;</span>
+<span class="nc" id="L48">        this.labels = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L49">    }</span>
+
+    /**
+     * Get labels.
+     *
+     * @return The em2Labels.
+     */
+    public List&lt;Label&gt; getLabels() {
+<span class="nc" id="L57">        return this.labels;</span>
+    }
+
+    /**
+     * Get clientNb
+     *
+     * @return the clientNb
+     */
+    public int getClientNb() {
+<span class="nc" id="L66">        return this.clientNb;</span>
+    }
+
+    /**
+     * Add multiple labels
+     *
+     * @param labels the labels to add
+     */
+    public void addLabels(List&lt;Label&gt; labels) {
+<span class="nc" id="L75">        this.labels.addAll(labels);</span>
+<span class="nc" id="L76">    }</span>
+
+    /**
+     * Add a label
+     *
+     * @param label the label to add
+     */
+    public void addLabel(Label label) {
+<span class="nc" id="L84">        this.labels.add(label);</span>
+<span class="nc" id="L85">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L89">        return &quot;ClientLabels2{&quot; + &quot;clientNb=&quot; + clientNb + &quot;, labels=&quot; + labels + '}';</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

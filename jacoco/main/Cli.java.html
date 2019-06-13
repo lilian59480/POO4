@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Cli.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">POO4-Project</a> &gt; <a href="index.source.html" class="el_package">main</a> &gt; <span class="el_source">Cli.java</span></div><h1>Cli.java</h1><pre class="source lang-java linenums">/*
+ * POO4 Project
+ * Copyright (C) 2019
+ * Lilian Petitpas, Thomas Ternisien, Thibaut Fenain, Corentin Apolinario
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package main;
+
+import algo.ISolver;
+import algo.genetic.GeneticSolver;
+import algo.iterative.CvCostCapacitySortedSolver;
+import algo.iterative.NaiveSolver;
+import algo.iterative.RandomSolver;
+import io.input.FilenameIterator;
+import io.input.InstanceFileParser;
+import io.input.JarInstanceResourceReader;
+import io.input.ParserException;
+import io.output.SolutionWriter;
+import io.output.WriterException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import model.Instance;
+import model.Planning;
+import utils.CliUtils;
+
+/**
+ * CLI function, used as an entry point for this project
+ *
+ * @author Lilian Petitpas
+ */
+public class Cli {
+
+    /**
+     * Class logger.
+     */
+<span class="nc" id="L54">    private static final Logger LOGGER = Logger.getLogger(Cli.class.getName());</span>
+
+    /**
+     * List of solvers available.
+     *
+     * @todo Use a factory?
+     */
+<span class="nc" id="L61">    private static final List&lt;ISolver&gt; SOLVERS = Arrays.asList(</span>
+            new NaiveSolver(),
+            new RandomSolver(),
+            new CvCostCapacitySortedSolver(),
+            new GeneticSolver(2, 5000, 2500, 0.0)
+    );
+
+    /**
+     * PrintStream used to print progress to the user.
+     */
+<span class="nc" id="L71">    private static final PrintStream PS = System.out;</span>
+
+    /**
+     * Instance Reader.
+     */
+<span class="nc" id="L76">    private static final JarInstanceResourceReader JAR_INSTANCE_RR = new JarInstanceResourceReader();</span>
+
+    /**
+     * Solution writer.
+     */
+<span class="nc" id="L81">    private static final SolutionWriter SW = new SolutionWriter();</span>
+
+    /**
+     * Instance file parser.
+     */
+    private final InstanceFileParser ifp;
+
+    /**
+     * Cli constructor.
+     *
+     * @throws ParserException If we can't instantiate the parser.
+     */
+<span class="nc" id="L93">    public Cli() throws ParserException {</span>
+<span class="nc" id="L94">        this.ifp = new InstanceFileParser();</span>
+<span class="nc" id="L95">    }</span>
+
+    /**
+     * Print help text.
+     */
+    private void printHelp() {
+<span class="nc" id="L101">        Cli.PS.println(&quot;Usage : cli.jar [option]&quot;);</span>
+
+<span class="nc" id="L103">        Cli.PS.println(&quot;Options :&quot;);</span>
+<span class="nc" id="L104">        Cli.PS.println(&quot;\thelp\tPrint help&quot;);</span>
+<span class="nc" id="L105">        Cli.PS.println(&quot;\tusage\tPrint help&quot;);</span>
+<span class="nc" id="L106">    }</span>
+
+    /**
+     * Print cost summary, in a beautiful table.
+     *
+     * @param solver Solver used
+     * @param instanceList List of instances solved with the solver in
+     * parameter.
+     */
+    private void printCostSummary(ISolver solver, List&lt;Instance&gt; instanceList) {
+<span class="nc" id="L116">        Cli.PS.println(&quot;Summary for :&quot;);</span>
+<span class="nc" id="L117">        Cli.PS.println(solver);</span>
+
+<span class="nc" id="L119">        Cli.PS.println(&quot;+----+--------------+--------+---------+&quot;);</span>
+<span class="nc" id="L120">        Cli.PS.println(&quot;| ID |     Cost     | Ext V. | Checker |&quot;);</span>
+<span class="nc" id="L121">        Cli.PS.println(&quot;+----+--------------+--------+---------+&quot;);</span>
+
+<span class="nc" id="L123">        int index = 0;</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">        for (Instance instance : instanceList) {</span>
+<span class="nc" id="L125">            Planning p = instance.getPlanningCurrent();</span>
+<span class="nc" id="L126">            int id = index;</span>
+<span class="nc" id="L127">            double cost = p.getCout();</span>
+
+<span class="nc" id="L129">            int externalVehicules = p.getVehicules().size() - instance.getNbVehicules();</span>
+
+<span class="nc" id="L131">            boolean valid = p.check();</span>
+<span class="nc" id="L132">            String unicodeValid = &quot;V&quot;;</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">            if (!valid) {</span>
+<span class="nc" id="L134">                unicodeValid = &quot;X&quot;;</span>
+            }
+
+<span class="nc" id="L137">            Cli.PS.printf(&quot;| %2d | %12.2f |   %2d   |    %s    |\n&quot;, id, (float) cost, externalVehicules, unicodeValid);</span>
+<span class="nc" id="L138">            index++;</span>
+<span class="nc" id="L139">        }</span>
+
+<span class="nc" id="L141">        Cli.PS.println(&quot;+----+--------------+--------+---------+&quot;);</span>
+
+<span class="nc" id="L143">    }</span>
+
+    /**
+     * Run all instances on all defined solvers.
+     */
+    private void runAllInstancesOnAllSolvers() {
+
+<span class="nc" id="L150">        Cli.PS.println(&quot;Run All solvers on all files instances stored in Jar&quot;);</span>
+<span class="nc" id="L151">        LOGGER.log(Level.INFO, &quot;Solvers available {0}&quot;, SOLVERS);</span>
+
+<span class="nc bnc" id="L153" title="All 2 branches missed.">        for (ISolver solverInst : SOLVERS) {</span>
+<span class="nc" id="L154">            this.runAllInstancesOnOneSolver(solverInst);</span>
+<span class="nc" id="L155">            Cli.PS.println(&quot;\t********************&quot;);</span>
+<span class="nc" id="L156">        }</span>
+<span class="nc" id="L157">    }</span>
+
+    /**
+     * Run all instances on a specific solver.
+     *
+     * @param solver The solver to use.
+     */
+    private void runAllInstancesOnOneSolver(ISolver solver) {
+<span class="nc" id="L165">        List&lt;Instance&gt; instanceList = new ArrayList&lt;&gt;();</span>
+        try {
+
+<span class="nc" id="L168">            Cli.PS.println(&quot;\tRun &quot; + solver + &quot; on all files instances stored in Jar&quot;);</span>
+
+<span class="nc bnc" id="L170" title="All 2 branches missed.">            for (FilenameIterator&lt;InputStream&gt; iterator = Cli.JAR_INSTANCE_RR.iterator(); iterator.hasNext();) {</span>
+<span class="nc" id="L171">                Cli.PS.println(&quot;\t\t********************&quot;);</span>
+
+<span class="nc" id="L173">                try (InputStream is = iterator.next()) {</span>
+<span class="nc" id="L174">                    LOGGER.log(Level.INFO, &quot;Loaded {0}&quot;, iterator.getFilename());</span>
+<span class="nc" id="L175">                    Cli.PS.println(&quot;\t\tResource &quot; + iterator.getFilename() + &quot; loaded from Jar&quot;);</span>
+
+<span class="nc" id="L177">                    Instance instance = this.ifp.parse(is);</span>
+
+<span class="nc" id="L179">                    LOGGER.log(Level.FINE, &quot;Instance parsed : {0}&quot;, is);</span>
+
+<span class="nc" id="L181">                    this.runOneInstancesOnOneSolver(solver, instance, Cli.defineSolutionFilename(iterator.getFilename()));</span>
+<span class="nc" id="L182">                    instanceList.add(instance);</span>
+                }
+
+<span class="nc" id="L185">                Cli.PS.println(&quot;\t\tInstance OK&quot;);</span>
+            }
+
+<span class="nc" id="L188">        } catch (ParserException | IOException ex) {</span>
+<span class="nc" id="L189">            LOGGER.log(Level.SEVERE, &quot;Exception while solving Instances!&quot;, ex);</span>
+<span class="nc" id="L190">        }</span>
+
+<span class="nc" id="L192">        this.printCostSummary(solver, instanceList);</span>
+
+<span class="nc" id="L194">    }</span>
+
+    /**
+     * Solve an instance.
+     *
+     * @param solver The solver to use.
+     * @param i The instance to solve.
+     * @param filename Filename to use when writing the solution.
+     */
+    private void runOneInstancesOnOneSolver(ISolver solver, Instance i, String filename) {
+<span class="nc" id="L204">        solver.setInstance(i);</span>
+<span class="nc" id="L205">        Cli.PS.println(&quot;\t\t\tSolving ...&quot;);</span>
+<span class="nc" id="L206">        boolean status = solver.solve();</span>
+<span class="nc bnc" id="L207" title="All 2 branches missed.">        if (!status) {</span>
+<span class="nc" id="L208">            LOGGER.log(Level.SEVERE, &quot;Instance unsolvable! Use the official checker to know why&quot;);</span>
+        }
+
+        try {
+<span class="nc" id="L212">            Cli.SW.write(i, filename);</span>
+<span class="nc" id="L213">        } catch (WriterException ex) {</span>
+<span class="nc" id="L214">            LOGGER.log(Level.SEVERE, &quot;Impossible to write solution file&quot;, ex);</span>
+<span class="nc" id="L215">        }</span>
+
+<span class="nc" id="L217">    }</span>
+
+    /**
+     * Cli Entry point.
+     *
+     * @param args Arguments, 1st can be &quot;help&quot; or &quot;usage&quot;
+     */
+    public static void main(String[] args) {
+<span class="nc" id="L225">        LOGGER.log(Level.INFO, &quot;Solving a new instance&quot;);</span>
+<span class="nc" id="L226">        LOGGER.log(Level.FINE, &quot;Arguments : {0}&quot;, Arrays.toString(args));</span>
+
+        Cli self;
+        try {
+<span class="nc" id="L230">            self = new Cli();</span>
+<span class="nc" id="L231">        } catch (ParserException ex) {</span>
+<span class="nc" id="L232">            LOGGER.log(Level.SEVERE, &quot;Impossible to initialise Cli&quot;, ex);</span>
+<span class="nc" id="L233">            System.exit(-1);</span>
+<span class="nc" id="L234">            return;</span>
+<span class="nc" id="L235">        }</span>
+<span class="nc" id="L236">        CliUtils.printIntro(Cli.PS);</span>
+<span class="nc" id="L237">        Cli.PS.println(&quot;******************&quot;);</span>
+<span class="nc" id="L238">        CliUtils.printLicence(Cli.PS);</span>
+<span class="nc" id="L239">        Cli.PS.println(&quot;******************&quot;);</span>
+
+<span class="nc" id="L241">        CliUtils.Options ops = CliUtils.parseArguments(args);</span>
+
+<span class="nc bnc" id="L243" title="All 3 branches missed.">        switch (ops) {</span>
+            case UNKNOWN:
+<span class="nc" id="L245">                Cli.PS.println(&quot;Unknown arguments&quot;);</span>
+<span class="nc" id="L246">                self.printHelp();</span>
+<span class="nc" id="L247">                break;</span>
+            case HELP:
+            case USAGE:
+<span class="nc" id="L250">                self.printHelp();</span>
+<span class="nc" id="L251">                break;</span>
+            case NO_ARGS:
+            default:
+<span class="nc" id="L254">                self.runAllInstancesOnAllSolvers();</span>
+        }
+
+<span class="nc" id="L257">    }</span>
+
+    /**
+     * Get the solution filename to be compatible witj specification.
+     *
+     * @todo Use a better and fool proof algorithm.
+     * @param instanceFilename Path of the instance
+     * @return Filename of the solution.
+     */
+    private static String defineSolutionFilename(String instanceFilename) {
+<span class="nc" id="L267">        return instanceFilename.substring(11, instanceFilename.length() - 4) + &quot;_sol.txt&quot;;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MyCanvas.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">POO4-Project</a> &gt; <a href="index.source.html" class="el_package">template</a> &gt; <span class="el_source">MyCanvas.java</span></div><h1>MyCanvas.java</h1><pre class="source lang-java linenums">/*
+ * POO4 Project
+ * Copyright (C) 2019
+ * Lilian Petitpas, Thomas Ternisien, Thibaut Fenain, Corentin Apolinario
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package template;
+
+import algo.iterative.NaiveSolver;
+import java.awt.BasicStroke;
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.util.List;
+import model.Depot;
+import model.Emplacement;
+import model.Instance;
+import model.Vehicule;
+
+/**
+ *
+ * @author thibaut
+ */
+public class MyCanvas extends Canvas {
+
+    private Instance instance;
+<span class="nc" id="L40">    private int draggedX = 400;</span>
+<span class="nc" id="L41">    private int draggedY = 400;</span>
+<span class="nc" id="L42">    private int zoom = 4;</span>
+
+    /**
+     * initial constructor
+     *
+     * @param i Instance
+     */
+<span class="nc" id="L49">    public MyCanvas(Instance i) {</span>
+<span class="nc" id="L50">        this.instance = i;</span>
+<span class="nc" id="L51">        setBackground(Color.WHITE);</span>
+<span class="nc" id="L52">    }</span>
+
+    /**
+     * Paint method
+     *
+     * @param g graphic
+     */
+    public void paint(Graphics g) {
+<span class="nc" id="L60">        super.paint(g);</span>
+<span class="nc" id="L61">        Color c = g.getColor();</span>
+        // DESSIN D'une Instance
+<span class="nc" id="L63">        NaiveSolver ds = new NaiveSolver(this.instance);</span>
+<span class="nc" id="L64">        ds.solve();</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        if (ds == null) {</span>
+<span class="nc" id="L66">            return;</span>
+        }
+
+<span class="nc" id="L69">        Instance i = ds.getInstance();</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">        if (i == null) {</span>
+<span class="nc" id="L71">            return;</span>
+        }
+
+<span class="nc" id="L74">        this.drawInstance(g, i);</span>
+<span class="nc" id="L75">        g.setColor(c);</span>
+<span class="nc" id="L76">    }</span>
+
+    /**
+     * Draw an Emplacement
+     *
+     * @param g Graphics zone.
+     * @param e Emplacement to draw.
+     */
+    private void drawEmplacement(Graphics g, Emplacement e) {
+<span class="nc bnc" id="L85" title="All 2 branches missed.">        if (e == null) {</span>
+<span class="nc" id="L86">            return;</span>
+        }
+
+<span class="nc bnc" id="L89" title="All 2 branches missed.">        if (e instanceof Depot) {</span>
+<span class="nc" id="L90">            g.setColor(Color.RED);</span>
+        } else {
+<span class="nc" id="L92">            g.setColor(Color.BLUE);</span>
+        }
+<span class="nc" id="L94">        g.fillRect((int) ((int) e.getX() * this.zoom + this.draggedX - 3), (int) e.getY() * this.zoom + this.draggedY - 3, 6, 6);</span>
+
+<span class="nc" id="L96">    }</span>
+
+    /**
+     * Draw an instance.
+     *
+     * @param g Graphics zone.
+     * @param i Instance to draw.
+     */
+    private void drawInstance(Graphics g, Instance i) {
+<span class="nc bnc" id="L105" title="All 2 branches missed.">        if (i == null) {</span>
+<span class="nc" id="L106">            return;</span>
+        }
+        //Dessin du depot
+<span class="nc" id="L109">        Depot d = i.getDepot();</span>
+
+<span class="nc" id="L111">        List&lt;Vehicule&gt; vehicules = i.getVehicules();</span>
+<span class="nc" id="L112">        int code = 0;</span>
+
+<span class="nc bnc" id="L114" title="All 2 branches missed.">        for (Vehicule v : vehicules) {</span>
+<span class="nc" id="L115">            Emplacement source = d;</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">            for (Emplacement destination : v.getEmplacements()) {</span>
+                /*
+                 * Between 360 -&gt; getHSBColor(X, 1, 0.8)
+                 */
+<span class="nc" id="L120">                g.setColor(Color.getHSBColor(code / 360.0f, 1, 0.8f));</span>
+<span class="nc" id="L121">                Graphics2D g2 = (Graphics2D) g;</span>
+<span class="nc" id="L122">                g2.setStroke(new BasicStroke(3));</span>
+<span class="nc" id="L123">                g2.drawLine((int) source.getX() * this.zoom + this.draggedX, (int) source.getY() * this.zoom + this.draggedY, (int) destination.getX() * this.zoom + this.draggedX, (int) destination.getY() * this.zoom + this.draggedY);</span>
+<span class="nc" id="L124">                source = destination;</span>
+<span class="nc" id="L125">                this.drawEmplacement(g, destination);</span>
+
+<span class="nc" id="L127">            }</span>
+<span class="nc" id="L128">            g.drawLine((int) source.getX() * this.zoom + this.draggedX, (int) source.getY() * this.zoom + this.draggedY, (int) d.getX() * this.zoom + this.draggedX, (int) d.getY() * this.zoom + this.draggedY);</span>
+<span class="nc" id="L129">            code += 20;</span>
+<span class="nc" id="L130">        }</span>
+<span class="nc" id="L131">        this.drawEmplacement(g, d);</span>
+<span class="nc" id="L132">    }</span>
+
+    /**
+     * zoom In.
+     *
+     */
+    public void zoomIn() {
+<span class="nc" id="L139">        this.zoom++;</span>
+<span class="nc" id="L140">    }</span>
+
+    /**
+     * zoom out.
+     *
+     */
+    public void zoomOut() {
+<span class="nc bnc" id="L147" title="All 2 branches missed.">        if (this.zoom != 1) {</span>
+<span class="nc" id="L148">            this.zoom--;</span>
+        }
+<span class="nc" id="L150">    }</span>
+    /**
+     * Center canvas.
+     */
+    public void center() {
+<span class="nc" id="L155">        this.zoom = 1;</span>
+<span class="nc" id="L156">    }</span>
+    
+    /**
+     *  Set dragged X-Y to the canvas.
+     *  @param x abscisse
+     *  @param y ordonne
+     */
+    public void draggedCanvas(int x, int y){
+<span class="nc" id="L164">        this.draggedX = x;</span>
+<span class="nc" id="L165">        this.draggedY = y;</span>
+<span class="nc" id="L166">    }</span>
+    /**
+     * Get zoom
+     * @return zoom.
+     */
+    public int getZoom() {
+<span class="nc" id="L172">        return this.zoom;</span>
+    }
+    
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>
