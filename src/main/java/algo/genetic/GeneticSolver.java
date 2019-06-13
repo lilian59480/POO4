@@ -236,18 +236,8 @@ public class GeneticSolver implements ISolver {
      */
     private Chromosome mutateChromosome(Chromosome c) throws SolverException {
         Chromosome bestC = c;
-        List<List<Object>> trips = new ArrayList<>();
-        for (Trip trip : c.getTournee().getTrips()) {
-            List<Object> temp = new ArrayList<>();
-            for (Emplacement em : trip.getEmplacements()) {
-                if (em.getClass() == Depot.class) {
-                    temp.add(em);
-                } else {
-                    temp.add(em.getClient());
-                }
-            }
-            trips.add(temp);
-        }
+        List<List<Object>> trips = chromosomeToTrips(c);
+
         Random r = new Random();
         //Take a random pair of vertexes (u, v) instead of every possible distinct pair
         int uTrip = r.nextInt(trips.size());
@@ -259,24 +249,24 @@ public class GeneticSolver implements ISolver {
         //System.out.println("U " + trips.get(uTrip).get(uNode));
         //System.out.println("V " + trips.get(vTrip).get(vNode));
 
-        //Move 1
+        //Do mutation moves
         if (trips.get(uTrip).get(uNode).getClass() == Client.class) {
+            //Move 1
             Chromosome tempC = mutationMove1(trips, uTrip, uNode, vTrip, vNode);
             if (tempC != null && tempC.getTournee().getCost() < bestC.getTournee().getCost()) {
                 bestC = tempC;
             }
-        }
-        //Move 2 & 3
-        if (trips.get(uTrip).get(uNode).getClass() == Client.class && trips.get(uTrip).get((uNode + 1) % trips.get(uTrip).size()).getClass() == Client.class) {
-            //Move 2
-            Chromosome tempC = mutationMove23(true, trips, uTrip, uNode, vTrip, vNode);
-            if (tempC != null && tempC.getTournee().getCost() < bestC.getTournee().getCost()) {
-                bestC = tempC;
-            }
-            //Move 3
-            mutationMove23(false, trips, uTrip, uNode, vTrip, vNode);
-            if (tempC != null && tempC.getTournee().getCost() < bestC.getTournee().getCost()) {
-                bestC = tempC;
+            if (trips.get(uTrip).get((uNode + 1) % trips.get(uTrip).size()).getClass() == Client.class) {
+                //Move 2
+                tempC = mutationMove23(true, trips, uTrip, uNode, vTrip, vNode);
+                if (tempC != null && tempC.getTournee().getCost() < bestC.getTournee().getCost()) {
+                    bestC = tempC;
+                }
+                //Move 3
+                tempC = mutationMove23(false, trips, uTrip, uNode, vTrip, vNode);
+                if (tempC != null && tempC.getTournee().getCost() < bestC.getTournee().getCost()) {
+                    bestC = tempC;
+                }
             }
         }
 
@@ -340,7 +330,7 @@ public class GeneticSolver implements ISolver {
                 ux.add((Client) tripsTemps.get(uTrip).remove(uNode));
             }
             tripsTemps.get(vTrip).addAll((vNode + 1) % tripsTemps.get(vTrip).size(), ux);
-        } else if (uNode < vNode && uNode+1!=vNode) {
+        } else if (uNode < vNode && uNode + 1 != vNode) {
             List<Client> ux = new ArrayList<>();
             ux.add((Client) tripsTemps.get(uTrip).get(uNode + 1));
             if (is2) {
@@ -378,6 +368,31 @@ public class GeneticSolver implements ISolver {
         Chromosome c = new Chromosome(this.instance, clients);
 
         return c;
+    }
+
+    /**
+     * Convert a Chromosome to a trips
+     *
+     * @param c the Chromosome to convert
+     * @return the trips
+     * @throws SolverException If there is an internal exception or inconsistant
+     *                         values.
+     */
+    private List<List<Object>> chromosomeToTrips(Chromosome c) throws SolverException {
+        List<List<Object>> trips = new ArrayList<>();
+        for (Trip trip : c.getTournee().getTrips()) {
+            List<Object> temp = new ArrayList<>();
+            for (Emplacement em : trip.getEmplacements()) {
+                if (em.getClass() == Depot.class) {
+                    temp.add(em);
+                } else {
+                    temp.add(em.getClient());
+                }
+            }
+            trips.add(temp);
+        }
+
+        return trips;
     }
 
     /**
