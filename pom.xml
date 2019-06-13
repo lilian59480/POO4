@@ -127,6 +127,11 @@
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>3.6.0.1398</version>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.0</version>
+            </plugin>
         </plugins>
     </build>
     <reporting>
@@ -169,6 +174,12 @@
                     <bottom><![CDATA[Copyright (C) 2019 Lilian Petitpas, Thomas Ternisien, Thibaut Fenain, Corentin Apolinario.<br>Licenced under the GNU General Public License version 3 or later.]]></bottom>
                     <detectLinks>true</detectLinks>
                     <show>private</show>
+                    <doclet>nl.talsmasoftware.umldoclet.UMLDoclet</doclet>
+                    <docletArtifact>
+                        <groupId>nl.talsmasoftware</groupId>
+                        <artifactId>umldoclet</artifactId>
+                        <version>2.0.3</version>
+                    </docletArtifact>
                 </configuration>
             </plugin>
         </plugins>
