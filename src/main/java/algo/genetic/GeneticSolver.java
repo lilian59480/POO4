@@ -213,8 +213,7 @@ public class GeneticSolver implements ISolver {
             //Will the child mutate?
             if (r.nextFloat() <= this.mutationRate) {
                 //Do mutation
-                System.out.println("Mutation occurs");
-                child = mutateChromosome(child);
+                child = this.mutateChromosome(child);
             }
             if (!this.isChromosomePoolDuplicates(child)) {
                 iterationsWithoutImprovement = 0;
@@ -235,17 +234,14 @@ public class GeneticSolver implements ISolver {
      * values.
      */
     private Chromosome mutateChromosome(Chromosome c) throws SolverException {
-        List<List<Object>> trips = chromosomeToTrips(c);
+        List<List<Object>> trips = this.chromosomeToTrips(c);
         Random r = new Random();
         //Take a random pair of vertexes (u, v) instead of every possible distinct pair
         int uTrip = r.nextInt(trips.size());
         int uNode = r.nextInt(trips.get(uTrip).size());
         int vTrip = r.nextInt(trips.size());
         int vNode = r.nextInt(trips.get(vTrip).size());
-        //System.out.println("C " + c);
-        //System.out.println("U " + trips.get(uTrip).get(uNode));
-        //System.out.println("V " + trips.get(vTrip).get(vNode));
-        Chromosome mutatedC = doMutationMoves(trips, uTrip, uNode, vTrip, vNode);
+        Chromosome mutatedC = this.doMutationMoves(trips, uTrip, uNode, vTrip, vNode);
         if (mutatedC == null) {
             return c;
         }
@@ -269,36 +265,36 @@ public class GeneticSolver implements ISolver {
         //if u is a client
         if (trips.get(uTrip).get(uNode).getClass() == Client.class) {
             //Move 1
-            Chromosome bestC = mutationMove1(trips, uTrip, uNode, vTrip, vNode);
+            Chromosome bestC = this.mutationMove1(trips, uTrip, uNode, vTrip, vNode);
             //if x is a client
             if (trips.get(uTrip).get((uNode + 1) % trips.get(uTrip).size()).getClass() == Client.class) {
                 //Move 2
-                bestC = getBestChromosome(bestC, mutationMove23(true, trips, uTrip, uNode, vTrip, vNode));
+                bestC = this.getBestChromosome(bestC, this.mutationMove23(true, trips, uTrip, uNode, vTrip, vNode));
                 //Move 3
-                bestC = getBestChromosome(bestC, mutationMove23(false, trips, uTrip, uNode, vTrip, vNode));
+                bestC = this.getBestChromosome(bestC, this.mutationMove23(false, trips, uTrip, uNode, vTrip, vNode));
             }
             //if v is a client
             if (trips.get(vTrip).get(vNode).getClass() == Client.class) {
                 //Move 4  
-                bestC = getBestChromosome(bestC, mutationMovePermuteTwoClient(trips, uTrip, uNode, vTrip, vNode));
+                bestC = this.getBestChromosome(bestC, this.mutationMovePermuteTwoClient(trips, uTrip, uNode, vTrip, vNode));
                 //if x is a client
                 if (trips.get(uTrip).get((uNode + 1) % trips.get(uTrip).size()).getClass() == Client.class) {
                     //Move 5
-                    bestC = getBestChromosome(bestC, mutationMove5(trips, uTrip, uNode, vTrip, vNode));
+                    bestC = this.getBestChromosome(bestC, this.mutationMove5(trips, uTrip, uNode, vTrip, vNode));
                     //if y is a client
                     if (trips.get(vTrip).get((vNode + 1) % trips.get(vTrip).size()).getClass() == Client.class) {
                         //Move 6
-                        bestC = getBestChromosome(bestC, mutationMove6(trips, uTrip, uNode, vTrip, vNode));
+                        bestC = this.getBestChromosome(bestC, this.mutationMove6(trips, uTrip, uNode, vTrip, vNode));
                         //if (u, x) and (v, y) are non adjacent in the same trip
                         if (uTrip == vTrip && Math.abs(uNode - vNode) > 3) {
                             //Move 7
-                            bestC = getBestChromosome(bestC, mutationMovePermuteTwoClient(trips, uTrip, uNode + 1, vTrip, vNode));
+                            bestC = this.getBestChromosome(bestC, this.mutationMovePermuteTwoClient(trips, uTrip, uNode + 1, vTrip, vNode));
                         }
                         if (uTrip != vTrip) {
                             //Move 8
-                            bestC = getBestChromosome(bestC, mutationMovePermuteTwoClient(trips, uTrip, uNode + 1, vTrip, vNode));
+                            bestC = this.getBestChromosome(bestC, this.mutationMovePermuteTwoClient(trips, uTrip, uNode + 1, vTrip, vNode));
                             //Move 9
-                            bestC = getBestChromosome(bestC, mutationMove9(trips, uTrip, uNode, vTrip, vNode));
+                            bestC = this.getBestChromosome(bestC, this.mutationMove9(trips, uTrip, uNode, vTrip, vNode));
                         }
                     }
                 }
@@ -336,7 +332,7 @@ public class GeneticSolver implements ISolver {
             return null;
         }
 
-        return tripsToChromosome(tripsTemps);
+        return this.tripsToChromosome(tripsTemps);
     }
 
     /**
@@ -383,7 +379,7 @@ public class GeneticSolver implements ISolver {
             return null;
         }
 
-        return tripsToChromosome(tripsTemps);
+        return this.tripsToChromosome(tripsTemps);
     }
 
     /**
@@ -410,7 +406,7 @@ public class GeneticSolver implements ISolver {
         tripsTemps.get(cli1Trip).set(cli1Node, tripsTemps.get(cli2Trip).get(cli2Node));
         tripsTemps.get(cli2Trip).set(cli2Node, temp);
 
-        return tripsToChromosome(tripsTemps);
+        return this.tripsToChromosome(tripsTemps);
     }
 
     /**
@@ -444,7 +440,7 @@ public class GeneticSolver implements ISolver {
             return null;
         }
 
-        return tripsToChromosome(tripsTemps);
+        return this.tripsToChromosome(tripsTemps);
     }
 
     /**
@@ -473,7 +469,7 @@ public class GeneticSolver implements ISolver {
         tripsTemps.get(uTrip).set(uNode + 1, tripsTemps.get(vTrip).get(vNode + 1));
         tripsTemps.get(vTrip).set(vNode + 1, temp);
 
-        return tripsToChromosome(tripsTemps);
+        return this.tripsToChromosome(tripsTemps);
     }
 
     /**
@@ -499,7 +495,7 @@ public class GeneticSolver implements ISolver {
         tripsTemps.get(vTrip).set(vNode + 1, tripsTemps.get(vTrip).get(vNode));
         tripsTemps.get(vTrip).set(vNode, x);
 
-        return tripsToChromosome(tripsTemps);
+        return this.tripsToChromosome(tripsTemps);
     }
 
     /**
@@ -607,14 +603,6 @@ public class GeneticSolver implements ISolver {
         }
         //Sort the chromosomePool by cost
         this.sortChromosomePool();
-
-        /*for (Chromosome c : this.chromosomePool) {
-            try {
-                System.out.println("Chromosome: " + c.getTournee().getCost());
-            } catch (SolverException ex) {
-                Logger.getLogger(GeneticSolver.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }*/
     }
 
     /**
@@ -669,7 +657,6 @@ public class GeneticSolver implements ISolver {
         Random r = new Random();
         int i = r.nextInt(childCli.size());
         int j = r.nextInt(childCli.size());
-        //System.out.println("Range from " + Math.min(i, j) + " to " + Math.max(i, j));
         //Make of the copy of the randomly selected range
         List<Client> p1Range = p1.getClients().subList(Math.min(i, j), Math.max(i, j) + 1);
         //Fill the chromosome with the remaining clients
@@ -678,15 +665,9 @@ public class GeneticSolver implements ISolver {
             while (p1Range.contains(p2Cli.get(l))) {
                 l = (l + 1) % p2Cli.size();
             }
-            //System.out.println("---> k=" + k + " l=" + l);
             childCli.set(k, p2Cli.get(l));
             l = (l + 1) % p2Cli.size();
         }
-        /*System.out.println("-----------");
-        System.out.println(p1.getClients());
-        System.out.println(p2Cli);
-        System.out.println(childCli);
-        System.out.println("-----------");*/
         return new Chromosome(p1.getInstance(), childCli);
     }
 
@@ -705,46 +686,38 @@ public class GeneticSolver implements ISolver {
      *
      * @param args the args
      */
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         Instance i = null;
-        //for (int j = 0; j < 40; j++) {
-        int id = 30;
-        System.out.println(id);
-        try {
-            InstanceFileParser ifp = new InstanceFileParser();
-            i = ifp.parse(new File("src/main/resources/instances/instance_" + id + "-triangle.txt"));
-        } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
-            return;
-        }
-        /*GeneticSolver gs = new GeneticSolver(i, 2, 5000, 2500, 0.0);
-        try {
-            gs.generateChromosomePool();
-            gs.mutateChromosome(gs.chromosomePool.get(0));
-
-        } catch (SolverException ex) {
-            Logger.getLogger(GeneticSolver.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
-        NaiveSolver ds = new NaiveSolver(i);
-        ds.solve();
-        double cns = i.getPlanningCurrent().getCout();
-        System.out.println("---Cout ns: " + cns);
-        GeneticSolver gs = new GeneticSolver(i, 2, 5000, 2500, 0.5);
-        gs.solve();
-        double cgs = i.getPlanningCurrent().getCout();
-        System.out.println("---Cout gs: " + cgs + " ( " + (cgs - cns) + " )");
-        try {
-            System.out.println(gs.chromosomePool.get(gs.chromosomePool.size() - 1).getTournee().getCost());
-        } catch (SolverException e) {
-            e.printStackTrace();
-        }
-        System.out.println(gs.chromosomePool.size());
-        /*try {
+        for (int j = 0; j < 40; j++) {
+            int id = j;
+            System.out.println(id);
+            try {
+                InstanceFileParser ifp = new InstanceFileParser();
+                i = ifp.parse(new File("src/main/resources/instances/instance_" + id + "-triangle.txt"));
+            } catch (Exception ex) {
+                LOGGER.log(Level.SEVERE, "Exception while solving an Instance", ex);
+                return;
+            }
+            NaiveSolver ds = new NaiveSolver(i);
+            ds.solve();
+            double cns = i.getPlanningCurrent().getCout();
+            System.out.println("---Cout ns: " + cns);
+            GeneticSolver gs = new GeneticSolver(i, 2, 5000, 2500, 0.5);
+            gs.solve();
+            double cgs = i.getPlanningCurrent().getCout();
+            System.out.println("---Cout gs: " + cgs + " ( " + (cgs - cns) + " )");
+            try {
+                System.out.println(gs.chromosomePool.get(gs.chromosomePool.size() - 1).getTournee().getCost());
+            } catch (SolverException e) {
+                e.printStackTrace();
+            }
+            System.out.println(gs.chromosomePool.size());*/
+            /*try {
         SolutionWriter sw = new SolutionWriter();
         sw.write(i, "target/instance_" + id + "-triangle_sol_sp.txt");
         } catch (Exception ex) {
         LOGGER.log(Level.SEVERE, "Exception while writing a solution", ex);
         }*/
-        //}
-    }
+    //    }
+    //}
 }
