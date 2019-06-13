@@ -86,7 +86,7 @@ public class VehiculeModelTable extends GenericModelTable<Vehicule> {
      * @return vehicules to display
      */
     public List<Vehicule> getDisplayVehicules() {
-        List<Vehicule> vehicules = new ArrayList<Vehicule>();
+        List<Vehicule> vehicules = new ArrayList<>();
         for (int i = 0; i < this.data.size(); i++) {
             if (this.checkBoxValues.get(i)) {
                 vehicules.add(this.data.get(i));

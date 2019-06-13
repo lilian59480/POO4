@@ -18,9 +18,9 @@
  */
 package main;
 
+import gui.ListeInstance;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import gui.ListeInstance;
 
 /**
  * Gui entry point for this project

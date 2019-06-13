@@ -25,7 +25,9 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import model.Client;
 import model.Depot;
 import model.Emplacement;
@@ -65,8 +67,25 @@ public class MyCanvas extends Canvas {
      * Vehicule table model.
      */
     private VehiculeModelTable vModel;
+    /**
+     * Vehicule table model.
+     */
     private ClientModelTable cModel;
 
+    /**
+     * Map of all the colors
+     */
+    private Map<Object, Integer> colorCodes;
+    /**
+     * Last color code used
+     */
+    private int lastColorCode;
+    
+    /**
+     * Step between each color
+     */
+    private static final int COLOR_STEP = 26;
+    
     /**
      * initial constructor
      *
@@ -78,8 +97,8 @@ public class MyCanvas extends Canvas {
         this.instance = i;
         this.vModel = vModel;
         this.cModel = cModel;
+        this.colorCodes = new HashMap<>();
         this.setBackground(Color.WHITE);
-
     }
 
     /**
@@ -126,7 +145,7 @@ public class MyCanvas extends Canvas {
         if (e instanceof Depot) {
             g.setColor(Color.RED);
         } else {
-            g.setColor(Color.getHSBColor(code / 360.0f, 1, 0.8f));
+            g.setColor(this.getColor(code));
         }
         g.fillRect(this.getDrawedX(e) - 3, this.getDrawedY(e) - 3, 6, 6);
 
@@ -142,8 +161,8 @@ public class MyCanvas extends Canvas {
         if (i == null) {
             return;
         }
-        this.drawRoute(g, i);
-        this.drawClient(g, i);
+        this.drawRoutes(g, i);
+        this.drawClients(g, i);
         Point origin = new Emplacement();
         g.setColor(Color.BLACK);
         g.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0));
@@ -158,13 +177,12 @@ public class MyCanvas extends Canvas {
      * @param g graphic
      * @param i instance
      */
-    private void drawRoute(Graphics2D g, Instance i) {
+    private void drawRoutes(Graphics2D g, Instance i) {
         //Dessin du depot
         Depot d = i.getDepot();
 
         List<Vehicule> vehicules = this.vModel.getDisplayVehicules();
         System.out.println("test vehicule Canvas" + vehicules.toString());
-        int code = 0;
 
         for (Vehicule v : vehicules) {
             Emplacement source = d;
@@ -172,14 +190,13 @@ public class MyCanvas extends Canvas {
                 /*
                  * Between 360 -> getHSBColor(X, 1, 0.8)
                  */
-                g.setColor(Color.getHSBColor(code / 360.0f, 1, 0.8f));
+                g.setColor(this.getColor(v));
                 g.setStroke(new BasicStroke(3));
                 g.drawLine(this.getDrawedX(source), this.getDrawedY(source), this.getDrawedX(destination), this.getDrawedY(destination));
                 source = destination;
 
             }
             g.drawLine(this.getDrawedX(source), this.getDrawedY(source), this.getDrawedX(d), this.getDrawedY(d));
-            code += 20;
         }
         this.drawEmplacement(g, d, 0);
     }
@@ -189,19 +206,17 @@ public class MyCanvas extends Canvas {
      * @param g graphic
      * @param i instance
      */
-    private void drawClient(Graphics2D g, Instance i) {
+    private void drawClients(Graphics2D g, Instance i) {
 
         List<Client> clients = this.cModel.getDisplayClients();
         //Dessin du depot
         Depot d = i.getDepot();
-        int code = 0;
         for (Client c : clients) {
             for (Emplacement e : c.getEmplacements()) {
                 /*
                  * Between 360 -> getHSBColor(X, 1, 0.8)
                  */
-                drawEmplacement(g, e, code);
-                code += 20;
+                this.drawEmplacement(g, e, this.getColorCode(c));
             }
         }
 
@@ -272,4 +287,39 @@ public class MyCanvas extends Canvas {
         return (int) (p.getY() * this.zoom + this.draggedY);
     }
 
+    /**
+     * Get the color code of the object.
+     *
+     * @param o Object 
+     * @return The color code of the object
+     */
+    private int getColorCode(Object o) {
+        if( this.colorCodes.containsKey(o) ) {
+            return this.colorCodes.get(o);
+        }
+        this.lastColorCode += MyCanvas.COLOR_STEP;
+        this.colorCodes.put(o, this.lastColorCode);
+        return this.lastColorCode;
+    }
+    
+    /**
+     * Get the color of the object.
+     *
+     * @param o Object 
+     * @return The color of the object
+     */
+    private Color getColor(Object o) {
+        int colorCode = this.getColorCode(o);
+        return this.getColor(colorCode);
+    }
+    
+    /**
+     * Get a color from an int.
+     *
+     * @param colorCode the color code
+     * @return The color from the color code
+     */
+    private Color getColor(int colorCode) {
+        return Color.getHSBColor(colorCode / 360.0f, 1, 0.8f);
+    }
 }

@@ -90,7 +90,7 @@ public class ListeInstance extends JFrame { // NOSONAR
      */
     private void initialisationFenetre() {
         this.setVisible(true);
-        this.setTitle("Gestion des clients by Thibaut Fenain");
+        this.setTitle("Gestion des clients");
         this.getContentPane().setBackground(Color.white);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -98,8 +98,6 @@ public class ListeInstance extends JFrame { // NOSONAR
 
     /**
      * Allow to connect to the DB.
-     *
-     * @author Thibaut Fenain
      */
     private void initConnexion() {
         try {

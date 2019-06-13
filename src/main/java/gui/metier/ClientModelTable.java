@@ -18,12 +18,9 @@
  */
 package gui.metier;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.table.AbstractTableModel;
 import model.Client;
-import model.Vehicule;
 
 /**
  *
@@ -34,7 +31,7 @@ public class ClientModelTable extends GenericModelTable<Client> {
     /**
      * entetes
      */
-    private static final String[] entetes = {"Display / Hide", "Vehicule"};
+    private static final String[] entetes = {"Display / Hide", "Client"};
 
     /**
      * Constructor.
@@ -74,7 +71,7 @@ public class ClientModelTable extends GenericModelTable<Client> {
      * @return vehicules to display
      */
     public List<Client> getDisplayClients() {
-        List<Client> clients = new ArrayList<Client>();
+        List<Client> clients = new ArrayList<>();
         for (int i = 0; i < this.data.size(); i++) {
             if (this.checkBoxValues.get(i)) {
                 clients.add(this.data.get(i));

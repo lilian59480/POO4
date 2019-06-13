@@ -177,6 +177,9 @@ public class Vehicule implements Serializable {
         if (!Objects.equals(this.depot, other.depot)) {
             return false;
         }
+        if (!Objects.equals(this.destinations, other.destinations)) {
+            return false;
+        }
         return true;
     }
 
